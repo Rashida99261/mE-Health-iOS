@@ -75,7 +75,7 @@ struct LoginView: View {
                             placeholder: "Enter Password",
                             text: viewStore.binding(
                                 get: \.password,
-                                send: LoginFeature.Action.emailChanged
+                                send: LoginFeature.Action.passwordChanged
                             ),
                             isSecure: true,
                             showPassword: viewStore.binding(

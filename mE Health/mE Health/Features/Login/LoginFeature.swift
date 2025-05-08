@@ -33,6 +33,7 @@ struct LoginFeature: Reducer {
         case navigateToAlreadyAUserTapped
         case dismissErrorAlert
         case setValidationErrorsVisible(Bool)
+        case loginResponse(Result<Bool, Never>)
     }
 
     func reduce(into state: inout State, action: Action) -> Effect<Action> {
@@ -53,15 +54,25 @@ struct LoginFeature: Reducer {
 
         case .loginTapped:
             state.showValidationErrors = true
-            let isValidEmail = NSPredicate(format: "SELF MATCHES %@", "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}")
-                .evaluate(with: state.email)
-            if state.email.isEmpty || state.password.isEmpty || !isValidEmail || state.password.count < 8 {
-                state.errorMessage = "Invalid credentials"
-                state.showErrorAlert = true
-            } else {
-                state.isLoading = true
-                // Simulate API call or use Effect here
+            let isValidEmail = NSPredicate(
+                format: "SELF MATCHES %@",
+                "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+            ).evaluate(with: state.email)
+
+            guard isValidEmail, state.password.count >= 8 else {
+                return .none // don't show alert
             }
+
+            state.isLoading = true
+
+            return .run { send in
+                try await Task.sleep(nanoseconds: 1_000_000_000)
+                await send(.loginResponse(.success(true)))
+            }
+
+        case .loginResponse:
+            state.isLoading = false
+            state.showErrorAlert = true
             return .none
 
         case .forgotPasswordTapped:

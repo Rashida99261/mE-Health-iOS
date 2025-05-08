@@ -50,5 +50,7 @@ struct SplashScreen: View {
 }
 
 #Preview {
-    SplashScreen()
+    NavigationStack {
+            SplashScreen()
+        }
 }
