@@ -20,6 +20,8 @@ struct LoginFeature: Reducer {
         var navigateToAlreadyAUser = false
         var isLoading = false
         var showForgotPassword = false
+        var forgotPasswordState: ForgotPasswordFeature.State? = nil
+        var alreadyUserState: AlreadyMeUserFeature.State? = nil
 
     }
 
@@ -28,12 +30,16 @@ struct LoginFeature: Reducer {
         case passwordChanged(String)
         case togglePasswordVisibility
         case loginTapped
-        case forgotPasswordTapped
         case navigateToRegisterTapped
         case navigateToAlreadyAUserTapped
         case dismissErrorAlert
         case setValidationErrorsVisible(Bool)
         case loginResponse(Result<Bool, Never>)
+        case forgotPasswordTapped
+        case dismissForgotPassword
+        case forgotPassword(ForgotPasswordFeature.Action)
+        case alreadyUserState(AlreadyMeUserFeature.Action)
+
     }
 
     func reduce(into state: inout State, action: Action) -> Effect<Action> {
@@ -77,6 +83,11 @@ struct LoginFeature: Reducer {
 
         case .forgotPasswordTapped:
             state.showForgotPassword = true
+            state.forgotPasswordState = ForgotPasswordFeature.State()
+            return .none
+
+        case .dismissForgotPassword:
+            state.showForgotPassword = false
             return .none
 
         case .navigateToRegisterTapped:
@@ -85,6 +96,7 @@ struct LoginFeature: Reducer {
 
         case .navigateToAlreadyAUserTapped:
             state.navigateToAlreadyAUser = true
+            state.alreadyUserState = AlreadyMeUserFeature.State()
             return .none
 
         case .dismissErrorAlert:
@@ -94,7 +106,45 @@ struct LoginFeature: Reducer {
         case .setValidationErrorsVisible(let isVisible):
             state.showValidationErrors = isVisible
             return .none
-
+            
+        case .forgotPassword(.navigateBackToLoginTapped):
+            state.showForgotPassword = false
+            state.forgotPasswordState = nil
+            return .none
+            
+        case .alreadyUserState(.navigateBackToLoginTapped):
+            state.navigateToAlreadyAUser = false
+            state.alreadyUserState = nil
+            return .none
+            
+        case .forgotPassword(.emailChanged(_)):
+            return .none
+        case .forgotPassword(.sendTapped):
+            return .none
+        case .forgotPassword(.showAlert(_)):
+            return .none
+        case .forgotPassword(.dismissAlert):
+            return .none
+        case .alreadyUserState(.emailChanged(_)):
+            return .none
+        case .alreadyUserState(.sendTapped):
+            return .none
+        case .alreadyUserState(.showAlert(_)):
+            return .none
+        case .alreadyUserState(.dismissAlert):
+            return .none
         }
     }
+    
+    var body: some ReducerOf<Self> {
+        Reduce(self.reduce)
+            .ifLet(\.forgotPasswordState, action: /Action.forgotPassword) {
+                ForgotPasswordFeature()
+            }
+        
+            .ifLet(\.alreadyUserState, action: /Action.alreadyUserState) {
+                AlreadyMeUserFeature()
+            }
+    }
+
 }

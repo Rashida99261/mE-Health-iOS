@@ -13,7 +13,6 @@ import ComposableArchitecture
 struct LoginView: View {
     let store: StoreOf<LoginFeature>
     @FocusState private var isTextFieldFocused: Bool
-
     @Environment(\.colorScheme) var colorScheme
     let meColor = "#FF6605"
     let textFieldCornerRadius: CGFloat = 10
@@ -21,6 +20,10 @@ struct LoginView: View {
     let secondaryButtonColor = Color(red: 0.2, green: 0.2, blue: 0.2)
     let buttonHeight: CGFloat = 50
 
+    private let registerStore = Store(initialState: RegistrationFeature.State()) {
+        RegistrationFeature()
+    }
+    
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             ZStack {
@@ -154,12 +157,20 @@ struct LoginView: View {
                 }.ignoresSafeArea(.keyboard)
                     .navigationDestination(
                         isPresented: viewStore.binding(
-                                                get: \.showForgotPassword,
-                                                send: .forgotPasswordTapped
-                                            )
+                            get: \.showForgotPassword,
+                            send: { _ in .dismissForgotPassword } // new action to cleanly dismiss
+                        )
                     ) {
-                        //ForgotPassword()
+                        IfLetStore(
+                            store.scope(
+                                state: \.forgotPasswordState,
+                                action: LoginFeature.Action.forgotPassword
+                            )
+                        ) { forgotPasswordStore in
+                            ForgotPasswordView(store: forgotPasswordStore)
+                        }
                     }
+
                     .navigationBarBackButtonHidden(true)
                     .navigationBarHidden(true)
             }
@@ -170,15 +181,6 @@ struct LoginView: View {
                 )
             ) {
                 Alert(title: Text("Login Failed"), message: Text(viewStore.errorMessage), dismissButton: .default(Text("OK")))
-            }
-            .navigationDestination(isPresented: viewStore.binding(get: \.showForgotPassword, send: { _ in .forgotPasswordTapped })) {
-                Text("Forgot Password Screen")
-            }
-            .navigationDestination(isPresented: viewStore.binding(get: \.navigateToRegister, send: { _ in .navigateToRegisterTapped })) {
-                Text("Registration Screen")
-            }
-            .navigationDestination(isPresented: viewStore.binding(get: \.navigateToAlreadyAUser, send: { _ in .navigateToAlreadyAUserTapped })) {
-                Text("Already a User Screen")
             }
         }
     }
@@ -205,7 +207,15 @@ struct LoginView: View {
                 send: LoginFeature.Action.navigateToAlreadyAUserTapped
             )
         ) {
-          //  AlreadyAUserView() // Replace with actual TCA-based view if needed
+            IfLetStore(
+                store.scope(
+                    state: \.alreadyUserState,
+                    action: LoginFeature.Action.alreadyUserState
+                )
+            ) { alreadyUserStore in
+                AlreadyMeUserView(store: alreadyUserStore)
+            }
+
         }
     }
 
@@ -227,7 +237,7 @@ struct LoginView: View {
                 send: LoginFeature.Action.navigateToRegisterTapped
             )
         ) {
-            //RegistrationView1() // Replace with actual TCA-based view if needed
+            RegistrationView1(store: registerStore) 
         }
     }
 
