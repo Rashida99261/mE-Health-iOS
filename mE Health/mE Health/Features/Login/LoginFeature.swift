@@ -22,9 +22,12 @@ struct LoginFeature: Reducer {
         var showForgotPassword = false
         var forgotPasswordState: ForgotPasswordFeature.State? = nil
         var alreadyUserState: AlreadyMeUserFeature.State? = nil
+        var navigateToDashboard = false
 
     }
-
+    
+    @Dependency(\.loginClient) var loginClient
+    
     enum Action: Equatable {
         case emailChanged(String)
         case passwordChanged(String)
@@ -34,7 +37,7 @@ struct LoginFeature: Reducer {
         case navigateToAlreadyAUserTapped
         case dismissErrorAlert
         case setValidationErrorsVisible(Bool)
-        case loginResponse(Result<Bool, Never>)
+        case loginResponse(TaskResult<LoginResponse>)
         case forgotPasswordTapped
         case dismissForgotPassword
         case forgotPassword(ForgotPasswordFeature.Action)
@@ -70,15 +73,30 @@ struct LoginFeature: Reducer {
             }
 
             state.isLoading = true
-
+            let request = LoginRequest(email: state.email, password: state.password, firebase_token: "", user_type: "seller")
             return .run { send in
-                try await Task.sleep(nanoseconds: 1_000_000_000)
-                await send(.loginResponse(.success(true)))
+                do {
+                        let response = try await loginClient.login(request)
+                        await send(.loginResponse(.success(response)))
+                    } catch {
+                        await send(.loginResponse(.failure(error)))
+                    }
             }
 
-        case .loginResponse:
+        case let .loginResponse(.success(response)):
+            state.isLoading = false
+            if response.status {
+                state.navigateToDashboard = true
+            } else {
+                state.showErrorAlert = true
+                state.errorMessage = response.message
+            }
+            return .none
+            
+        case let .loginResponse(.failure(error)):
             state.isLoading = false
             state.showErrorAlert = true
+            state.errorMessage = "Login failed: \(error.localizedDescription)"
             return .none
 
         case .forgotPasswordTapped:

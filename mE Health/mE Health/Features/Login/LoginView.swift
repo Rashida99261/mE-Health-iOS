@@ -107,6 +107,16 @@ struct LoginView: View {
                         Button(action: {
                             viewStore.send(.setValidationErrorsVisible(true))
                             viewStore.send(.loginTapped)
+                            
+//                            NavigationLink(
+//                                             destination: DashboardView(),
+//                                             isActive: viewStore.binding(
+//                                                 get: \.navigateToDashboard,
+//                                                 send: { _ in .loginTapped } // dummy
+//                                             )
+//                                         ) {
+//                                             EmptyView()
+//                                         }
                         }) {
                             HStack {
                                 if viewStore.isLoading {
@@ -136,7 +146,7 @@ struct LoginView: View {
                         ) {
                                                Button("OK", role: .cancel) { }
                                            } message: {
-                                               Text("Valid Format")
+                                               Text(viewStore.errorMessage)
                                            }
                         
                         // OR Divider
@@ -252,4 +262,13 @@ struct LoginView: View {
             }
         )
     )
+}
+
+struct DashboardView : View {
+    
+    var body: some View {
+        ZStack {
+            
+        }
+    }
 }
