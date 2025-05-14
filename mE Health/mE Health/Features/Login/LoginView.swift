@@ -19,7 +19,6 @@ struct LoginView: View {
     let horizontalPadding: CGFloat = 20
     let secondaryButtonColor = Color(red: 0.2, green: 0.2, blue: 0.2)
     let buttonHeight: CGFloat = 50
-
     private let registerStore = Store(initialState: RegistrationFeature.State()) {
         RegistrationFeature()
     }
@@ -107,6 +106,10 @@ struct LoginView: View {
                         Button(action: {
                             viewStore.send(.setValidationErrorsVisible(true))
                             viewStore.send(.loginTapped)
+                            
+//                            if let token = viewStore.authService.authState?.lastTokenResponse?.accessToken {
+//                                print("Access Token: \(token)")
+//                            }
                             
 //                            NavigationLink(
 //                                             destination: DashboardView(),

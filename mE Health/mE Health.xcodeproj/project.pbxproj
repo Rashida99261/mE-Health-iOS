@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		5CA33D1F2DCA47CA00064A7B /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 5CA33D1E2DCA47CA00064A7B /* ComposableArchitecture */; };
+		5CD69A472DD4645300310DF1 /* AppAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 5CD69A462DD4645300310DF1 /* AppAuth */; };
+		5CD69A492DD4645300310DF1 /* AppAuthCore in Frameworks */ = {isa = PBXBuildFile; productRef = 5CD69A482DD4645300310DF1 /* AppAuthCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,7 +58,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5CD69A472DD4645300310DF1 /* AppAuth in Frameworks */,
 				5CA33D1F2DCA47CA00064A7B /* ComposableArchitecture in Frameworks */,
+				5CD69A492DD4645300310DF1 /* AppAuthCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,6 +122,8 @@
 			name = "mE Health";
 			packageProductDependencies = (
 				5CA33D1E2DCA47CA00064A7B /* ComposableArchitecture */,
+				5CD69A462DD4645300310DF1 /* AppAuth */,
+				5CD69A482DD4645300310DF1 /* AppAuthCore */,
 			);
 			productName = "mE Health";
 			productReference = 5CA33CF02DCA46FB00064A7B /* mE Health.app */;
@@ -203,6 +209,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				5CA33D1D2DCA47CA00064A7B /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+				5CD69A452DD4645300310DF1 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 5CA33CF12DCA46FB00064A7B /* Products */;
@@ -408,6 +415,7 @@
 				DEVELOPMENT_TEAM = M9FNL3CCW9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "mE-Health-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -437,6 +445,7 @@
 				DEVELOPMENT_TEAM = M9FNL3CCW9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "mE-Health-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -577,6 +586,14 @@
 				minimumVersion = 1.19.1;
 			};
 		};
+		5CD69A452DD4645300310DF1 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/openid/AppAuth-iOS.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -584,6 +601,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5CA33D1D2DCA47CA00064A7B /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
+		};
+		5CD69A462DD4645300310DF1 /* AppAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5CD69A452DD4645300310DF1 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */;
+			productName = AppAuth;
+		};
+		5CD69A482DD4645300310DF1 /* AppAuthCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5CD69A452DD4645300310DF1 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */;
+			productName = AppAuthCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

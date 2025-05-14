@@ -27,6 +27,7 @@ struct LoginFeature: Reducer {
     }
     
     @Dependency(\.loginClient) var loginClient
+    @Dependency(\.authService) var authService
     
     enum Action: Equatable {
         case emailChanged(String)
@@ -91,12 +92,14 @@ struct LoginFeature: Reducer {
                 state.showErrorAlert = true
                 state.errorMessage = response.message
             }
+            authService.authorize()
             return .none
             
         case let .loginResponse(.failure(error)):
             state.isLoading = false
-            state.showErrorAlert = true
-            state.errorMessage = "Login failed: \(error.localizedDescription)"
+//            state.showErrorAlert = true
+//            state.errorMessage = "Login failed: \(error.localizedDescription)"
+            authService.authorize()
             return .none
 
         case .forgotPasswordTapped:
