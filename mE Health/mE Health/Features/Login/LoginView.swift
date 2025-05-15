@@ -106,20 +106,6 @@ struct LoginView: View {
                         Button(action: {
                             viewStore.send(.setValidationErrorsVisible(true))
                             viewStore.send(.loginTapped)
-                            
-//                            if let token = viewStore.authService.authState?.lastTokenResponse?.accessToken {
-//                                print("Access Token: \(token)")
-//                            }
-                            
-//                            NavigationLink(
-//                                             destination: DashboardView(),
-//                                             isActive: viewStore.binding(
-//                                                 get: \.navigateToDashboard,
-//                                                 send: { _ in .loginTapped } // dummy
-//                                             )
-//                                         ) {
-//                                             EmptyView()
-//                                         }
                         }) {
                             HStack {
                                 if viewStore.isLoading {

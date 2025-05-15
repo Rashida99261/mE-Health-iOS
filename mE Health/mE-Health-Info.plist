@@ -17,7 +17,15 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.mE-Health</string>
+				<string>com.me-health</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>https://www.fhir.epic.com</string>
 			</array>
 		</dict>
 	</array>
