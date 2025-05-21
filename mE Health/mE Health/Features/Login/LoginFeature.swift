@@ -23,6 +23,9 @@ struct LoginFeature: Reducer {
         var forgotPasswordState: ForgotPasswordFeature.State? = nil
         var alreadyUserState: AlreadyMeUserFeature.State? = nil
         var navigateToDashboard = false
+        var authError: String?
+        var accessToken: String?
+        var patientID: String?
 
     }
     
@@ -43,6 +46,9 @@ struct LoginFeature: Reducer {
         case dismissForgotPassword
         case forgotPassword(ForgotPasswordFeature.Action)
         case alreadyUserState(AlreadyMeUserFeature.Action)
+        case oauthResponse(Result<URL, AuthError>)
+        case tokenExchangeResponse(Result<TokenExchangeResult, AuthError>)
+        
 
     }
 
@@ -92,15 +98,52 @@ struct LoginFeature: Reducer {
                 state.showErrorAlert = true
                 state.errorMessage = response.message
             }
-            authService.authorize()
+            
+            return .run { send in
+                            do {
+                                let callbackURL = try await authService.startOAuthFlow()
+                                await send(.oauthResponse(.success(callbackURL)))
+                            } catch {
+                                let authError = error as? AuthError ?? .unknown
+                                await send(.oauthResponse(.failure(authError)))
+                            }
+                        }
+            
+        case let .oauthResponse(result):
+            state.isLoading = false
+            switch result {
+            case let .success(url):
+                print("✅ Callback URL: \(url)")
+                guard let code = extractCode(from: url) else {
+                    return .send(.tokenExchangeResponse(.failure(.authFailed)))
+                }
+                return .run { send in
+                    do {
+                        let (token, patientID) = try await authService.exchangeCodeForToken(code)
+                        await send(.tokenExchangeResponse(.success(TokenExchangeResult(accessToken: token, patientID: patientID))))
+                    } catch {
+                        await send(.tokenExchangeResponse(.failure(error as? AuthError ?? .unknown)))
+                    }
+                }
+            case let .failure(error):
+                state.authError = error.localizedDescription
+            }
             return .none
+
             
         case let .loginResponse(.failure(error)):
             state.isLoading = false
-//            state.showErrorAlert = true
-//            state.errorMessage = "Login failed: \(error.localizedDescription)"
-            authService.authorize()
-            return .none
+            state.showErrorAlert = true
+            state.errorMessage = "Login failed: \(error.localizedDescription)"
+            return .run { send in
+                            do {
+                                let callbackURL = try await authService.startOAuthFlow()
+                                await send(.oauthResponse(.success(callbackURL)))
+                            } catch {
+                                let authError = error as? AuthError ?? .unknown
+                                await send(.oauthResponse(.failure(authError)))
+                            }
+                        }
 
         case .forgotPasswordTapped:
             state.showForgotPassword = true
@@ -138,6 +181,18 @@ struct LoginFeature: Reducer {
             state.alreadyUserState = nil
             return .none
             
+        case .tokenExchangeResponse(.success(let tokenResult)):
+            state.isLoading = false
+            state.accessToken = tokenResult.accessToken
+            state.patientID = tokenResult.patientID
+            return .none
+
+        case .tokenExchangeResponse(.failure(let error)):
+            state.isLoading = false
+            state.errorMessage = error.localizedDescription
+            return .none
+
+            
         case .forgotPassword(.emailChanged(_)):
             return .none
         case .forgotPassword(.sendTapped):
@@ -155,6 +210,13 @@ struct LoginFeature: Reducer {
         case .alreadyUserState(.dismissAlert):
             return .none
         }
+    }
+    
+    private func extractCode(from url: URL) -> String? {
+            URLComponents(url: url, resolvingAgainstBaseURL: false)?
+                .queryItems?
+                .first(where: { $0.name == "code" })?
+                .value
     }
     
     var body: some ReducerOf<Self> {
