@@ -125,7 +125,30 @@ struct LoginView: View {
                         .foregroundColor(.white)
                         .clipShape(Capsule())
                         .disabled(viewStore.isLoading)
-                        
+//                        .navigationDestination(
+//                            store: store.scope(
+//                                state: \.$dashboardState,
+//                                action: LoginFeature.Action.dashboard
+//                            )
+//                        ) { dashboardStore in
+//                            DashboardView(store: dashboardStore)
+//                        }
+                        .navigationDestination(
+                            isPresented: viewStore.binding(
+                                get: \.navigateToDashboard,
+                                send: { _ in .dismissDashboardView } // new action to cleanly dismiss
+                            )
+                        ) {
+                            IfLetStore(
+                                store.scope(
+                                    state: \.dashboardState,
+                                    action: LoginFeature.Action.dashboardState
+                                )
+                            ) { dashboardStore in
+                                DashboardView(store: dashboardStore)
+                            }
+                        }
+
                         .alert(
                             "STATUS",
                             isPresented: viewStore.binding(
@@ -133,7 +156,8 @@ struct LoginView: View {
                                 send: .dismissErrorAlert
                             )
                         ) {
-                                               Button("OK", role: .cancel) { }
+                                               Button("OK", role: .cancel) {
+                                               }
                                            } message: {
                                                Text(viewStore.errorMessage)
                                            }
@@ -253,11 +277,3 @@ struct LoginView: View {
     )
 }
 
-struct DashboardView : View {
-    
-    var body: some View {
-        ZStack {
-            
-        }
-    }
-}

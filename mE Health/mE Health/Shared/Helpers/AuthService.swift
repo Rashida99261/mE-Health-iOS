@@ -29,7 +29,7 @@ enum AuthError: Error, LocalizedError, Equatable {
 
 final class AuthService: NSObject, ASWebAuthenticationPresentationContextProviding {
     static let shared = AuthService()
-    let clientID = "58e04c49-b139-485c-8832-2b057c594329"
+    let clientID = "8f61aa69-40a1-45f7-8de0-055fad83cdad"
     let redirectURI = "smartFhirAuthApp://callback"
     let tokenEndpoint = "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/token"
     let aud = "https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/R4"

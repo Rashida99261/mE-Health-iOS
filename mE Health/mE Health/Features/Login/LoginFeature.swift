@@ -24,8 +24,8 @@ struct LoginFeature: Reducer {
         var alreadyUserState: AlreadyMeUserFeature.State? = nil
         var navigateToDashboard = false
         var authError: String?
-        var accessToken: String?
-        var patientID: String?
+        var isLoggedIn = false
+        var dashboardState: DashboardFeature.State? = nil
 
     }
     
@@ -48,7 +48,9 @@ struct LoginFeature: Reducer {
         case alreadyUserState(AlreadyMeUserFeature.Action)
         case oauthResponse(Result<URL, AuthError>)
         case tokenExchangeResponse(Result<TokenExchangeResult, AuthError>)
-        
+        case dismissDashboardView
+        case dashboardState(DashboardFeature.Action)
+
 
     }
 
@@ -133,8 +135,8 @@ struct LoginFeature: Reducer {
             
         case let .loginResponse(.failure(error)):
             state.isLoading = false
-            state.showErrorAlert = true
-            state.errorMessage = "Login failed: \(error.localizedDescription)"
+//            state.showErrorAlert = false
+//            state.errorMessage = "Login failed: \(error.localizedDescription)"
             return .run { send in
                             do {
                                 let callbackURL = try await authService.startOAuthFlow()
@@ -183,16 +185,25 @@ struct LoginFeature: Reducer {
             
         case .tokenExchangeResponse(.success(let tokenResult)):
             state.isLoading = false
-            state.accessToken = tokenResult.accessToken
-            state.patientID = tokenResult.patientID
+            UserDefaults.standard.set(tokenResult.patientID, forKey: "patientId")
+            state.isLoggedIn = true
+            _ = TokenManager.saveToken(tokenResult.accessToken)
+            state.dashboardState = DashboardFeature.State()
+            state.navigateToDashboard = true
             return .none
+            
 
         case .tokenExchangeResponse(.failure(let error)):
             state.isLoading = false
             state.errorMessage = error.localizedDescription
             return .none
 
-            
+           
+        case .dismissDashboardView:
+            state.navigateToDashboard = false
+            state.dashboardState = nil
+            return .none
+
         case .forgotPassword(.emailChanged(_)):
             return .none
         case .forgotPassword(.sendTapped):
@@ -209,6 +220,13 @@ struct LoginFeature: Reducer {
             return .none
         case .alreadyUserState(.dismissAlert):
             return .none
+        case .dashboardState(let dashboardAction):
+            // Forward dashboard actions to the dashboard reducer
+            guard var dashboardState = state.dashboardState else { return .none }
+            let effect = DashboardFeature().reduce(into: &dashboardState, action: dashboardAction)
+            state.dashboardState = dashboardState
+            return effect.map(Action.dashboardState)
+
         }
     }
     
@@ -228,6 +246,10 @@ struct LoginFeature: Reducer {
             .ifLet(\.alreadyUserState, action: /Action.alreadyUserState) {
                 AlreadyMeUserFeature()
             }
+            .ifLet(\.dashboardState, action: /Action.dashboardState) {
+                DashboardFeature()
+            }
     }
 
 }
+
