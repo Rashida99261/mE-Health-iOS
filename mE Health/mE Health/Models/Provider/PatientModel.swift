@@ -10,6 +10,7 @@ struct Patient : Codable, Equatable {
     let id : String?
     let active : Bool?
     let name : [Name]?
+    var birthDate : String?
     let generalPractitioner : [GeneralPractitioner]?
 
     enum CodingKeys: String, CodingKey {

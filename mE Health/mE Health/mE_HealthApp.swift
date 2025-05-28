@@ -11,7 +11,8 @@ import ComposableArchitecture
 @main
 struct mE_HealthApp: App {
     
-    
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     var body: some Scene {
         WindowGroup {
             NavigationStack {

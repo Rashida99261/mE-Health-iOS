@@ -33,6 +33,8 @@ struct DashboardFeature: Reducer {
     }
     
     @Dependency(\.fhirClient) var fhirClient
+    @Dependency(\.coreDataClient) var coreDataClient
+
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -55,6 +57,11 @@ struct DashboardFeature: Reducer {
                 if let ref = patient.generalPractitioner?.first?.reference {
                     UserDefaults.standard.set(ref, forKey: "practitionerId")
                 }
+                do {
+                        try coreDataClient.savePatient(patient)
+                    } catch {
+                        print("❌ Failed to save patient to Core Data: \(error)")
+                    }
                 return .none
 
             case .patientResponse(.failure):
