@@ -197,6 +197,9 @@ struct LoginView: View {
                     .navigationBarBackButtonHidden(true)
                     .navigationBarHidden(true)
             }
+            .onAppear {
+                            viewStore.send(.onAppear)
+                        }
             .alert(
                 isPresented: viewStore.binding(
                     get: \.showErrorAlert,

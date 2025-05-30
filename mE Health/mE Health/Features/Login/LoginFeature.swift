@@ -50,18 +50,27 @@ struct LoginFeature: Reducer {
         case tokenExchangeResponse(Result<TokenExchangeResult, AuthError>)
         case dismissDashboardView
         case dashboardState(DashboardFeature.Action)
+        case onAppear
 
 
     }
 
     func reduce(into state: inout State, action: Action) -> Effect<Action> {
         switch action {
+            
+        case .onAppear:
+            print("on appear")
+            return .none
+            
+
         case .emailChanged(let email):
+            print("Email changed to:", email)
             state.email = email
             state.showValidationErrors = false
             return .none
 
         case .passwordChanged(let password):
+            print("password changed to:", password)
             state.password = password
             state.showValidationErrors = false
             return .none
@@ -100,7 +109,7 @@ struct LoginFeature: Reducer {
                 state.showErrorAlert = true
                 state.errorMessage = response.message
             }
-            
+           
             return .run { send in
                             do {
                                 let callbackURL = try await authService.startOAuthFlow()
@@ -121,8 +130,8 @@ struct LoginFeature: Reducer {
                 }
                 return .run { send in
                     do {
-                        let (token, patientID) = try await authService.exchangeCodeForToken(code)
-                        await send(.tokenExchangeResponse(.success(TokenExchangeResult(accessToken: token, patientID: patientID))))
+                        let (token, patientID,expiresIn) = try await authService.exchangeCodeForToken(code)
+                        await send(.tokenExchangeResponse(.success(TokenExchangeResult(accessToken: token, patientID: patientID, expiresIn: expiresIn))))
                     } catch {
                         await send(.tokenExchangeResponse(.failure(error as? AuthError ?? .unknown)))
                     }
@@ -135,6 +144,7 @@ struct LoginFeature: Reducer {
             
         case let .loginResponse(.failure(error)):
             state.isLoading = false
+            SessionManager.shared.saveLoginSession()
 //            state.showErrorAlert = false
 //            state.errorMessage = "Login failed: \(error.localizedDescription)"
             return .run { send in
@@ -187,7 +197,12 @@ struct LoginFeature: Reducer {
             state.isLoading = false
             UserDefaults.standard.set(tokenResult.patientID, forKey: "patientId")
             state.isLoggedIn = true
-            _ = TokenManager.saveToken(tokenResult.accessToken)
+            
+            let expiresIn = tokenResult.expiresIn
+            let expiryTime = Date().addingTimeInterval(TimeInterval(expiresIn)).timeIntervalSince1970
+            _ = TokenManager.saveAccessToken(tokenResult.accessToken)
+            _ = TokenManager.saveExpiryTimestamp(expiryTime)
+
             state.dashboardState = DashboardFeature.State()
             state.navigateToDashboard = true
             return .none

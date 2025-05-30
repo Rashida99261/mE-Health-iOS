@@ -54,7 +54,8 @@ struct FHIRAPIService : FHIRAPIClient{
         guard let url = components.url else {
             throw URLError(.badURL)
         }
-        let bearerToken = TokenManager.fetchToken() ?? ""
+        let bearerToken = TokenManager.fetchAccessToken() ?? ""
+        print("bearerToken",bearerToken)
         var request = URLRequest(url: url)
         request.setValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
         request.setValue("application/fhir+json", forHTTPHeaderField: "Accept")

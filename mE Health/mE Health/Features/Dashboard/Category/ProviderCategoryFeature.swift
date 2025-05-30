@@ -2,6 +2,7 @@ import ComposableArchitecture
 import Foundation
 
 struct ProviderCategoryFeature: Reducer {
+    
     struct State: Equatable {
         var patient: Patient?
         var practitioner: Practitioner?

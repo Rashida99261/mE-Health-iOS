@@ -14,6 +14,7 @@ public enum HealthCategory: String, CaseIterable, Identifiable, Equatable {
     case consents = "Consents"
 
     public var id: String { rawValue }
+   
 }
 
 
@@ -22,7 +23,8 @@ struct DashboardFeature: Reducer {
         var selectedCategory: HealthCategory?
         var patient: Patient?
         var isLoading: Bool = false
-
+        var showErrorAlert = false
+        var errorMessage = ""
     }
 
     enum Action: Equatable {
@@ -30,6 +32,14 @@ struct DashboardFeature: Reducer {
         case patientResponse(Result<Patient, FHIRAPIError>)
         case categoryTapped(HealthCategory)
         case categoryDetailDismissed
+        case alertDismissed
+        case logoutTapped
+        case tokenValidated(String) // token
+        case tokenValidationFailed
+        case fetchDashboardData
+
+
+
     }
     
     @Dependency(\.fhirClient) var fhirClient
@@ -43,6 +53,26 @@ struct DashboardFeature: Reducer {
             case .onAppear:
                 state.isLoading = true
                 return .run { send in
+                    if let token = TokenManager.getValidAccessToken() {
+                         await send(.tokenValidated(token))
+                    } else {
+                        await send(.tokenValidationFailed)
+                    }
+                }
+                
+            case let .tokenValidated(token):
+                print("🔐 Token ready: \(token)")
+                TokenManager.deleteAccessToken()
+                _ = TokenManager.saveAccessToken(token)
+                return .send(.fetchDashboardData)
+
+            case .tokenValidationFailed:
+                print("❌ Token refresh failed")
+                
+                return .none
+
+            case .fetchDashboardData:
+                return .run { send in
                     do {
                         let result = try await fhirClient.fetchPatient()
                         await send(.patientResponse(.success(result)))
@@ -51,17 +81,24 @@ struct DashboardFeature: Reducer {
                     }
                 }
 
+
             case let .patientResponse(.success(patient)):
                 state.isLoading = false
                 state.patient = patient
                 if let ref = patient.generalPractitioner?.first?.reference {
+                    print(ref)
                     UserDefaults.standard.set(ref, forKey: "practitionerId")
                 }
                 do {
-                        try coreDataClient.savePatient(patient)
-                    } catch {
-                        print("❌ Failed to save patient to Core Data: \(error)")
-                    }
+                    try coreDataClient.savePatient(patient)
+                    let name = (patient.name?.first?.given?.joined(separator: " ") ?? "") + " " + (patient.name?.first?.family ?? "")
+                    let id = patient.id ?? "NA"
+                    state.showErrorAlert = true
+                    state.errorMessage = "Name: \(name)\nID: \(id)"
+                } catch {
+                    print("❌ Failed to save patient to Core Data: \(error)")
+                }
+
                 return .none
 
             case .patientResponse(.failure):
@@ -78,6 +115,15 @@ struct DashboardFeature: Reducer {
             case .categoryDetailDismissed:
                 state.selectedCategory = nil
                 return .none
+                
+
+            case .alertDismissed:
+                state.showErrorAlert = false
+              return .none
+
+            case .logoutTapped:
+                return .none
+
             }
         }
     }

@@ -38,7 +38,7 @@ final class AuthService: NSObject, ASWebAuthenticationPresentationContextProvidi
     func startOAuthFlow() async throws -> URL {
         let (verifier, challenge) = self.generateCodeVerifierAndChallenge()
         self.codeVerifier = verifier
-        let authURL = URL(string: "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/authorize?client_id=\(clientID)&response_type=code&redirect_uri=\(redirectURI)&scope=openid&code_challenge=\(challenge)&code_challenge_method=S256")!
+        let authURL = URL(string: "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/authorize?client_id=\(clientID)&response_type=code&redirect_uri=\(redirectURI)&scope=openid profile patient/*.read patient/*.write offline_access&code_challenge=\(challenge)&code_challenge_method=S256")!
         let callbackScheme = "smartFhirAuthApp" // Your registered scheme
 
         return try await withCheckedThrowingContinuation { continuation in
@@ -61,7 +61,9 @@ final class AuthService: NSObject, ASWebAuthenticationPresentationContextProvidi
         return components?.queryItems?.first(where: { $0.name == "code" })?.value
     }
 
-    func exchangeCodeForToken(code: String) async throws -> (String, String) {
+    func exchangeCodeForToken(code: String) async throws -> (String, String, Int) {
+//
+//    func exchangeCodeForToken(code: String) async throws -> (String, String) {
 
         var request = URLRequest(url: URL(string: tokenEndpoint)!)
         request.httpMethod = "POST"
@@ -85,15 +87,22 @@ final class AuthService: NSObject, ASWebAuthenticationPresentationContextProvidi
 
         let (data, _) = try await URLSession.shared.data(for: request)
 
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw AuthError.tokenExchangeFailed
+        }
+        
+        print(json)
+
         guard
             let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
             let accessToken = json["access_token"] as? String,
-            let patientID = json["patient"] as? String
+            let patientID = json["patient"] as? String,
+            let expiresIn = json["expires_in"] as? Int
         else {
             throw AuthError.tokenExchangeFailed
         }
 
-        return (accessToken, patientID)
+        return (accessToken, patientID, expiresIn)
     }
 
     private var cancellables = Set<AnyCancellable>()
@@ -140,7 +149,7 @@ extension Dictionary where Key == String, Value == String {
 
 struct AuthServiceClient {
     var startOAuthFlow: @Sendable () async throws -> URL
-    var exchangeCodeForToken: @Sendable (_ code: String) async throws -> (String, String)
+    var exchangeCodeForToken: @Sendable (_ code: String) async throws -> (String, String, Int)
 }
 
 private enum AuthServiceKey: DependencyKey {
@@ -163,4 +172,6 @@ extension DependencyValues {
 struct TokenExchangeResult: Equatable {
     let accessToken: String
     let patientID: String
+    let expiresIn:Int
 }
+

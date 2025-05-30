@@ -16,7 +16,14 @@ struct mE_HealthApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                SplashScreen()
+                SplashScreen(
+                    store: Store(
+                        initialState: AppFeature.State(),
+                        reducer: {
+                            AppFeature()
+                        }
+                    )
+                )
             }
 
         }
