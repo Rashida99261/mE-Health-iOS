@@ -21,22 +21,30 @@ struct MedicationCategoryView: View {
                 ScrollView {
                     
                     if viewStore.isLoading {
-                        ProgressView("Loading Providers...")
+                        ProgressView("Loading Medical Data...")
                     } else {
                         
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("Condition Details")
+                            Text("Medical Details")
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .padding(.bottom, 8)
                             
-                            medicationRow(title: "Medication Name", value: "2 (two) times a day with meals", icon: "waveform.path.ecg.fill")
-                            medicationRow(title: "Dosage", value: "Take 1 tablet (125 mcg total) by mouth 1 (one) time each day., Starting Mon 4/29/2019, Until Tue 4/28/2020, Print", icon: "calendar.badge.clock")
-                            medicationRow(title: "Frequency", value: "365 days repeat", icon: "waveform.path.ecg")
-                            medicationRow(title: "Route", value: "Oral", icon: "calendar")
+                            let resourceObj = viewStore.medicationModel?.entry?.first?.resource
+                            let name = resourceObj?.courseOfTherapyType?.text ?? "Unknown"  //
+                            let dosage = resourceObj?.dosageInstruction?.first?.text ?? "Unknown"
+                            let route = resourceObj?.dosageInstruction?.first?.route?.text ?? "Unknown"
+                            let frequency = resourceObj?.dosageInstruction?.first?.timing?.Repeat?.count ?? 0
+                            let requester = resourceObj?.requester?.display ?? "Unknown"
+                            let noOfRepeat = resourceObj?.dispenseRequest?.numberOfRepeatsAllowed ?? 0
+                            
+                            medicationRow(title: "Medication Name", value: name, icon: "waveform.path.ecg.fill")
+                            medicationRow(title: "Dosage", value: dosage, icon: "calendar.badge.clock")
+                            medicationRow(title: "Frequency", value: "\(frequency) days repeat", icon: "waveform.path.ecg")
+                            medicationRow(title: "Route", value: route, icon: "calendar")
                             medicationRow(title: "RxNorm Code", value: "", icon: "info.circle")
-                            medicationRow(title: "Prescriber", value: "Physician", icon: "info.circle")
-                            medicationRow(title: "Refills", value: "numberOfRepeatsAllowed : 11", icon: "info.circle")
+                            medicationRow(title: "Prescriber", value: requester, icon: "info.circle")
+                            medicationRow(title: "Refills", value: "numberOfRepeatsAllowed : \(noOfRepeat)", icon: "info.circle")
                             
                             Spacer()
                         }
@@ -50,6 +58,9 @@ struct MedicationCategoryView: View {
                     }
                 }
                 .navigationTitle("Condition")
+            }
+            .onAppear {
+                viewStore.send(.loadMedication)
             }
         }
     }

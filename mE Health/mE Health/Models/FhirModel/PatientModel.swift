@@ -77,3 +77,49 @@ struct GeneralPractitioner : Codable,Equatable {
     }
 
 }
+
+struct Practitioner: Codable,Equatable {
+    let id: String?
+    let reference : String?
+    let display : String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id = "id"
+        case reference = "reference"
+        case display = "display"
+
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        id = try values.decodeIfPresent(String.self, forKey: .id)
+        reference = try values.decodeIfPresent(String.self, forKey: .reference)
+        display = try values.decodeIfPresent(String.self, forKey: .display)
+
+    }
+}
+
+
+struct PractitionerRole: Codable, Equatable  {
+    let resourceType : String?
+    let type : String?
+    let total : Int?
+    let entry : [Entry]?
+
+    enum CodingKeys: String, CodingKey {
+
+        case resourceType = "resourceType"
+        case type = "type"
+        case total = "total"
+        case entry = "entry"
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        resourceType = try values.decodeIfPresent(String.self, forKey: .resourceType)
+        type = try values.decodeIfPresent(String.self, forKey: .type)
+        total = try values.decodeIfPresent(Int.self, forKey: .total)
+        entry = try values.decodeIfPresent([Entry].self, forKey: .entry)
+    }
+
+}

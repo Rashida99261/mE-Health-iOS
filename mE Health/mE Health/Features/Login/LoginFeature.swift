@@ -199,10 +199,13 @@ struct LoginFeature: Reducer {
             state.isLoggedIn = true
             
             let expiresIn = tokenResult.expiresIn
-            let expiryTime = Date().addingTimeInterval(TimeInterval(expiresIn)).timeIntervalSince1970
+            let expiryDate = Date().addingTimeInterval(TimeInterval(expiresIn - 60))
+            UserDefaults.standard.set(expiryDate, forKey: "tokenExpiryDate")
             _ = TokenManager.saveAccessToken(tokenResult.accessToken)
-            _ = TokenManager.saveExpiryTimestamp(expiryTime)
-
+            
+            let loginTimestamp = Date()
+            UserDefaults.standard.set(loginTimestamp, forKey: "loginTimestamp")
+           
             state.dashboardState = DashboardFeature.State()
             state.navigateToDashboard = true
             return .none

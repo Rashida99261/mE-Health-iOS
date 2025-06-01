@@ -8,11 +8,12 @@
 import ComposableArchitecture
 
 struct CoreDataClient {
-    var saveResourceTree: (Resource) throws -> Void
+    var saveResourceTree: (MedicationModel) throws -> Void
     var savePatient: (Patient) throws -> Void
     var savePractitioner: (Practitioner) throws -> Void
     var saveResource: (Resource) throws -> Void
     var saveConditionModel: (ConditionModel) throws -> Void
+    var saveConsentModel: (ConsentModel) throws -> Void
 }
 
 enum CoreDataError: Error {
@@ -33,17 +34,19 @@ private enum CoreDataClientKey: DependencyKey {
 extension CoreDataClient {
     static let live = CoreDataClient(
         
-        saveResourceTree: { resource in
+        saveResourceTree: { medicationModel in
             let context = PersistenceController.shared.context
             let resourceEntity = ResourceEntity(context: context)
 
-            resourceEntity.id = resource.id
-            resourceEntity.resourceType = resource.resourceType
-            resourceEntity.status = resource.status
-            resourceEntity.active = resource.active ?? false
+            let resource = medicationModel.entry?.first?.resource
+            
+            resourceEntity.id = resource?.Id ?? ""
+            resourceEntity.resourceType = resource?.resourceType
+            resourceEntity.status = resource?.status
+            resourceEntity.active = resource?.active ?? false
 
             // 🔹 Practitioner
-            if let practitioner = resource.practitioner {
+            if let practitioner = resource?.practitioner {
                 let practitionerEntity = PractitionerEntity(context: context)
                 practitionerEntity.id = practitioner.id
                 practitionerEntity.display = practitioner.display
@@ -51,7 +54,7 @@ extension CoreDataClient {
             }
 
             // 🔹 Identifiers
-            if let identifiers = resource.identifier {
+            if let identifiers = resource?.identifier {
                 for identifier in identifiers {
                     let identifierEntity = IdentifierEntity(context: context)
                     identifierEntity.use = identifier.use
@@ -62,7 +65,7 @@ extension CoreDataClient {
             }
 
             // 🔹 MedicationReference
-            if let medication = resource.medicationReference {
+            if let medication = resource?.medicationReference {
                 let medEntity = MedicationReferenceEntity(context: context)
                 medEntity.reference = medication.reference
                 medEntity.display = medication.display
@@ -70,7 +73,7 @@ extension CoreDataClient {
             }
 
             // 🔹 Subject
-            if let subject = resource.subject {
+            if let subject = resource?.subject {
                 let subjectEntity = MedicationReferenceEntity(context: context)
                 subjectEntity.reference = subject.reference
                 subjectEntity.display = subject.display
@@ -78,7 +81,7 @@ extension CoreDataClient {
             }
 
             // 🔹 Encounter
-            if let encounter = resource.encounter {
+            if let encounter = resource?.encounter {
                 let encounterEntity = EncounterEntity(context: context)
                 encounterEntity.reference = encounter.reference
                 encounterEntity.display = encounter.display
@@ -86,7 +89,7 @@ extension CoreDataClient {
             }
 
             // 🔹 Requester
-            if let requester = resource.requester {
+            if let requester = resource?.requester {
                 let requesterEntity = RequesterEntity(context: context)
                 requesterEntity.display = requester.display
                 requesterEntity.reference = requester.reference
@@ -94,7 +97,7 @@ extension CoreDataClient {
             }
 
             // 🔹 Dosage Instructions
-            if let dosages = resource.dosageInstruction {
+            if let dosages = resource?.dosageInstruction {
                 for dosage in dosages {
                     let dosageEntity = DosageInstructionEntity(context: context)
                     dosageEntity.text = dosage.text
@@ -103,7 +106,7 @@ extension CoreDataClient {
             }
 
             // 🔹 DispenseRequest
-            if let dispense = resource.dispenseRequest {
+            if let dispense = resource?.dispenseRequest {
                 let dispenseEntity = DispenseRequestEntity(context: context)
                 dispenseEntity.numberOfRepeatsAllowed = Int16(dispense.numberOfRepeatsAllowed ?? 0)
                 resourceEntity.dispenseRequest = dispenseEntity
@@ -124,12 +127,6 @@ extension CoreDataClient {
             let entity = PatientEntity(context: context)
             entity.id = patient.id ?? "1"
             entity.name = (patient.name?.first?.given?.joined(separator: " ") ?? "") + " " + (patient.name?.first?.family ?? "")
-            entity.gender = "Male"
-            entity.birthDate = "1993-07-15"
-            
-            
-            
-            
             do {
                 try context.save()
                 print("✅ Saved patient to Core Data")
@@ -157,7 +154,7 @@ extension CoreDataClient {
         saveResource: { resource in
             let context = PersistenceController.shared.context
             let entity = ResourceEntity(context: context)
-            entity.id = resource.id
+            entity.id = resource.Id
             entity.resourceType = resource.resourceType
             entity.status = resource.status
             entity.active = resource.active ?? false
@@ -196,7 +193,6 @@ extension CoreDataClient {
         saveConditionModel:   { model in
 
             let context = PersistenceController.shared.context
-                    
                     model.entry?.forEach { entry in
                         guard let resource = entry.resource else { return }
                         
@@ -205,7 +201,7 @@ extension CoreDataClient {
                         conditionEntity.resourceType = resource.resourceType
                         conditionEntity.onsetDateTime = resource.onsetDateTime
                         conditionEntity.recordedDate = resource.recordedDate
-                        
+
                         // Clinical Status
                         if let clinical = resource.clinicalStatus {
                             let statusEntity = ClinicalStatusEntity(context: context)
@@ -278,10 +274,57 @@ extension CoreDataClient {
                         print("❌ Saving ConditionModel failed: \(error)")
                         throw CoreDataError.saveFailed
                     }
+                },
+        saveConsentModel:   { consentModel in
+            let context = PersistenceController.shared.context
+            
+                let consentEntity = ConsentEntity(context: context)
+                
+                consentEntity.resourceType = consentModel.resourceType
+                consentEntity.type = consentModel.type
+                consentEntity.total = Int32(consentModel.total ?? 0)
+                
+                if let entries = consentModel.entry {
+                    for entry in entries {
+                        let entryEntity = ConsentEntryEntity(context: context)
+                        entryEntity.fullUrl = entry.fullUrl
+                        
+                        if let resource = entry.resource {
+                            let resourceEntity = ConsentResourceEntity(context: context)
+                            resourceEntity.resourceType = resource.resourceType
+                            
+                            if let issues = resource.issue {
+                                for issue in issues {
+                                    let issueEntity = ConsentIssueEntity(context: context)
+                                    issueEntity.code = issue.code
+                                    issueEntity.severity = issue.severity
+                                    issueEntity.diagnostics = issue.diagnostics
+                                    
+                                    if let details = issue.details {
+                                        let detailsEntity = DetailsEntity(context: context)
+                                        // Set detailsEntity fields from details
+                                        issueEntity.details = detailsEntity
+                                    }
+                                    
+                                    resourceEntity.addToIssues(issueEntity)
+                                }
+                            }
+                            entryEntity.resource = resourceEntity
+                        }
+                        consentEntity.addToEntries(entryEntity)
+                    }
+                }
+
+                do {
+                    try context.save()
+                    print("Consent data saved.")
+                } catch {
+                    print("Failed to save consent data: \(error)")
                 }
             
-        
 
+        }
+        
     )
 }
 

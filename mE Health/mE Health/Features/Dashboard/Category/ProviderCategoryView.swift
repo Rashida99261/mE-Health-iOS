@@ -22,7 +22,6 @@ struct ProviderCategoryView: View {
                         
                         let name = viewStore.patient?.name?.first?.text ?? "Unknown"  //
                         let speciality = viewStore.practitioner?.display ?? "Unknown"
-                        
                         VStack(alignment: .leading, spacing: 16) {
                             Text("Provider Details")
                                 .font(.title2)

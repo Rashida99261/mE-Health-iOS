@@ -34,9 +34,12 @@ struct DashboardFeature: Reducer {
         case categoryDetailDismissed
         case alertDismissed
         case logoutTapped
-        case tokenValidated(String) // token
+        case tokenValidated(String)
         case tokenValidationFailed
         case fetchDashboardData
+        case reauthCompleted(Result<String, AuthError>)
+        case authFailed(String)
+      
 
 
 
@@ -53,23 +56,52 @@ struct DashboardFeature: Reducer {
             case .onAppear:
                 state.isLoading = true
                 return .run { send in
-                    if let token = TokenManager.getValidAccessToken() {
-                         await send(.tokenValidated(token))
-                    } else {
-                        await send(.tokenValidationFailed)
-                    }
+                    do {
+                            let token = try await AuthService.shared.getValidAccessToken()
+                            _ = TokenManager.saveAccessToken(token)
+                            await send(.tokenValidated(token))
+                        } catch {
+                            await send(.tokenValidationFailed)
+                        }
                 }
                 
             case let .tokenValidated(token):
                 print("🔐 Token ready: \(token)")
-                TokenManager.deleteAccessToken()
-                _ = TokenManager.saveAccessToken(token)
                 return .send(.fetchDashboardData)
 
             case .tokenValidationFailed:
                 print("❌ Token refresh failed")
+                return .run { send in
+                      do {
+                          let callbackURL = try await AuthService.shared.startOAuthFlow()
+                          guard let code = await AuthService.shared.extractCode(from: callbackURL) else {
+                              await send(.authFailed("Failed to extract code"))
+                              return
+                          }
+                          let (accessToken, patientID, expiresIn) = try await AuthService.shared.exchangeCodeForToken(code: code)
+                          UserDefaults.standard.set(patientID, forKey: "patientId")
+                          await AuthService.saveExpiryTimestamp(expiresIn)
+                          await send(.tokenValidated(accessToken))
+                      } catch {
+                          await send(.authFailed(error.localizedDescription))
+                      }
+                  }
                 
+            case .authFailed(let error):
+                state.showErrorAlert = true
+                state.errorMessage = error
                 return .none
+                
+            case .reauthCompleted(let result):
+                switch result {
+                case .success(let token):
+                    _ = TokenManager.saveAccessToken(token)
+                    return .send(.tokenValidated(token))
+                case .failure(let error):
+                    state.showErrorAlert = true
+                    state.errorMessage = error.localizedDescription
+                    return .none
+                }
 
             case .fetchDashboardData:
                 return .run { send in

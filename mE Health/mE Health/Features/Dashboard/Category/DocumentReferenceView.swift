@@ -21,6 +21,7 @@ struct DocumentReferenceView: View {
                         ProgressView("Loading Providers...")
                     } else {
                         
+                        
 //                        let respourceObj = viewStore.consentModel?.entry?.first?.resource
 //                        let name = respourceObj?.code?.text ?? "Unknown"  //
 //                        let onsetDate = respourceObj?.onsetDateTime ?? "Unknown"

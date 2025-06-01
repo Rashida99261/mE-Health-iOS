@@ -53,6 +53,9 @@ struct ConditionCategoryView: View {
                 }
                 .navigationTitle("Condition")
             }
+            .onAppear {
+                viewStore.send(.loadCondition)  
+            }
         }
     }
 

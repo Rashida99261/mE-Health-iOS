@@ -22,6 +22,7 @@ struct MedicationFeature: Reducer {
     }
 
     @Dependency(\.fhirClient) var fhirClient
+    @Dependency(\.coreDataClient) var coreDataClient
 
     func reduce(into state: inout State, action: Action) -> Effect<Action> {
         switch action {
@@ -44,6 +45,11 @@ struct MedicationFeature: Reducer {
         case let .getMedicationResponse(.success(condition)):
             state.medicationModel = condition
             state.isLoading = false
+            do {
+                try coreDataClient.saveResourceTree(condition)
+            } catch {
+                print("❌ Failed to save MEdication to Core Data: \(error)")
+            }
             return .none
 
         case let .getMedicationResponse(.failure(error)):

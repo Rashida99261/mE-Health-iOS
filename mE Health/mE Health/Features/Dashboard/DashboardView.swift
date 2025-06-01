@@ -67,6 +67,7 @@ struct DashboardView: View {
             
         }
     }
+
     
     @ViewBuilder
     private func destinationView(for category: HealthCategory,patient: Patient) -> some View {

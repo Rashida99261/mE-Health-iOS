@@ -125,6 +125,9 @@ struct VitalObservationView: View {
                 }
                 .navigationTitle("Condition")
             }
+            .onAppear {
+                viewStore.send(.loadVitalbservation)
+            }
         }
     }
 

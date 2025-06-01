@@ -17,17 +17,18 @@ struct ConsentFeature: Reducer {
     }
 
     enum Action: Equatable {
-        case loadLabObservation
+        case loadConsent
         case getLabObservationResponse(Result<ConsentModel, FHIRAPIError>)
 
     }
 
     @Dependency(\.fhirClient) var fhirClient
-
+    @Dependency(\.coreDataClient) var coreDataClient
+    
     func reduce(into state: inout State, action: Action) -> Effect<Action> {
         switch action {
 
-        case .loadLabObservation:
+        case .loadConsent:
             
             state.isLoading = true
             state.errorMessage = nil
@@ -42,9 +43,14 @@ struct ConsentFeature: Reducer {
                 }
             }
 
-        case let .getLabObservationResponse(.success(condition)):
-            state.consentModel = condition
+        case let .getLabObservationResponse(.success(consent)):
+            state.consentModel = consent
             state.isLoading = false
+            do {
+                try coreDataClient.saveConsentModel(consent)
+            } catch {
+                print("❌ Failed to save Consent to Core Data: \(error)")
+            }
             return .none
 
         case let .getLabObservationResponse(.failure(error)):

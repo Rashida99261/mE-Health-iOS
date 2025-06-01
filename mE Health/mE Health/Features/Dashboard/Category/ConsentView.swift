@@ -53,6 +53,9 @@ struct ConsentView: View {
                 }
                 .navigationTitle("Condition")
             }
+            .onAppear {
+                viewStore.send(.loadConsent)
+            }
         }
     }
 

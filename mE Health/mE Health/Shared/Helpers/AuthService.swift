@@ -34,6 +34,50 @@ final class AuthService: NSObject, ASWebAuthenticationPresentationContextProvidi
     let tokenEndpoint = "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/token"
     let aud = "https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/R4"
     private var codeVerifier = ""
+    
+    // Token Info
+    private(set) var accessToken: String?
+    private(set) var patientID: String?
+    private var expiryDate: Date?
+
+    func getValidAccessToken() async throws -> String {
+        if let token = TokenManager.fetchAccessToken(), AuthService.isTokenValid() {
+            return token
+        }
+
+        // Token is expired or missing, trigger re-auth
+        let callbackURL = try await startOAuthFlow()
+        
+        guard let code = extractCode(from: callbackURL) else {
+            throw AuthError.authFailed
+        }
+
+        let (newToken, patientID, expiresIn) = try await exchangeCodeForToken(code: code)
+        
+        self.accessToken = newToken
+        self.patientID = patientID
+        self.expiryDate = Date().addingTimeInterval(TimeInterval(expiresIn - 60))
+        UserDefaults.standard.set(patientID, forKey: "patientId")
+        _ = TokenManager.saveAccessToken(newToken)
+        AuthService.saveExpiryTimestamp(expiresIn)
+        
+        return newToken
+    }
+
+    
+    static func saveExpiryTimestamp(_ expiresIn: Int) {
+        let expiryDate = Date().addingTimeInterval(TimeInterval(expiresIn - 60)) // 1-minute buffer
+        UserDefaults.standard.set(expiryDate, forKey: "tokenExpiryDate")
+    }
+
+
+    static func isTokenValid() -> Bool {
+        guard let expiryDate = UserDefaults.standard.object(forKey: "tokenExpiryDate") as? Date else {
+            return false
+        }
+        return Date() < expiryDate
+    }
+
 
     func startOAuthFlow() async throws -> URL {
         let (verifier, challenge) = self.generateCodeVerifierAndChallenge()
@@ -62,8 +106,6 @@ final class AuthService: NSObject, ASWebAuthenticationPresentationContextProvidi
     }
 
     func exchangeCodeForToken(code: String) async throws -> (String, String, Int) {
-//
-//    func exchangeCodeForToken(code: String) async throws -> (String, String) {
 
         var request = URLRequest(url: URL(string: tokenEndpoint)!)
         request.httpMethod = "POST"
