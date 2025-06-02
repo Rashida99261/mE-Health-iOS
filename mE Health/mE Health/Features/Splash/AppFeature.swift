@@ -1,9 +1,3 @@
-//
-//  AppFeature.swift
-//  mE Health
-//
-//  Created by Rashida on 29/05/25.
-//
 
 import ComposableArchitecture
 import Foundation

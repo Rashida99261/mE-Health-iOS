@@ -1,10 +1,3 @@
-//
-//  RegistrationFeature.swift
-//  mE Health
-//
-//  Created by Rashida on 9/05/25.
-//
-
 
 import ComposableArchitecture
 import Foundation

@@ -1,9 +1,3 @@
-//
-//  ForgotView.swift
-//  mE Health
-//
-//  Created by Rashida on 8/05/25.
-//
 import SwiftUI
 import ComposableArchitecture
 

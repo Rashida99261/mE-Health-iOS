@@ -2,7 +2,22 @@
 //  ConsentView.swift
 //  mE Health
 //
-//  Created by Rashida on 23/05/25.
+//  # =============================================================================
+//# mEinstein - CONFIDENTIAL
+//#
+//# Copyright ©️ 2025 mEinstein Inc. All Rights Reserved.
+//#
+//# NOTICE: All information contained herein is and remains the property of
+//# mEinstein Inc. The intellectual and technical concepts contained herein are
+//# proprietary to mEinstein Inc. and may be covered by U.S. and foreign patents,
+//# patents in process, and are protected by trade secret or copyright law.
+//#
+//# Dissemination of this information, or reproduction of this material,
+//# is strictly forbidden unless prior written permission is obtained from
+//# mEinstein Inc.
+//#
+//# Author(s): Ishant 
+//# ============================================================================= on 23/05/25.
 //
 
 import SwiftUI
@@ -22,11 +37,6 @@ struct ConsentView: View {
                         ProgressView("Loading Providers...")
                     } else {
                         
-//                        let respourceObj = viewStore.consentModel?.entry?.first?.resource
-//                        let name = respourceObj?.code?.text ?? "Unknown"  //
-//                        let onsetDate = respourceObj?.onsetDateTime ?? "Unknown"
-//                        let status = respourceObj?.clinicalStatus?.text ?? "Unknown"
-//                        let recordedDate = respourceObj?.recordedDate ?? "Unknown"
 
                         VStack(alignment: .leading, spacing: 16) {
                             Text("Condition Details")
@@ -34,11 +44,11 @@ struct ConsentView: View {
                                 .fontWeight(.bold)
                                 .padding(.bottom, 8)
                             
-                            conditionRow(title: "Data Category", value: "Not Available", icon: "lungs.fill")
-                            conditionRow(title: "Consent Status", value: "Not Available", icon: "calendar.badge.clock")
-                            conditionRow(title: "Consent Type", value: "Active",icon: "waveform.path.ecg")
-                            conditionRow(title: "Expiry Date", value: "Not Available", icon: "calendar")
-                            conditionRow(title: "Last Modified", value: "urn:oid:1.2.840.114350.1.13.0.1.7.2.657369", icon: "info.circle")
+                            Text("No Data Found")
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                                .padding(.bottom, 8)
+                            
                             
                             Spacer()
                         }

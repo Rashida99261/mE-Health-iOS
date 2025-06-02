@@ -1,5 +1,5 @@
 //
-//  SceneDelegate.swift
+//  PersistenceController.swift
 //  mE Health
 //
 //  # =============================================================================
@@ -20,26 +20,22 @@
 //# ============================================================================= on 28/05/25.
 //
 
-import UIKit
-import SwiftUI
+import CoreData
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+class PersistenceController {
+    static let shared = PersistenceController()
 
-    var window: UIWindow?
-
-    func scene(
-        _ scene: UIScene,
-        willConnectTo session: UISceneSession,
-        options connectionOptions: UIScene.ConnectionOptions
-    ) {
-        let context = PersistenceController.shared.context
-        let contentView = ContentView().environment(\.managedObjectContext, context)
-
-        if let windowScene = scene as? UIWindowScene {
-            let window = UIWindow(windowScene: windowScene)
-            window.rootViewController = UIHostingController(rootView: contentView)
-            self.window = window
-            window.makeKeyAndVisible()
+    lazy var persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "FHIRTableModel") // same as .xcdatamodeld
+        container.loadPersistentStores { _, error in
+            if let error = error as NSError? {
+                fatalError("Unresolved error \(error)")
+            }
         }
+        return container
+    }()
+
+    var context: NSManagedObjectContext {
+        persistentContainer.viewContext
     }
 }

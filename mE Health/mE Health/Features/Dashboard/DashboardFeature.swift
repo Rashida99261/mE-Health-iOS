@@ -130,7 +130,6 @@ struct DashboardFeature: Reducer {
                 } catch {
                     print("❌ Failed to save patient to Core Data: \(error)")
                 }
-
                 return .none
 
             case .patientResponse(.failure):

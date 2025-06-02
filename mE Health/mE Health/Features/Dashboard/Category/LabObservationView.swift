@@ -2,7 +2,22 @@
 //  LabObservationView.swift
 //  mE Health
 //
-//  Created by Rashida on 23/05/25.
+//  # =============================================================================
+//# mEinstein - CONFIDENTIAL
+//#
+//# Copyright ©️ 2025 mEinstein Inc. All Rights Reserved.
+//#
+//# NOTICE: All information contained herein is and remains the property of
+//# mEinstein Inc. The intellectual and technical concepts contained herein are
+//# proprietary to mEinstein Inc. and may be covered by U.S. and foreign patents,
+//# patents in process, and are protected by trade secret or copyright law.
+//#
+//# Dissemination of this information, or reproduction of this material,
+//# is strictly forbidden unless prior written permission is obtained from
+//# mEinstein Inc.
+//#
+//# Author(s): Ishant 
+//# ============================================================================= on 23/05/25.
 //
 
 import SwiftUI
@@ -18,7 +33,7 @@ struct LabObservationView: View {
             NavigationView {
                 ScrollView {
                     if viewStore.isLoading {
-                        ProgressView("Loading Providers...")
+                        ProgressView("Loading Lab Observation...")
                     } else {
                         
                         let issueObj = viewStore.labModel?.entry?.first?.resource?.issue?.first
@@ -26,7 +41,7 @@ struct LabObservationView: View {
                         let codeLoin = issueObj?.details?.coding?.first?.code ?? ""
 
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("Condition Details")
+                            Text("Lab Observation Details")
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .padding(.bottom, 8)
@@ -88,7 +103,7 @@ struct VitalObservationView: View {
             NavigationView {
                 ScrollView {
                     if viewStore.isLoading {
-                        ProgressView("Loading Providers...")
+                        ProgressView("Loading Vital Observation...")
                     } else {
                         
                         
@@ -98,7 +113,7 @@ struct VitalObservationView: View {
 
                         
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("Condition Details")
+                            Text("Vital Observation Details")
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .padding(.bottom, 8)

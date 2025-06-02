@@ -1,10 +1,3 @@
-//
-//  AuthService.swift
-//  mE Health
-//
-//  Created by Rashida on 14/05/25.
-//
-
 import Foundation
 import AppAuth
 import AuthenticationServices
@@ -29,10 +22,6 @@ enum AuthError: Error, LocalizedError, Equatable {
 
 final class AuthService: NSObject, ASWebAuthenticationPresentationContextProviding {
     static let shared = AuthService()
-    let clientID = "8f61aa69-40a1-45f7-8de0-055fad83cdad"
-    let redirectURI = "smartFhirAuthApp://callback"
-    let tokenEndpoint = "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/token"
-    let aud = "https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/R4"
     private var codeVerifier = ""
     
     // Token Info
@@ -82,11 +71,11 @@ final class AuthService: NSObject, ASWebAuthenticationPresentationContextProvidi
     func startOAuthFlow() async throws -> URL {
         let (verifier, challenge) = self.generateCodeVerifierAndChallenge()
         self.codeVerifier = verifier
-        let authURL = URL(string: "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/authorize?client_id=\(clientID)&response_type=code&redirect_uri=\(redirectURI)&scope=openid profile patient/*.read patient/*.write offline_access&code_challenge=\(challenge)&code_challenge_method=S256")!
-        let callbackScheme = "smartFhirAuthApp" // Your registered scheme
+        let authURL = URL(string: "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/authorize?client_id=\(Constants.API.clientID)&response_type=code&redirect_uri=\(Constants.API.redirectURI)&scope=openid profile patient/*.read patient/*.write offline_access&code_challenge=\(challenge)&code_challenge_method=S256")!
+        
 
         return try await withCheckedThrowingContinuation { continuation in
-            let session = ASWebAuthenticationSession(url: authURL, callbackURLScheme: callbackScheme) { callbackURL, error in
+            let session = ASWebAuthenticationSession(url: authURL, callbackURLScheme: Constants.API.callbackScheme) { callbackURL, error in
                 if let url = callbackURL {
                     continuation.resume(returning: url)
                 } else {
@@ -107,15 +96,15 @@ final class AuthService: NSObject, ASWebAuthenticationPresentationContextProvidi
 
     func exchangeCodeForToken(code: String) async throws -> (String, String, Int) {
 
-        var request = URLRequest(url: URL(string: tokenEndpoint)!)
+        var request = URLRequest(url: URL(string: Constants.API.tokenEndpoint)!)
         request.httpMethod = "POST"
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
 
         let bodyParams = [
             "grant_type": "authorization_code",
             "code": code,
-            "redirect_uri": redirectURI,
-            "client_id": clientID,
+            "redirect_uri": Constants.API.redirectURI,
+            "client_id": Constants.API.clientID,
             "code_verifier": self.codeVerifier
         ]
 

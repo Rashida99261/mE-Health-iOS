@@ -1,10 +1,3 @@
-//
-//  InputField.swift
-//  mE Health
-//
-//  Created by Rashida on 7/05/25.
-//
-
 import SwiftUI
 
 struct InputField: View {

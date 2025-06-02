@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  mE Health
-//
-//  Created by Rashida on 6/05/25.
-//
-
 import SwiftUI
 
 struct ContentView: View {

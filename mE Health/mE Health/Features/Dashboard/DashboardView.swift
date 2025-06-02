@@ -2,7 +2,22 @@
 //  DashboardView.swift
 //  mE Health
 //
-//  Created by Rashida on 22/05/25.
+//  # =============================================================================
+//# mEinstein - CONFIDENTIAL
+//#
+//# Copyright ©️ 2025 mEinstein Inc. All Rights Reserved.
+//#
+//# NOTICE: All information contained herein is and remains the property of
+//# mEinstein Inc. The intellectual and technical concepts contained herein are
+//# proprietary to mEinstein Inc. and may be covered by U.S. and foreign patents,
+//# patents in process, and are protected by trade secret or copyright law.
+//#
+//# Dissemination of this information, or reproduction of this material,
+//# is strictly forbidden unless prior written permission is obtained from
+//# mEinstein Inc.
+//#
+//# Author(s): Ishant 
+//# ============================================================================= on 22/05/25.
 //
 
 import SwiftUI
@@ -20,12 +35,6 @@ struct DashboardView: View {
                         ProgressView("Loading patient...")
                     } else if let patient = viewStore.patient {
                         VStack(alignment: .leading, spacing: 8) {
-                            
-                            
-                            
-                            //                            Text("Patient: \(patient.name?.first?.text ?? "Unknown")")
-                            //                            Text("DOB: \(patient.birthDate ?? "N/A")")
-                            //                            Text("Gender: \(patient.gender ?? "N/A")")
                         }
                         .padding()
                     }

@@ -1,10 +1,3 @@
-//
-//  Extensions.swift
-//  mE Health
-//
-//  Created by Rashida on 7/05/25.
-//
-
 import SwiftUI
 extension Color {
     /// Create from hex string like "FF5500" or "#FF5500"

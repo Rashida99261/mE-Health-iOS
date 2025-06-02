@@ -1,9 +1,3 @@
-//
-//  Untitled.swift
-//  mE Health
-//
-//  Created by Rashida on 21/05/25.
-//
 
 import Foundation
 import ComposableArchitecture
@@ -45,9 +39,9 @@ protocol FHIRAPIClient {
 
 struct FHIRAPIService : FHIRAPIClient{
     
-    private let baseURL: String = "https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/R4"
+    
     private func makeRequest(path: String, queryItems: [URLQueryItem] = []) throws -> URLRequest {
-        guard var components = URLComponents(string: baseURL + path) else {
+        guard var components = URLComponents(string: Constants.API.FHIRbaseURL + path) else {
             throw URLError(.badURL)
         }
         components.queryItems = queryItems
