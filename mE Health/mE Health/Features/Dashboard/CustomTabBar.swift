@@ -6,52 +6,23 @@
 import SwiftUI
 import ComposableArchitecture
 
-//struct CustomTabBar: View {
-//    let store: StoreOf<DashboardFeature>
-//
-//    var body: some View {
-//        WithViewStore(store, observe: \.selectedTab) { viewStore in
-//            HStack {
-//                // Left Tab
-//                TabButton(tab: .menu, icon: "house", viewStore: viewStore)
-//
-//                Spacer()
-//
-//                // Center Tab (Bigger)
-//                Button(action: {
-//                    viewStore.send(.tabSelected(.voice))
-//                }) {
-//                    Image(systemName: "plus")
-//                        .font(.system(size: 28, weight: .bold))
-//                        .foregroundColor(.white)
-//                        .frame(width: 60, height: 60)
-//                        .background(Color.accentColor)
-//                        .clipShape(Circle())
-//                        .shadow(radius: 4)
-//                }
-//                .offset(y: -20)
-//
-//                Spacer()
-//
-//                // Right Tab
-//                TabButton(tab: .dashboard, icon: "gear", viewStore: viewStore)
-//            }
-//            .padding(.horizontal, 40)
-//            .padding(.top, 10)
-//            .padding(.bottom, 30)
-//            .background(Color.white.shadow(radius: 5))
-//        }
-//    }
-//}
-
 struct CustomTabBar: View {
     @Binding var selectedTab: DashboardTab
 
     var body: some View {
         ZStack {
+            // Background shape with corner radius
+            
+            RoundedRectangle(cornerRadius: 0, style: .continuous)
+                .fill(Color.white)
+                .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: -2) // top shadow only
+                .ignoresSafeArea(edges: .bottom)
+
+
+            // Main tab items
             HStack {
                 TabItem(
-                    icon: "house",
+                    icon: "menu",
                     title: "Menu",
                     isSelected: selectedTab == .menu,
                     action: { selectedTab = .menu }
@@ -60,23 +31,25 @@ struct CustomTabBar: View {
                 Spacer()
 
                 TabItem(
-                    icon: "slider.horizontal.3",
+                    icon: "dashboard",
                     title: "Dashboard",
                     isSelected: selectedTab == .dashboard,
                     action: { selectedTab = .dashboard }
                 )
             }
             .padding(.horizontal, 32)
-            .padding(.top, 10)
-            .frame(height: 70)
-            .background(Color.white.shadow(radius: 5))
+            .padding(.top, 12) // adjust based on visual balance
+            .padding(.bottom, 20) // so text/icons don’t touch bottom
 
+            // Floating mic button
             Button(action: {
                 selectedTab = .voice
             }) {
                 ZStack {
                     Circle()
-                        .fill(LinearGradient(colors: [Color(hex: "FB531C"), Color(hex: "F79E2D")], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .fill(LinearGradient(colors: [Color(hex: "FB531C"), Color(hex: "F79E2D")],
+                                             startPoint: .topLeading,
+                                             endPoint: .bottomTrailing))
                         .frame(width: 70, height: 70)
                         .shadow(radius: 4)
 
@@ -88,26 +61,9 @@ struct CustomTabBar: View {
             }
             .offset(y: -35)
         }
+        .frame(height: 80)
     }
 }
-
-
-//struct TabButton: View {
-//    let tab: Tab
-//    let icon: String
-//    let viewStore: ViewStore<Tab, DashboardFeature.Action>
-//
-//    var body: some View {
-//        Button(action: {
-//            viewStore.send(.tabSelected(tab))
-//        }) {
-//            Image(systemName: icon)
-//                .font(.system(size: 22))
-//                .foregroundColor(viewStore.state == tab ? .accentColor : .gray)
-//        }
-//    }
-//}
-
 struct TabItem: View {
     let icon: String
     let title: String
@@ -117,12 +73,12 @@ struct TabItem: View {
     var body: some View {
         Button(action: action) {
             VStack(spacing: 4) {
-                Image(systemName: icon)
+                Image(icon)
                     .font(.system(size: 20))
-                    .foregroundColor(isSelected ? Color(hex: "FB531C") : .gray)
+                    .foregroundColor(isSelected ? Color(hex: "FB531C") : Color(hex: "333333"))
                 Text(title)
                     .font(.caption)
-                    .foregroundColor(isSelected ? Color(hex: "FB531C") : .gray)
+                    .foregroundColor(isSelected ? Color(hex: "FB531C") : Color(hex: "333333"))
             }
         }
     }

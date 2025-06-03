@@ -25,5 +25,10 @@
 			<array/>
 		</dict>
 	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Inter-Bold.ttf</string>
+		<string>Inter-Regular</string>
+	</array>
 </dict>
 </plist>

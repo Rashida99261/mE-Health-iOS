@@ -1,25 +1,3 @@
-//
-//  DashboardView.swift
-//  mE Health
-//
-//  # =============================================================================
-//# mEinstein - CONFIDENTIAL
-//#
-//# Copyright ©️ 2025 mEinstein Inc. All Rights Reserved.
-//#
-//# NOTICE: All information contained herein is and remains the property of
-//# mEinstein Inc. The intellectual and technical concepts contained herein are
-//# proprietary to mEinstein Inc. and may be covered by U.S. and foreign patents,
-//# patents in process, and are protected by trade secret or copyright law.
-//#
-//# Dissemination of this information, or reproduction of this material,
-//# is strictly forbidden unless prior written permission is obtained from
-//# mEinstein Inc.
-//#
-//# Author(s): Ishant
-//# ============================================================================= on 22/05/25.
-//
-
 import SwiftUI
 import ComposableArchitecture
 
@@ -29,45 +7,46 @@ struct DashboardView: View {
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             NavigationStack {
-                
-                ZStack {
-                    VStack {
-                        
-                        Spacer()
-                        
-                        VStack(spacing: 24) {
-                            Text("How can I help you today?")
-                                .font(.title)
-                                .fontWeight(.bold)
-                            
-                            Spacer()
-                            
-                            CardButton(title: "AI Assistant", iconName: "sparkles", gradientColors: [.orange, .yellow])
-                            CardButton(title: "Data Marketplace", iconName: "cart", gradientColors: [.orange, .yellow])
-                            
-                            Spacer()
-                           
-                        }
-                        
-                        Spacer()
-                    }
+                GeometryReader { geometry in
+                    ZStack {
+                        Color.white.ignoresSafeArea()
 
-                    VStack {
-                        Spacer()
-                        CustomTabBar(selectedTab: viewStore.binding(
-                                                get: \.selectedTab,
-                                                send: DashboardFeature.Action.tabSelected
-                                            ))
+                        VStack(spacing: 0) {
+                            Text("How can I help you today?")
+                                .font(.custom("Inter-Bold", size: 24))
+                                .padding(.top, 64)
+
+                            Spacer()
+
+                            VStack(spacing: 24) {
+                                CardButton(title: "AI Assistant", iconName: "sparkles", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")])
+                                CardButton(title: "Data Marketplace", iconName: "cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")])
+                            }
+                            .padding(.horizontal, 24)
+
+                            Spacer()
+
+                            // This spacer leaves space for the tab bar
+                            Spacer().frame(height: 60)
+                        }
+
+                        // Bottom Tab Bar
+                        VStack {
+                            Spacer()
+                            
+                            CustomTabBar(selectedTab: viewStore.binding(
+                                get: \.selectedTab,
+                                send: DashboardFeature.Action.tabSelected
+                            ))
+                            .ignoresSafeArea(edges: .bottom) // Crucial!
+                        }
                     }
+                    .onAppear {
+                        viewStore.send(.onAppear)
+                    }
+                    .navigationBarBackButtonHidden(true)
                 }
-                .edgesIgnoringSafeArea(.bottom)
-                .background(Color.white)
-                .onAppear {
-                    viewStore.send(.onAppear)  // ✅ Trigger the reducer case
-                }
-                
             }
-            .navigationBarBackButtonHidden(true)
         }
     }
         
@@ -157,39 +136,40 @@ struct DashboardView: View {
     }
     
     
-    
-    struct CardButton: View {
-        let title: String
-        let iconName: String
-        let gradientColors: [Color]
-        
-        var body: some View {
-            HStack {
-                
-                LinearGradient(
-                    gradient: Gradient(colors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .frame(width: 32)
-                .cornerRadius(5)
-                
-                Spacer()
-                
+struct CardButton: View {
+    let title: String
+    let iconName: String
+    let gradientColors: [Color]
+
+    var body: some View {
+        HStack(spacing: 16) {
+            // Leading gradient bar
+            LinearGradient(
+                gradient: Gradient(colors: gradientColors),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .frame(width: 32)
+            .cornerRadius(5)
+
+            // Left-aligned text and icon
+            VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .foregroundColor(.white)
-                    .fontWeight(.semibold)
-                
-                Spacer()
-                
-                Image(systemName: iconName)
-                    .foregroundColor(Color(hex: "FB531C"))
-                    .padding(.trailing)
+                    .font(.custom("Inter-Bold", size: 18))
             }
-            .frame(height: 80)
-            .background(Color.black)
-            .cornerRadius(12)
-            .shadow(radius: 5)
-            .padding(.horizontal)
+
+            Spacer()
+
+            // Trailing icon
+            Image(systemName: iconName)
+                .foregroundColor(Color(hex: "FB531C"))
+                .padding(.trailing, 8)
         }
+        .frame(height: 80)
+        .background(Color.black)
+        .cornerRadius(12)
+        .shadow(radius: 5)
+        .padding(.horizontal)
     }
+}
