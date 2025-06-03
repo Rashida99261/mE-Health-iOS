@@ -25,6 +25,7 @@ struct DashboardFeature: Reducer {
         var isLoading: Bool = false
         var showErrorAlert = false
         var errorMessage = ""
+        var selectedTab: DashboardTab = .menu
     }
 
     enum Action: Equatable {
@@ -39,6 +40,7 @@ struct DashboardFeature: Reducer {
         case fetchDashboardData
         case reauthCompleted(Result<String, AuthError>)
         case authFailed(String)
+        case tabSelected(DashboardTab)
       
 
 
@@ -154,6 +156,11 @@ struct DashboardFeature: Reducer {
 
             case .logoutTapped:
                 return .none
+                
+            case .tabSelected(let tab):
+                            state.selectedTab = tab
+                            return .none
+                        
 
             }
         }

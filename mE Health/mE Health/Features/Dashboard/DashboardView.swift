@@ -16,7 +16,7 @@
 //# is strictly forbidden unless prior written permission is obtained from
 //# mEinstein Inc.
 //#
-//# Author(s): Ishant 
+//# Author(s): Ishant
 //# ============================================================================= on 22/05/25.
 //
 
@@ -30,136 +30,166 @@ struct DashboardView: View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             NavigationStack {
                 
-                VStack {
-                    if viewStore.isLoading {
-                        ProgressView("Loading patient...")
-                    } else if let patient = viewStore.patient {
-                        VStack(alignment: .leading, spacing: 8) {
+                ZStack {
+                    VStack {
+                        
+                        Spacer()
+                        
+                        VStack(spacing: 24) {
+                            Text("How can I help you today?")
+                                .font(.title)
+                                .fontWeight(.bold)
+                            
+                            Spacer()
+                            
+                            CardButton(title: "AI Assistant", iconName: "sparkles", gradientColors: [.orange, .yellow])
+                            CardButton(title: "Data Marketplace", iconName: "cart", gradientColors: [.orange, .yellow])
+                            
+                            Spacer()
+                           
                         }
-                        .padding()
+                        
+                        Spacer()
+                    }
+
+                    VStack {
+                        Spacer()
+                        CustomTabBar(selectedTab: viewStore.binding(
+                                                get: \.selectedTab,
+                                                send: DashboardFeature.Action.tabSelected
+                                            ))
                     }
                 }
-                List {
-                    ForEach(HealthCategory.allCases) { category in
-                        Button {
-                            viewStore.send(.categoryTapped(category))
-                        } label: {
-                            Text(category.rawValue)
-                                .padding(.vertical, 8)
-                        }
-                    }
+                .edgesIgnoringSafeArea(.bottom)
+                .background(Color.white)
+                .onAppear {
+                    viewStore.send(.onAppear)  // ✅ Trigger the reducer case
                 }
-                .navigationTitle("Health Record")
-                .sheet(
-                    item: Binding(
-                        get: { viewStore.selectedCategory },
-                        set: { _ in viewStore.send(.categoryDetailDismissed) }
+                
+            }
+            .navigationBarBackButtonHidden(true)
+        }
+    }
+        
+        
+        @ViewBuilder
+        private func destinationView(for category: HealthCategory,patient: Patient) -> some View {
+            switch category {
+            case .providers:
+                ProviderCategoryView(
+                    store: Store(
+                        initialState: ProviderCategoryFeature.State(patient: patient),
+                        reducer: {
+                            ProviderCategoryFeature()
+                        }
                     )
-                ) { category in
-                    if let patient = viewStore.patient {
-                        destinationView(for: category, patient: patient)
-                    }
+                )
+            case .conditions:
+                ConditionCategoryView(
+                    store: Store(
+                        initialState: ConditionFeature.State(),
+                        reducer: {
+                            ConditionFeature()
+                        }
+                    )
+                )
+            case .medications:
+                MedicationCategoryView(
+                    store: Store(
+                        initialState: MedicationFeature.State(),
+                        reducer: {
+                            MedicationFeature()
+                        }
+                    )
+                )
+            case .labs:
+                LabObservationView(
+                    store: Store(
+                        initialState: LabObservationFeature.State(),
+                        reducer: {
+                            LabObservationFeature()
+                        }
+                    )
+                )
+            case .vitals:
+                VitalObservationView(
+                    store: Store(
+                        initialState: VitalsObservationFeature.State(),
+                        reducer: {
+                            VitalsObservationFeature()
+                        }
+                    )
+                )
+            case .uploads:
+                DocumentReferenceView(
+                    store: Store(
+                        initialState: ConsentFeature.State(),
+                        reducer: {
+                            ConsentFeature()
+                        }
+                    )
+                )
+            case .consents:
+                ConsentView(
+                    store: Store(
+                        initialState: ConsentFeature.State(),
+                        reducer: {
+                            ConsentFeature()
+                        }
+                    )
+                )
+            }
+        }
+        
+    }
+    
+    
+    
+    #Preview {
+        DashboardView(
+            store: Store(
+                initialState: DashboardFeature.State(),
+                reducer: {
+                    DashboardFeature()
                 }
-            }
-            
-            .onAppear {
-                viewStore.send(.onAppear)  // ✅ Trigger the reducer case
-            }
-            .alert(
-                isPresented: viewStore.binding(
-                    get: \.showErrorAlert,
-                    send: .alertDismissed
-                )
-            ) {
-                Alert(title: Text("Patient Data Saved"), message: Text(viewStore.errorMessage), dismissButton: .default(Text("OK")))
-            }
-            
-        }
-    }
-
-    
-    @ViewBuilder
-    private func destinationView(for category: HealthCategory,patient: Patient) -> some View {
-        switch category {
-        case .providers:
-            ProviderCategoryView(
-                store: Store(
-                    initialState: ProviderCategoryFeature.State(patient: patient),
-                    reducer: {
-                        ProviderCategoryFeature()
-                    }
-                )
             )
-        case .conditions:
-            ConditionCategoryView(
-                store: Store(
-                    initialState: ConditionFeature.State(),
-                    reducer: {
-                        ConditionFeature()
-                    }
-                )
-            )
-        case .medications:
-            MedicationCategoryView(
-                store: Store(
-                    initialState: MedicationFeature.State(),
-                    reducer: {
-                        MedicationFeature()
-                    }
-                )
-            )
-        case .labs:
-            LabObservationView(
-                store: Store(
-                    initialState: LabObservationFeature.State(),
-                    reducer: {
-                        LabObservationFeature()
-                    }
-                )
-            )
-        case .vitals:
-            VitalObservationView(
-                store: Store(
-                    initialState: VitalsObservationFeature.State(),
-                    reducer: {
-                        VitalsObservationFeature()
-                    }
-                )
-            )
-        case .uploads:
-            DocumentReferenceView(
-                store: Store(
-                    initialState: ConsentFeature.State(),
-                    reducer: {
-                        ConsentFeature()
-                    }
-                )
-            )
-        case .consents:
-            ConsentView(
-                store: Store(
-                    initialState: ConsentFeature.State(),
-                    reducer: {
-                        ConsentFeature()
-                    }
-                )
-            )
-        }
-    }
-    
-}
-
-
-
-#Preview {
-    DashboardView(
-        store: Store(
-            initialState: DashboardFeature.State(),
-            reducer: {
-                DashboardFeature()
-            }
         )
-    )
-}
-
-
+    }
+    
+    
+    
+    struct CardButton: View {
+        let title: String
+        let iconName: String
+        let gradientColors: [Color]
+        
+        var body: some View {
+            HStack {
+                
+                LinearGradient(
+                    gradient: Gradient(colors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .frame(width: 32)
+                .cornerRadius(5)
+                
+                Spacer()
+                
+                Text(title)
+                    .foregroundColor(.white)
+                    .fontWeight(.semibold)
+                
+                Spacer()
+                
+                Image(systemName: iconName)
+                    .foregroundColor(Color(hex: "FB531C"))
+                    .padding(.trailing)
+            }
+            .frame(height: 80)
+            .background(Color.black)
+            .cornerRadius(12)
+            .shadow(radius: 5)
+            .padding(.horizontal)
+        }
+    }
