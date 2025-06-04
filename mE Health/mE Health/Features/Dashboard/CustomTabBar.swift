@@ -46,17 +46,18 @@ struct CustomTabBar: View {
                 selectedTab = .voice
             }) {
                 ZStack {
-                    Circle()
-                        .fill(LinearGradient(colors: [Color(hex: "FB531C"), Color(hex: "F79E2D")],
-                                             startPoint: .topLeading,
-                                             endPoint: .bottomTrailing))
-                        .frame(width: 70, height: 70)
-                        .shadow(radius: 4)
+//                    Circle()
+//                        .fill(LinearGradient(colors: [Color(hex: "FB531C"), Color(hex: "F79E2D")],
+//                                             startPoint: .topLeading,
+//                                             endPoint: .bottomTrailing))
+//                        .frame(width: 70, height: 70)
+//                        .shadow(radius: 4)
 
-                    Image(systemName: "mic.circle.fill")
+                    Image("center_icon")
                         .resizable()
                         .foregroundColor(.white)
-                        .frame(width: 30, height: 30)
+                        .frame(width: 70, height: 70)
+                        .shadow(radius: 4)
                 }
             }
             .offset(y: -35)

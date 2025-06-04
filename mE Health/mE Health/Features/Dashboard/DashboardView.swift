@@ -3,6 +3,7 @@ import ComposableArchitecture
 
 struct DashboardView: View {
     let store: StoreOf<DashboardFeature>
+    @State private var isClinicListActive = false
     
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
@@ -13,14 +14,32 @@ struct DashboardView: View {
 
                         VStack(spacing: 0) {
                             Text("How can I help you today?")
-                                .font(.custom("Inter-Bold", size: 24))
+                                .font(.custom("Montserrat-Bold", size: 24))
                                 .padding(.top, 64)
 
                             Spacer()
 
                             VStack(spacing: 24) {
-                                CardButton(title: "AI Assistant", iconName: "sparkles", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")])
-                                CardButton(title: "Data Marketplace", iconName: "cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")])
+                                CardButton(title: "AI Assistant", iconName: "AI", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {
+                                    
+                                }
+                                CardButton(title: "Data Marketplace", iconName: "shopping_cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {
+                                    
+                                }
+                                
+                                CardButton(title: "Clinic List", iconName: "shopping_cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")])
+                                {
+                                    
+                                    isClinicListActive = true
+                                }
+                                
+                                // Hidden NavigationLink
+                                             NavigationLink(
+                                                 destination: ClinicListView(),
+                                                 isActive: $isClinicListActive
+                                             ) {
+                                                 EmptyView()
+                                             }
                             }
                             .padding(.horizontal, 24)
 
@@ -140,36 +159,38 @@ struct CardButton: View {
     let title: String
     let iconName: String
     let gradientColors: [Color]
+    let action: () -> Void // Add this
 
     var body: some View {
-        HStack(spacing: 16) {
-            // Leading gradient bar
-            LinearGradient(
-                gradient: Gradient(colors: gradientColors),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .frame(width: 32)
-            .cornerRadius(5)
-
-            // Left-aligned text and icon
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .foregroundColor(.white)
-                    .font(.custom("Inter-Bold", size: 18))
+        Button(action: action) {
+            HStack(spacing: 16) {
+                // Leading gradient bar
+                LinearGradient(
+                    gradient: Gradient(colors: gradientColors),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .frame(width: 32)
+                .cornerRadius(5)
+                
+                // Left-aligned text and icon
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                        .foregroundColor(.white)
+                        .font(.custom("Montserrat-Bold", size: 18))
+                }
+                
+                Spacer()
+                
+                // Trailing icon
+                Image(iconName)
+                    .padding(.trailing, 12)
             }
-
-            Spacer()
-
-            // Trailing icon
-            Image(systemName: iconName)
-                .foregroundColor(Color(hex: "FB531C"))
-                .padding(.trailing, 8)
+            .frame(height: 80)
+            .background(Color.black)
+            .cornerRadius(12)
+            .shadow(radius: 5)
+            .padding(.horizontal)
         }
-        .frame(height: 80)
-        .background(Color.black)
-        .cornerRadius(12)
-        .shadow(radius: 5)
-        .padding(.horizontal)
     }
 }

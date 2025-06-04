@@ -12,9 +12,7 @@ public enum HealthCategory: String, CaseIterable, Identifiable, Equatable {
     case vitals = "Vitals"
     case uploads = "Uploads"
     case consents = "Consents"
-
     public var id: String { rawValue }
-   
 }
 
 
@@ -33,7 +31,6 @@ struct DashboardFeature: Reducer {
         case patientResponse(Result<Patient, FHIRAPIError>)
         case categoryTapped(HealthCategory)
         case categoryDetailDismissed
-        case alertDismissed
         case logoutTapped
         case tokenValidated(String)
         case tokenValidationFailed
@@ -57,15 +54,16 @@ struct DashboardFeature: Reducer {
                 
             case .onAppear:
                 state.isLoading = true
-                return .run { send in
-                    do {
-                            let token = try await AuthService.shared.getValidAccessToken()
-                            _ = TokenManager.saveAccessToken(token)
-                            await send(.tokenValidated(token))
-                        } catch {
-                            await send(.tokenValidationFailed)
-                        }
-                }
+                return .send(.fetchDashboardData)
+//                return .run { send in
+//                    do {
+//                            let token = try await AuthService.shared.getValidAccessToken()
+//                            _ = TokenManager.saveAccessToken(token)
+//                            await send(.tokenValidated(token))
+//                        } catch {
+//                            await send(.tokenValidationFailed)
+//                        }
+//                }
                 
             case let .tokenValidated(token):
                 print("🔐 Token ready: \(token)")
@@ -106,14 +104,16 @@ struct DashboardFeature: Reducer {
                 }
 
             case .fetchDashboardData:
-                return .run { send in
-                    do {
-                        let result = try await fhirClient.fetchPatient()
-                        await send(.patientResponse(.success(result)))
-                    } catch {
-                        await send(.patientResponse(.failure(error as? FHIRAPIError ?? .invalidResponse)))
-                    }
-                }
+                state.isLoading = false
+                return .none
+//                return .run { send in
+//                    do {
+//                        let result = try await fhirClient.fetchPatient()
+//                        await send(.patientResponse(.success(result)))
+//                    } catch {
+//                        await send(.patientResponse(.failure(error as? FHIRAPIError ?? .invalidResponse)))
+//                    }
+//                }
 
 
             case let .patientResponse(.success(patient)):
@@ -149,11 +149,6 @@ struct DashboardFeature: Reducer {
                 state.selectedCategory = nil
                 return .none
                 
-
-            case .alertDismissed:
-                state.showErrorAlert = false
-              return .none
-
             case .logoutTapped:
                 return .none
                 

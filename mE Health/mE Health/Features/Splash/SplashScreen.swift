@@ -53,15 +53,8 @@ struct SplashScreen: View {
                             }
                         )
                     )
-                    }
+                }
 
-
-//                IfLetStore(
-//                    store.scope(state: \.loginState, action: AppFeature.Action.login),
-//                    then: { loginStore in
-//                        LoginView(store: loginStore)
-//                    }
-//                )
             }
         }
     }
