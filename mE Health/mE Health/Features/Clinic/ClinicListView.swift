@@ -8,38 +8,40 @@
 import SwiftUI
 import ComposableArchitecture
 
-// MARK: - Clinic Model
-struct Clinic: Identifiable {
-    let id = UUID()
-    let name: String
-    let iconName: String
-    let count : String
-}
 
 // MARK: - Clinic Card View
 struct ClinicCard: View {
-    let clinic: Clinic
+    let state: TopStates
 
     var body: some View {
         VStack {
-
             Spacer()
 
-            Image(clinic.iconName)
-                .resizable()
+            if let logoURL = state.logo, let url = URL(string: logoURL) {
+                AsyncImage(url: url) { image in
+                    image.resizable()
+                } placeholder: {
+                    Image("country_placeholder")
+                        .resizable()
+                }
                 .scaledToFit()
                 .frame(width: 40, height: 40)
+            } else {
+                Image("country_placeholder")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 40, height: 40)
+            }
 
-            Text(clinic.name)
+            Text(state.state ?? "Unknown")
                 .foregroundColor(.black)
                 .font(.custom("Montserrat-Bold", size: 10))
                 .padding(.top, 8)
-            
-            Text(clinic.count)
+
+            Text("\(state.count ?? 0)")
                 .foregroundColor(Color(hex: "FB531C"))
                 .font(.custom("Montserrat-Bold", size: 13))
                 .padding(.top, 8)
-
 
             Spacer()
         }
@@ -54,86 +56,97 @@ struct ClinicCard: View {
 
 // MARK: - Clinic List View
 struct ClinicListView: View {
+    
+    let store: StoreOf<ClinicFeature>
     @State private var searchText = ""
-    @State private var selectedClinic: Clinic?
+    @State private var selectedClinic: TopStates?
     
-    // Dummy Data
-    let clinics = [
-        Clinic(name: "Abkhazia", iconName: "country_placeholder", count: "26"),
-        Clinic(name: "Cuba", iconName: "country_placeholder", count: "10"),
-        Clinic(name: "Malaysia", iconName: "country_placeholder", count: "31"),
-        Clinic(name: "Massachusetts", iconName: "country_placeholder", count: "54"),
-        Clinic(name: "United Kingdom", iconName: "country_placeholder", count: "54"),
-        Clinic(name: "Zimbabwe", iconName: "country_placeholder", count: "54"),
-        Clinic(name: "Abkhazia", iconName: "country_placeholder", count: "26"),
-        Clinic(name: "Cuba", iconName: "country_placeholder", count: "10")
-    ]
-    
-    var filteredClinics: [Clinic] {
-        if searchText.isEmpty {
-            return clinics
-        } else {
-            return clinics.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
-        }
-    }
-
     // 2-column grid layout
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {
-        NavigationStack {
-            VStack(alignment: .leading, spacing: 16) {
-                Text("Connect to Your Provider")
-                    .font(.custom("Montserrat-Bold", size: 34))
-                    .padding(.horizontal)
-                
-                // Search Bar
-                TextField("Search by Name , City or Country", text: $searchText)
-                    .padding(10)
-                    .background(Color(.secondarySystemBackground))
-                    .cornerRadius(10)
-                    .padding(.horizontal)
-                
-                // Grid List
-                ScrollView {
-                    LazyVGrid(columns: columns, spacing: 16) {
-                        ForEach(filteredClinics) { clinic in
-                            ClinicCard(clinic: clinic)
-                                .onTapGesture {
-                                    // Handle tap (e.g., navigation)
-                                    print("Tapped on \(clinic.name)")
-                                    selectedClinic = clinic
-                                    
-                                }
-                        }
+        WithViewStore(store, observe: \.self) { viewStore in
+            NavigationStack {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("Connect to Your Provider")
+                        .font(.custom("Montserrat-Bold", size: 34))
+                        .padding(.horizontal)
+
+                    // Search Bar
+                    CustomSearchBar(text: $searchText)
+
+                    // Loading View
+                    if viewStore.isLoading {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
                     }
-                    .padding(.horizontal)
-                }
-                NavigationLink(
-                    destination: selectedClinic.map {
-                        
-                        ClinicDetailListView(
-                            store: Store(
-                                initialState: ClinicDetailFeature.State(),
-                                reducer: {
-                                    ClinicDetailFeature()
-                                }
-                            ), title: $0.name
+
+                    // Grid List
+                    ScrollView {
+                        LazyVGrid(columns: columns, spacing: 16) {
+                            ForEach(filteredClinics(from: viewStore.stateData), id: \.state) { clinic in
+                                ClinicCard(state: clinic)
+                                    .onTapGesture {
+                                        selectedClinic = clinic
+                                    }
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+
+                    NavigationLink(
+                        destination: selectedClinic.map {
+                            ClinicDetailListView(
+                                store: Store(
+                                    initialState: ClinicDetailFeature.State(),
+                                    reducer: {
+                                        ClinicDetailFeature()
+                                    }
+                                ), title: $0.state ?? ""
+                            )
+                        },
+                        isActive: Binding(
+                            get: { selectedClinic != nil },
+                            set: { if !$0 { selectedClinic = nil } }
                         )
-                    },
-                    isActive: Binding(
-                        get: { selectedClinic != nil },
-                        set: { if !$0 { selectedClinic = nil } }
-                    )
-                ) {
-                    EmptyView()
+                    ) {
+                        EmptyView()
+                    }
+                }
+                .padding(.top)
+                .onAppear {
+                    viewStore.send(.onAppear)
+                }
+                .alert("Error", isPresented: .constant(viewStore.showErrorAlert)) {
+                    Button("OK", role: .cancel) {}
+                } message: {
+                    Text(viewStore.errorMessage)
                 }
             }
-            .padding(.top)
         }
     }
+
+    func filteredClinics(from clinics: [TopStates]?) -> [TopStates] {
+        guard let clinics = clinics else { return [] }
+
+        if searchText.isEmpty {
+            return clinics
+        } else {
+            return clinics.filter {
+                ($0.state ?? "").localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+
 }
 
 #Preview {
-    ClinicListView()
+    ClinicListView(
+        store: Store(
+            initialState: ClinicFeature.State(),
+            reducer: {
+                ClinicFeature()
+            }
+        )
+    )
 }

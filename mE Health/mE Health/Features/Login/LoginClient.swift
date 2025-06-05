@@ -77,4 +77,5 @@ extension DependencyValues {
 
 struct AppEnvironment {
     var loginClient: LoginClient
+    var practicesClient:PracticesClient
 }

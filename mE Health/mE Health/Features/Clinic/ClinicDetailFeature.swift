@@ -16,23 +16,52 @@ struct ClinicDetailFeature: Reducer {
         var showErrorAlert = false
         var errorMessage = ""
         var isConnected: Bool = false
+        var practicesData : [PracticesModelData]?
     }
 
     enum Action: Equatable {
+        case onDetailAppear
         case onTapConnect
         case tokenValidated(String)
         case tokenValidationFailed
         case reauthCompleted(Result<String, AuthError>)
         case authFailed(String)
         case fetchDashboardData
+        case getPracticesSuccessResponse(PracticesModel)
+        case getPracticesFailureResponse(String)
+
     }
     
     @Dependency(\.fhirClient) var fhirClient
+    @Dependency(\.practicesClient) var practiceClient
 
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+                
+            case .onDetailAppear:
+                state.isLoading = true
+                return .run { send in
+                    do {
+                        let practices = try await practiceClient.getPracticeList()
+                        await send(.getPracticesSuccessResponse(practices))
+                    } catch {
+                        await send(.getPracticesFailureResponse(error.localizedDescription))
+                    }
+                }
+                
+            case .getPracticesFailureResponse(let message):
+                state.isLoading = false
+                state.errorMessage = message
+                // Handle error
+                return .none
+                
+            case let .getPracticesSuccessResponse(model):
+                state.isLoading = false
+                state.practicesData = model.data ?? []
+                return .none
+
                 
             case .onTapConnect:
                 state.isLoading = true

@@ -34,12 +34,17 @@ struct DashboardView: View {
                                 }
                                 
                                 // Hidden NavigationLink
-                                             NavigationLink(
-                                                 destination: ClinicListView(),
-                                                 isActive: $isClinicListActive
-                                             ) {
-                                                 EmptyView()
-                                             }
+                                NavigationLink(
+                                    destination: ClinicListView(
+                                        store: Store(
+                                            initialState: ClinicFeature.State(),
+                                            reducer: { ClinicFeature() }
+                                        )
+                                    ),
+                                    isActive: $isClinicListActive
+                                ) {
+                                    EmptyView()
+                                }
                             }
                             .padding(.horizontal, 24)
 

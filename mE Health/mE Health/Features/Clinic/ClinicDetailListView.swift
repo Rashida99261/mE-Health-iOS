@@ -8,25 +8,14 @@ import ComposableArchitecture
 struct ClinicDetailListView: View {
     
     let store: StoreOf<ClinicDetailFeature>
-    
     let title: String
-    
     @State private var selectedTab = 0
     @State private var searchText = ""
     
     let tabs = ["All", "Recent", "Connected"]
     @State private var selectedIndex = 0
     
-    // Dummy list data
-    let allItems = [
-        "Cleveland Clinic London", "Cleveland Clinic London", "Cleveland Clinic London", "Cleveland Clinic London"
-    ]
-    
-    var filteredItems: [String] {
-        allItems.filter {
-            searchText.isEmpty || $0.localizedCaseInsensitiveContains(searchText)
-        }
-    }
+
     
     var body: some View {
         
@@ -71,25 +60,33 @@ struct ClinicDetailListView: View {
                 .frame(height: 45)
                 .padding(.horizontal)
                 
+                let filteredPractices = (viewStore.practicesData ?? []).filter {
+                    searchText.isEmpty || ($0.practice_name?.localizedCaseInsensitiveContains(searchText) ?? false)
+                }
+
+                
                 // Search Bar
-                TextField("Search by Name , City or Country", text: $searchText)
-                    .padding(10)
-                    .background(Color(.secondarySystemBackground))
-                    .cornerRadius(10)
-                    .padding(.horizontal)
+                CustomSearchBar(text: $searchText)
                 
                 // List of items (for selected tab)
-                List(filteredItems, id: \.self) { item in
-                    ClinicDetailCard(title: item,
-                        onConnect: {
-                            viewStore.send(.onTapConnect)
-                    },isConnected: viewStore.isConnected)
+                List(filteredPractices, id: \.practice_name) { item in
+                        ClinicDetailCard(
+                            practiceObj: item,
+                            onConnect: {
+                                viewStore.send(.onTapConnect)
+                            },
+                            isConnected: viewStore.isConnected
+                        )
                         .listRowInsets(EdgeInsets())
                         .padding(.vertical, 4)
-                }
-                .listStyle(PlainListStyle())
+                    }
+                    .listStyle(PlainListStyle())
             }
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                viewStore.send(.onDetailAppear)
+            }
+
         }
     }
 
@@ -97,33 +94,49 @@ struct ClinicDetailListView: View {
 
 // MARK: - List Item Card
 struct ClinicDetailCard: View {
-    var title: String
-    var imageName: String = "Cambridge" // Replace with your actual image
+    
+    let practiceObj: PracticesModelData
     var onConnect: () -> Void
     var isConnected: Bool
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             // Clinic image
-            Image(imageName)
-                .resizable()
-                .scaledToFill()
+            
+            if let logoURL = practiceObj.logo_url, let url = URL(string: logoURL) {
+                AsyncImage(url: url) { image in
+                    image.resizable()
+                } placeholder: {
+                    Image("Cambridge")
+                        .resizable()
+                }
+                .scaledToFit()
                 .frame(width: 110, height: 60)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .padding(.leading, 8)
+            } else {
+                Image("Cambridge")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 110, height: 60)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .padding(.leading, 8)
+
+            }
+
 
             VStack(alignment: .leading, spacing: 8) {
                 ZStack(alignment: .topTrailing) {
                     // Title and connect button
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(title)
+                        Text(practiceObj.practice_name ?? "Cleveland Clinic London")
                             .font(.custom("Montserrat-Bold", size: 20))
                             .foregroundColor(.primary)
 
                         Button(action: {
                             if !isConnected { onConnect() }
                         }) {
-                            Text(isConnected ? "Connected MyChart" : "Connect")
+                            Text(isConnected ? "Disconnect" : "Connect")
                                 .font(.custom("Montserrat-SemiBold", size: 10))
                                 .foregroundColor(.white)
                                 .padding(.horizontal, 16)
