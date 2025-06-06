@@ -94,72 +94,80 @@ struct ClinicDetailListView: View {
 
 // MARK: - List Item Card
 struct ClinicDetailCard: View {
-    
     let practiceObj: PracticesModelData
     var onConnect: () -> Void
     var isConnected: Bool
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            // Clinic image
-            
-            if let logoURL = practiceObj.logo_url, let url = URL(string: logoURL) {
-                AsyncImage(url: url) { image in
-                    image.resizable()
-                } placeholder: {
-                    Image("Cambridge")
-                        .resizable()
-                }
-                .scaledToFit()
-                .frame(width: 110, height: 60)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .padding(.leading, 8)
-            } else {
-                Image("Cambridge")
-                    .resizable()
+        ZStack(alignment: .topTrailing) {
+            // Card content
+            HStack(alignment: .top, spacing: 12) {
+                // Clinic image
+                if let logoURL = practiceObj.logo_url, let url = URL(string: logoURL) {
+                    AsyncImage(url: url) { image in
+                        image.resizable()
+                    } placeholder: {
+                        Image("Cambridge")
+                            .resizable()
+                    }
                     .scaledToFit()
                     .frame(width: 110, height: 60)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .padding(.leading, 8)
-
-            }
-
-
-            VStack(alignment: .leading, spacing: 8) {
-                ZStack(alignment: .topTrailing) {
-                    // Title and connect button
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(practiceObj.practice_name ?? "Cleveland Clinic London")
-                            .font(.custom("Montserrat-Bold", size: 20))
-                            .foregroundColor(.primary)
-
-                        Button(action: {
-                            if !isConnected { onConnect() }
-                        }) {
-                            Text(isConnected ? "Disconnect" : "Connect")
-                                .font(.custom("Montserrat-SemiBold", size: 10))
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 6)
-                                .background(Color(hex: "FF6605"))
-                                .cornerRadius(8)
-                        }
-                        .disabled(isConnected)
-                    }
-
+                } else {
+                    Image("Cambridge")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 110, height: 60)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .padding(.leading, 8)
                 }
-            }
 
-            Spacer()
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(practiceObj.practice_name ?? "Cleveland Clinic London")
+                        .font(.custom("Montserrat-Bold", size: 20))
+                        .foregroundColor(.primary)
+
+                    Button(action: {
+                        if !isConnected { onConnect() }
+                    }) {
+                        Text(isConnected ? "Disconnect" : "Connect")
+                            .font(.custom("Montserrat-SemiBold", size: 10))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 6)
+                            .background(Color(hex: "FF6605"))
+                            .cornerRadius(8)
+                    }
+                    .disabled(isConnected)
+                }
+
+                Spacer()
+            }
+            .padding(12)
+            .frame(height: 132)
+            .background(Color.white)
+            .cornerRadius(12)
+            .shadow(radius: 1)
+
+            // ✅ Badge overlay, inset from top and trailing
+            Text("MyChart")
+                .font(.custom("Montserrat-SemiBold", size: 10))
+                .frame(height: 28)
+                .foregroundColor(.white)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 4)
+                .background(
+                    RoundedCorners(color: .black,
+                                   tl: 0, tr: 12, bl: 12, br: 0)
+                )
+                .padding(.top, 0)
+                .padding(.trailing, 0) // 👈 Matches card's internal padding
         }
-        .frame(height: 132)
-        .padding(12)
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(radius: 1)
         .padding(.horizontal)
     }
 }
+
 
 #Preview {
     ClinicDetailListView(

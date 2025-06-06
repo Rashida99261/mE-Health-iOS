@@ -122,6 +122,7 @@ struct ClinicListView: View {
                 } message: {
                     Text(viewStore.errorMessage)
                 }
+                
             }
         }
     }
