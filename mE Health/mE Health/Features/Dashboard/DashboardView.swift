@@ -7,6 +7,9 @@ struct DashboardView: View {
     let sideMenuWidth: CGFloat = 100.0
     @State private var isClinicListActive = false
     @State private var isMenuOpen: Bool = false
+    private let loginStore = Store(initialState: LoginFeature.State()) {
+        LoginFeature()
+    }
 
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
@@ -106,10 +109,28 @@ struct DashboardView: View {
                     }
                     .navigationBarBackButtonHidden(true)
                 }
+                
             }
+            
+            
+            
             .navigationDestination(
-                store: store.scope(state: \.$persona, action: DashboardFeature.Action.persona),
-                destination: { personaStore in
+                isPresented: viewStore.binding(
+                    get: { $0.personaState != nil },
+                    send: { isPresented in
+                        isPresented
+                            ? .onAppear // or any no-op action like `.none` if you add one
+                            : .personaAction(.navigateBackToHomeTapped)
+                    }
+
+                )
+            ) {
+                IfLetStore(
+                    store.scope(
+                        state: \.personaState,
+                        action: DashboardFeature.Action.personaAction
+                    )
+                ) { personaStore in
                     PersonaView(
                         store: personaStore,
                         selectedTab: viewStore.binding(
@@ -121,16 +142,27 @@ struct DashboardView: View {
                             viewStore.send(.toggleMenu(isMenuOpen))
                         }
                     )
-                    .onDisappear {
-                            viewStore.send(DashboardFeature.Action.dismissPersona)
-                    }
                 }
-            )
+            }
+
+            .navigationDestination(
+                item: viewStore.binding(
+                    get: \.navigationDestination,
+                    send: DashboardFeature.Action.navigationDestinationChanged
+                )
+            ) { destination in
+                switch destination {
+                case .login:
+                    LoginView(store: loginStore)
+                }
+            }
+
 
         }
     }
 
 }
+
 #Preview {
         DashboardView(
             store: Store(

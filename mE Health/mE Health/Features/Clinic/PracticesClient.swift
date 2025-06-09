@@ -15,11 +15,11 @@ protocol PracticesClient {
 struct ApiPracticeClient: PracticesClient {
     func getStateList() async throws -> StateModel {
         let url = Constants.API.appBaseUrl + "/api/health/practices/stats/"
+        let token = UserDefaults.standard.value(forKey: "token") as! String
         var request = URLRequest(url: URL(string: url)!)
         request.httpMethod = "GET"
         request.setValue("application/json", forHTTPHeaderField: "accept")
-        request.setValue("Token ab312ddf93afc76fc5f6f45d351c4d2ae1d84cea", forHTTPHeaderField: "Authorization")
-        
+        request.setValue("Token \(token)", forHTTPHeaderField: "Authorization")
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse, 200..<300 ~= httpResponse.statusCode else {
             throw URLError(.badServerResponse)
@@ -28,11 +28,12 @@ struct ApiPracticeClient: PracticesClient {
     }
     
     func getPracticeList() async throws -> PracticesModel {
+        let token = UserDefaults.standard.value(forKey: "token") as! String
         let url = Constants.API.appBaseUrl + "/api/health/practices/"
         var request = URLRequest(url: URL(string: url)!)
         request.httpMethod = "GET"
         request.setValue("application/json", forHTTPHeaderField: "accept")
-        request.setValue("Token ab312ddf93afc76fc5f6f45d351c4d2ae1d84cea", forHTTPHeaderField: "Authorization")
+        request.setValue("Token \(token)", forHTTPHeaderField: "Authorization")
         
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse, 200..<300 ~= httpResponse.statusCode else {

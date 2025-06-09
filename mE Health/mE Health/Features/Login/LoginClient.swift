@@ -30,10 +30,6 @@ struct LoginRequest: Encodable {
     let user_type: String
 }
 
-struct LoginResponse: Decodable , Equatable {
-    let message: String
-    let status: Bool
-}
 
 protocol LoginClient {
     func login(_ request: LoginRequest) async throws -> LoginResponse
@@ -41,7 +37,7 @@ protocol LoginClient {
 
 struct ApiLoginClient: LoginClient {
     func login(_ request: LoginRequest) async throws -> LoginResponse {
-        var urlRequest = URLRequest(url: URL(string: "https://dev-admin.meinstein.ai/user/login/")!)
+        var urlRequest = URLRequest(url: URL(string: Constants.API.loginApi)!)
         urlRequest.httpMethod = "POST"
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = try JSONEncoder().encode(request)

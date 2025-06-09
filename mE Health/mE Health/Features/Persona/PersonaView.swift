@@ -81,12 +81,12 @@ struct PersonaView: View {
                 .ignoresSafeArea(edges: .bottom)
 
             }
-            .background(Color(red: 246/255, green: 246/255, blue: 255/255)) // matching light background
+            .background(Color.white) // matching light background
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     CustomBackButton {
-                        presentationMode.wrappedValue.dismiss()
+                        viewStore.send(.navigateBackToHomeTapped)
                     }
                 }
             }

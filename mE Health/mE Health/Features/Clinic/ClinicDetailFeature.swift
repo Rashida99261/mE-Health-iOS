@@ -5,6 +5,7 @@
 
 import ComposableArchitecture
 import Foundation
+import UIKit
 
 
 
@@ -14,19 +15,22 @@ struct ClinicDetailFeature: Reducer {
         var showErrorAlert = false
         var errorMessage = ""
         var isConnected: Bool = false
-        var practicesData : [PracticesModelData]?
+        var practicesData: [PracticesModelData]?
+        var connectedPracticeIds: Set<Int> = []
+        var recentPracticeIds: [Int] = [] // <-- Add this
     }
 
     enum Action: Equatable {
         case onDetailAppear
-        case onTapConnect
-        case tokenValidated(String)
-        case tokenValidationFailed
-        case reauthCompleted(Result<String, AuthError>)
         case authFailed(String)
-        case fetchDashboardData
         case getPracticesSuccessResponse(PracticesModel)
         case getPracticesFailureResponse(String)
+        case connectTapped(PracticesModelData)
+        case disconnectTapped(PracticesModelData)
+        case connectionSucceeded(Int) // practice_id
+        case disconnectionSucceeded(Int)
+        case tokenValidationFailed(Int)
+
 
     }
     
@@ -60,27 +64,31 @@ struct ClinicDetailFeature: Reducer {
                 state.practicesData = model.data ?? []
                 return .none
 
-                
-            case .onTapConnect:
-                state.isLoading = true
+            case .connectTapped(let practice):
+                guard let id = practice.id else { return .none }
+                if !state.connectedPracticeIds.contains(id) {
+                    if !state.recentPracticeIds.contains(id) {
+                        state.recentPracticeIds.append(id)
+                    }
+                }
+
                 return .run { send in
                     do {
-                            let token = try await AuthService.shared.getValidAccessToken()
-                            _ = TokenManager.saveAccessToken(token)
-                            await send(.tokenValidated(token))
-                        } catch {
-                            await send(.tokenValidationFailed)
-                        }
+                        let token = try await AuthService.shared.getValidAccessToken()
+                        _ = TokenManager.saveAccessToken(token)
+                        await send(.connectionSucceeded(practice.id ?? 0))
+                    } catch {
+                        await send(.tokenValidationFailed(practice.id ?? 0))
+                    }
                 }
-                
-            case let .tokenValidated(token):
-                print("🔐 Token ready: \(token)")
-                return .send(.fetchDashboardData)
 
-            case .tokenValidationFailed:
+
+            case let .tokenValidationFailed(id):
                 print("❌ Token refresh failed")
                 return .run { send in
                       do {
+                          try await Task.sleep(nanoseconds: 500_000_000) // 0.5s delay
+                          await UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                           let callbackURL = try await AuthService.shared.startOAuthFlow()
                           guard let code = await AuthService.shared.extractCode(from: callbackURL) else {
                               await send(.authFailed("Failed to extract code"))
@@ -89,7 +97,8 @@ struct ClinicDetailFeature: Reducer {
                           let (accessToken, patientID, expiresIn) = try await AuthService.shared.exchangeCodeForToken(code: code)
                           UserDefaults.standard.set(patientID, forKey: "patientId")
                           await AuthService.saveExpiryTimestamp(expiresIn)
-                          await send(.tokenValidated(accessToken))
+                          _ = TokenManager.saveAccessToken(accessToken)
+                          await send(.connectionSucceeded(id))
                       } catch {
                           await send(.authFailed(error.localizedDescription))
                       }
@@ -97,27 +106,35 @@ struct ClinicDetailFeature: Reducer {
                 
             case .authFailed(let error):
                 state.showErrorAlert = true
+                state.isLoading = false
                 state.isConnected = false
                 state.errorMessage = error
                 return .none
                 
-            case .reauthCompleted(let result):
-                switch result {
-                case .success(let token):
-                    _ = TokenManager.saveAccessToken(token)
-                    return .send(.tokenValidated(token))
-                case .failure(let error):
-                    state.showErrorAlert = true
-                    state.errorMessage = error.localizedDescription
-                    return .none
-                }
-
-            case .fetchDashboardData:
-                state.isLoading = false
-                state.isConnected = true
+            case .connectionSucceeded(let id):
+                state.connectedPracticeIds.insert(id)
                 return .none
-                
-                        
+
+            case .disconnectTapped(let practice):
+                guard let practiceId = practice.id else {
+                     return .none
+                 }
+                 state.connectedPracticeIds.remove(practiceId)
+                 state.isLoading = false
+                 state.isConnected = false
+
+                 // Call logout and remove token
+                 return .run { send in
+                     do {
+                         await AuthService.shared.logout() // Logout from FHIR
+                         TokenManager.deleteAccessToken()       // Clear token
+                     } catch {
+                         print("Failed to logout from FHIR: \(error)")
+                     }
+                 }
+
+            case .disconnectionSucceeded(_):
+                return .none
             }
         }
     }

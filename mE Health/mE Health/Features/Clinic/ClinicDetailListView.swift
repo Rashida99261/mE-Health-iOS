@@ -61,10 +61,28 @@ struct ClinicDetailListView: View {
                     .frame(height: 45)
                     .padding(.horizontal)
                     
-                    let filteredPractices = (viewStore.practicesData ?? []).filter {
+                    let filteredBySearch = (viewStore.practicesData ?? []).filter {
                         searchText.isEmpty || ($0.practice_name?.localizedCaseInsensitiveContains(searchText) ?? false)
                     }
+
                     
+                    let filteredPractices: [PracticesModelData] = {
+                        switch selectedTab {
+                        case 0: return filteredBySearch
+                        case 1:  // Add recent logic if needed
+                            return filteredBySearch.filter { item in
+                                guard let id = item.id else { return false }
+                                return viewStore.recentPracticeIds.contains(id) &&
+                                       !viewStore.connectedPracticeIds.contains(id)
+                            }
+
+                        case 2: return filteredBySearch.filter { item in
+                            viewStore.connectedPracticeIds.contains(item.id ?? 0)
+                        }
+                        default: return filteredBySearch
+                        }
+                    }()
+
                     
                     // Search Bar
                     CustomSearchBar(text: $searchText)
@@ -74,9 +92,15 @@ struct ClinicDetailListView: View {
                         ClinicDetailCard(
                             practiceObj: item,
                             onConnect: {
-                                viewStore.send(.onTapConnect)
+                                if viewStore.connectedPracticeIds.contains(item.id ?? 0) {
+                                    viewStore.send(.disconnectTapped(item))
+                                } else {
+                                    viewStore.send(.connectTapped(item))
+                                }
+
                             },
-                            isConnected: viewStore.isConnected
+                            isConnected: viewStore.connectedPracticeIds.contains(item.id ?? 0)
+
                         )
                         .listRowInsets(EdgeInsets())
                         .padding(.vertical, 4)
@@ -135,19 +159,28 @@ struct ClinicDetailCard: View {
                     Text(practiceObj.practice_name ?? "Cleveland Clinic London")
                         .font(.custom("Montserrat-Bold", size: 20))
                         .foregroundColor(.primary)
-
-                    Button(action: {
-                        if !isConnected { onConnect() }
-                    }) {
-                        Text(isConnected ? "Disconnect" : "Connect")
-                            .font(.custom("Montserrat-SemiBold", size: 10))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 6)
-                            .background(Color(hex: Constants.API.PrimaryColorHex))
-                            .cornerRadius(8)
+                    
+                    HStack() {
+                        
+                        Button(action: {
+                            onConnect()
+                        }) {
+                            Text(isConnected ? "Disconnect" : "Connect")
+                                .font(.custom("Montserrat-SemiBold", size: 10))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 6)
+                                .background(Color(hex: Constants.API.PrimaryColorHex))
+                                .cornerRadius(8)
+                        }
+                        if isConnected {
+                            Image("refresh")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 28, height: 28)
+                                .padding(.leading, 4)
+                        }
                     }
-                    .disabled(isConnected)
                 }
 
                 Spacer()

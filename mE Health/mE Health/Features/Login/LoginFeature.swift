@@ -41,7 +41,7 @@ struct LoginFeature: Reducer {
         var authError: String?
         var isLoggedIn = false
         var dashboardState: DashboardFeature.State? = nil
-
+        var userData : UserData?
     }
     
     @Dependency(\.loginClient) var loginClient
@@ -117,14 +117,13 @@ struct LoginFeature: Reducer {
             }
 
         case let .loginResponse(.success(response)):
-//            state.isLoading = false
-//            if response.status {
-//                state.navigateToDashboard = true
-//            } else {
-//                state.showErrorAlert = true
-//                state.errorMessage = response.message
-//            }
+            print(response)
+            
+            let userData = response.data
+            state.userData = userData
+            let token = userData?.token ?? ""
             state.isLoading = false
+            UserDefaults.standard.set(token, forKey: "token")
             SessionManager.shared.saveLoginSession()
             state.isLoggedIn = true
             state.dashboardState = DashboardFeature.State()

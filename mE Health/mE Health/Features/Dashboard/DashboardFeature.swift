@@ -17,37 +17,30 @@ public enum HealthCategory: String, CaseIterable, Identifiable, Equatable {
 
 
 struct DashboardFeature: Reducer {
+    
+    enum NavigationDestination: Equatable {
+        case login
+    }
+
     struct State: Equatable {
-        var selectedCategory: HealthCategory?
-        var patient: Patient?
         var isLoading: Bool = false
         var showErrorAlert = false
         var errorMessage = ""
         var selectedTab: DashboardTab = .menu
         var selectedMenuTab : SideMenuTab = .dashboard
         var showMenu: Bool = false
-        @PresentationState var persona: PersonaFeature.State? = nil
-        
-
-
+        var personaState: PersonaFeature.State? = nil
+        var navigationDestination: NavigationDestination? = nil
     }
 
     enum Action: Equatable {
         case onAppear
-        case patientResponse(Result<Patient, FHIRAPIError>)
-        case categoryTapped(HealthCategory)
-        case categoryDetailDismissed
         case logoutTapped
-        case tokenValidated(String)
-        case tokenValidationFailed
-        case fetchDashboardData
-        case reauthCompleted(Result<String, AuthError>)
-        case authFailed(String)
         case tabSelected(DashboardTab)
         case tabMenuItemSelected(SideMenuTab)
         case toggleMenu(Bool)
-        case persona(PresentationAction<PersonaFeature.Action>)
-        case dismissPersona
+        case personaAction(PersonaFeature.Action)
+        case navigationDestinationChanged(DashboardFeature.NavigationDestination?)
     }
     
     @Dependency(\.fhirClient) var fhirClient
@@ -58,99 +51,8 @@ struct DashboardFeature: Reducer {
             
         case .onAppear:
             state.isLoading = true
-            return .send(.fetchDashboardData)
-            //                return .run { send in
-            //                    do {
-            //                            let token = try await AuthService.shared.getValidAccessToken()
-            //                            _ = TokenManager.saveAccessToken(token)
-            //                            await send(.tokenValidated(token))
-            //                        } catch {
-            //                            await send(.tokenValidationFailed)
-            //                        }
-            //                }
-            
-        case let .tokenValidated(token):
-            print("🔐 Token ready: \(token)")
-            return .send(.fetchDashboardData)
-            
-        case .tokenValidationFailed:
-            print("❌ Token refresh failed")
-            return .run { send in
-                do {
-                    let callbackURL = try await AuthService.shared.startOAuthFlow()
-                    guard let code = await AuthService.shared.extractCode(from: callbackURL) else {
-                        await send(.authFailed("Failed to extract code"))
-                        return
-                    }
-                    let (accessToken, patientID, expiresIn) = try await AuthService.shared.exchangeCodeForToken(code: code)
-                    UserDefaults.standard.set(patientID, forKey: "patientId")
-                    await AuthService.saveExpiryTimestamp(expiresIn)
-                    await send(.tokenValidated(accessToken))
-                } catch {
-                    await send(.authFailed(error.localizedDescription))
-                }
-            }
-            
-        case .authFailed(let error):
-            state.showErrorAlert = true
-            state.errorMessage = error
-            return .none
-            
-        case .reauthCompleted(let result):
-            switch result {
-            case .success(let token):
-                _ = TokenManager.saveAccessToken(token)
-                return .send(.tokenValidated(token))
-            case .failure(let error):
-                state.showErrorAlert = true
-                state.errorMessage = error.localizedDescription
-                return .none
-            }
-            
-        case .fetchDashboardData:
-            state.isLoading = false
-            return .none
-            //                return .run { send in
-            //                    do {
-            //                        let result = try await fhirClient.fetchPatient()
-            //                        await send(.patientResponse(.success(result)))
-            //                    } catch {
-            //                        await send(.patientResponse(.failure(error as? FHIRAPIError ?? .invalidResponse)))
-            //                    }
-            //                }
-            
-            
-        case let .patientResponse(.success(patient)):
-            state.isLoading = false
-            state.patient = patient
-            if let ref = patient.generalPractitioner?.first?.reference {
-                print(ref)
-                UserDefaults.standard.set(ref, forKey: "practitionerId")
-            }
-            do {
-                try coreDataClient.savePatient(patient)
-                let name = (patient.name?.first?.given?.joined(separator: " ") ?? "") + " " + (patient.name?.first?.family ?? "")
-                let id = patient.id ?? "NA"
-                state.showErrorAlert = true
-                state.errorMessage = "Name: \(name)\nID: \(id)"
-            } catch {
-                print("❌ Failed to save patient to Core Data: \(error)")
-            }
-            return .none
-            
-        case .patientResponse(.failure):
-            state.isLoading = false
-            // Handle error
-            return .none
-            
-        case .categoryTapped(let category):
-            print("Tapped: \(category)") // See if this prints!
-            
-            state.selectedCategory = category
-            return .none
-            
-        case .categoryDetailDismissed:
-            state.selectedCategory = nil
+            state.personaState = nil
+            state.navigationDestination = nil
             return .none
             
         case .logoutTapped:
@@ -158,31 +60,34 @@ struct DashboardFeature: Reducer {
             
         case .tabSelected(let tab):
             state.selectedTab = tab
-            if tab == .menu {
-                //state.showMenu = true
-            }
             return .none
             
         case let .toggleMenu(isOpen):
             state.showMenu = isOpen
-            print(state.showMenu)
             return .none
             
         case .tabMenuItemSelected(let item):
-            
             if item == .persona {
-                state.persona = PersonaFeature.State()
+                state.personaState = PersonaFeature.State()
+            }
+            if item == .logout {
+                SessionManager.shared.clearSession() // Make sure you have a method like this
+                state.navigationDestination = .login
             }
             return .none
-        case .persona(_):
+            
+        case .personaAction(.navigateBackToHomeTapped):
+            print("open")
+            state.personaState = nil
+            state.navigationDestination = nil
             return .none
             
-        case .dismissPersona:
-            state.persona = nil
-            state.selectedTab = .dashboard
-            //state.showMenu.toggle()
+        case .navigationDestinationChanged(let destination):
+            state.navigationDestination = destination
             return .none
 
+        case .personaAction(.itemTapped(_)):
+            return .none
         }
                 
     }
@@ -190,12 +95,13 @@ struct DashboardFeature: Reducer {
     
     var body: some ReducerOf<Self> {
         Reduce(self.reduce)
-            .ifLet(\.$persona, action: /DashboardFeature.Action.persona) {
+            .ifLet(\.personaState, action: /Action.personaAction) {
                 PersonaFeature()
             }
 
-
     }
+    
+   
 }
 
 

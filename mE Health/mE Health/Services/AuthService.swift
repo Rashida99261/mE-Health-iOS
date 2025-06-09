@@ -58,6 +58,10 @@ final class AuthService: NSObject, ASWebAuthenticationPresentationContextProvidi
         let expiryDate = Date().addingTimeInterval(TimeInterval(expiresIn - 60)) // 1-minute buffer
         UserDefaults.standard.set(expiryDate, forKey: "tokenExpiryDate")
     }
+    
+    static func clearExpiryTimestamp() {
+        UserDefaults.standard.removeObject(forKey: "tokenExpiryDate")
+    }
 
 
     static func isTokenValid() -> Bool {
@@ -65,6 +69,12 @@ final class AuthService: NSObject, ASWebAuthenticationPresentationContextProvidi
             return false
         }
         return Date() < expiryDate
+    }
+
+    func logout() {
+        TokenManager.deleteAccessToken()
+        AuthService.clearExpiryTimestamp()
+        UserDefaults.standard.removeObject(forKey: "patientId")
     }
 
 
@@ -79,6 +89,9 @@ final class AuthService: NSObject, ASWebAuthenticationPresentationContextProvidi
                 if let url = callbackURL {
                     continuation.resume(returning: url)
                 } else {
+                    DispatchQueue.main.async {
+                          UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                      }
                     continuation.resume(throwing: error ?? URLError(.badServerResponse))
                 }
             }
@@ -139,7 +152,11 @@ final class AuthService: NSObject, ASWebAuthenticationPresentationContextProvidi
     private var cancellables = Set<AnyCancellable>()
 
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        return UIApplication.shared.windows.first ?? UIWindow()
+        return UIApplication.shared
+            .connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow } ?? UIWindow()
     }
 
     private func generateCodeVerifierAndChallenge() -> (String, String) {

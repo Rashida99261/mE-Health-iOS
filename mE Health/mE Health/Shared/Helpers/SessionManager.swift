@@ -37,5 +37,7 @@ class SessionManager {
 
     func clearSession() {
         userDefaults.removeObject(forKey: Constants.API.isLoggedIn)
+        userDefaults.removeObject(forKey: "token")
     }
+    
 }
