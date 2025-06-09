@@ -2,8 +2,6 @@
 //  ClinicListView.swift
 //  mE Health
 //
-//  Created by Rashida on 4/06/25.
-//
 
 import SwiftUI
 import ComposableArchitecture
@@ -60,7 +58,7 @@ struct ClinicListView: View {
     let store: StoreOf<ClinicFeature>
     @State private var searchText = ""
     @State private var selectedClinic: TopStates?
-    
+    @Environment(\.presentationMode) var presentationMode
     // 2-column grid layout
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
@@ -124,6 +122,15 @@ struct ClinicListView: View {
                 }
                 
             }
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    CustomBackButton {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+            }
+
         }
     }
 

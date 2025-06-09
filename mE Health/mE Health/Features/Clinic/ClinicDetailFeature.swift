@@ -2,8 +2,6 @@
 //  ClinicDetailFeature.swift
 //  mE Health
 //
-//  Created by Rashida on 4/06/25.
-//
 
 import ComposableArchitecture
 import Foundation

@@ -15,6 +15,11 @@ extension Color {
     }
 }
 
+extension Color {
+    static var backGroundColorN: Color { Color(UIColor(red: 0.96, green: 0.96, blue: 0.99, alpha: 1.00)) }
+}
+
+
 
 struct Validator {
     static func validateEmail(_ input: String) -> String? {

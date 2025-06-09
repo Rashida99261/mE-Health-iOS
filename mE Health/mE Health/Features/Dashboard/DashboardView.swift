@@ -1,39 +1,60 @@
 import SwiftUI
+import SwiftUICore
 import ComposableArchitecture
 
 struct DashboardView: View {
     let store: StoreOf<DashboardFeature>
+    let sideMenuWidth: CGFloat = 100.0
     @State private var isClinicListActive = false
-    
+    @State private var isMenuOpen: Bool = false
+
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             NavigationStack {
                 GeometryReader { geometry in
-                    ZStack {
-                        Color.white.ignoresSafeArea()
-
+                    ZStack(alignment: .leading) {
+                        
+                        // MARK: Side Menu
+                        SideMenuView(
+                            selectedTab: viewStore.selectedMenuTab,
+                            onItemTap: { tab in
+                                viewStore.send(.tabMenuItemSelected(tab))
+                                viewStore.send(.toggleMenu(false))
+                            }
+                        )
+                        .frame(width: 150)
+                        .offset(x: viewStore.showMenu ? 0 : -150)
+                        .animation(.easeInOut(duration: 0.3), value: viewStore.showMenu)
+                        .zIndex(1)
+                        
+                        // MARK: Dimmed Tap Area
+                        if viewStore.showMenu {
+                            Color.black.opacity(0.4)
+                                .ignoresSafeArea()
+                                .onTapGesture {
+                                    viewStore.send(.toggleMenu(false))
+                                }
+                                .offset(x: 150)
+                                .zIndex(1.1)
+                        }
+                        
+                        // MARK: Main Content (Sliding)
                         VStack(spacing: 0) {
                             Text("How can I help you today?")
                                 .font(.custom("Montserrat-Bold", size: 24))
                                 .padding(.top, 64)
-
+                            
                             Spacer()
-
+                            
                             VStack(spacing: 24) {
-                                CardButton(title: "AI Assistant", iconName: "AI", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {
-                                    
-                                }
-                                CardButton(title: "Data Marketplace", iconName: "shopping_cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {
-                                    
-                                }
+                                CardButton(title: "AI Assistant", iconName: "AI", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {}
                                 
-                                CardButton(title: "Clinic List", iconName: "shopping_cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")])
-                                {
-                                    
+                                CardButton(title: "Data Marketplace", iconName: "shopping_cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {}
+                                
+                                CardButton(title: "Clinic List", iconName: "shopping_cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {
                                     isClinicListActive = true
                                 }
                                 
-                                // Hidden NavigationLink
                                 NavigationLink(
                                     destination: ClinicListView(
                                         store: Store(
@@ -46,109 +67,71 @@ struct DashboardView: View {
                                     EmptyView()
                                 }
                             }
-                            .padding(.horizontal, 24)
-
-                            Spacer()
-
-                            // This spacer leaves space for the tab bar
-                            Spacer().frame(height: 60)
-                        }
-
-                        // Bottom Tab Bar
-                        VStack {
+                            .padding(.horizontal, 0)
+                            
                             Spacer()
                             
-                            CustomTabBar(selectedTab: viewStore.binding(
-                                get: \.selectedTab,
-                                send: DashboardFeature.Action.tabSelected
-                            ))
-                            .ignoresSafeArea(edges: .bottom) // Crucial!
+                            // Reserve space for tab bar
+                            Spacer().frame(height: 60)
                         }
+                        .padding(.horizontal)
+                        .background(Color.white.ignoresSafeArea())
+                        .offset(x: viewStore.showMenu ? 150 : 0) // 👈 Slide only this
+                        .animation(.easeInOut, value: viewStore.showMenu)
+                        .zIndex(2)
+                        
+                        // MARK: Fixed Tab Bar (NOT sliding)
+                        VStack {
+                            Spacer()
+                            CustomTabBar(
+                                selectedTab: viewStore.binding(
+                                    get: \.selectedTab,
+                                    send: DashboardFeature.Action.tabSelected
+                                ),
+                                onMenuTapped: {
+                                    if viewStore.selectedTab == .menu {
+                                        viewStore.send(.toggleMenu(!viewStore.showMenu))
+                                       } else {
+                                           viewStore.send(.tabSelected(.menu))
+                                       }
+                                }
+                            )
+                            .ignoresSafeArea(edges: .bottom)
+                        }
+                        .zIndex(3) // Keep it above everything
                     }
+
                     .onAppear {
                         viewStore.send(.onAppear)
                     }
                     .navigationBarBackButtonHidden(true)
                 }
             }
+            .navigationDestination(
+                store: store.scope(state: \.$persona, action: DashboardFeature.Action.persona),
+                destination: { personaStore in
+                    PersonaView(
+                        store: personaStore,
+                        selectedTab: viewStore.binding(
+                            get: \.selectedTab,
+                            send: DashboardFeature.Action.tabSelected
+                        ),
+                        onMenuTapped: {
+                            isMenuOpen.toggle()
+                            viewStore.send(.toggleMenu(isMenuOpen))
+                        }
+                    )
+                    .onDisappear {
+                            viewStore.send(DashboardFeature.Action.dismissPersona)
+                    }
+                }
+            )
+
         }
     }
-        
-        
-        @ViewBuilder
-        private func destinationView(for category: HealthCategory,patient: Patient) -> some View {
-            switch category {
-            case .providers:
-                ProviderCategoryView(
-                    store: Store(
-                        initialState: ProviderCategoryFeature.State(patient: patient),
-                        reducer: {
-                            ProviderCategoryFeature()
-                        }
-                    )
-                )
-            case .conditions:
-                ConditionCategoryView(
-                    store: Store(
-                        initialState: ConditionFeature.State(),
-                        reducer: {
-                            ConditionFeature()
-                        }
-                    )
-                )
-            case .medications:
-                MedicationCategoryView(
-                    store: Store(
-                        initialState: MedicationFeature.State(),
-                        reducer: {
-                            MedicationFeature()
-                        }
-                    )
-                )
-            case .labs:
-                LabObservationView(
-                    store: Store(
-                        initialState: LabObservationFeature.State(),
-                        reducer: {
-                            LabObservationFeature()
-                        }
-                    )
-                )
-            case .vitals:
-                VitalObservationView(
-                    store: Store(
-                        initialState: VitalsObservationFeature.State(),
-                        reducer: {
-                            VitalsObservationFeature()
-                        }
-                    )
-                )
-            case .uploads:
-                DocumentReferenceView(
-                    store: Store(
-                        initialState: ConsentFeature.State(),
-                        reducer: {
-                            ConsentFeature()
-                        }
-                    )
-                )
-            case .consents:
-                ConsentView(
-                    store: Store(
-                        initialState: ConsentFeature.State(),
-                        reducer: {
-                            ConsentFeature()
-                        }
-                    )
-                )
-            }
-        }
-        
-    }
-    
-    
-    
-    #Preview {
+
+}
+#Preview {
         DashboardView(
             store: Store(
                 initialState: DashboardFeature.State(),

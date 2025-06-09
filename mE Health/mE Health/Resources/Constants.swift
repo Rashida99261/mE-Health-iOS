@@ -35,6 +35,7 @@ enum Constants {
         static let callbackScheme = "smartFhirAuthApp"
         static let isLoggedIn = "isLoggedIn"
         static let FHIRbaseURL: String = "https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/R4"
+        static let PrimaryColorHex = "FF6605"
 
     }
 

@@ -8,6 +8,7 @@ import ComposableArchitecture
 
 struct CustomTabBar: View {
     @Binding var selectedTab: DashboardTab
+    var onMenuTapped: (() -> Void)? = nil
 
     var body: some View {
         ZStack {
@@ -25,7 +26,9 @@ struct CustomTabBar: View {
                     icon: "menu",
                     title: "Menu",
                     isSelected: selectedTab == .menu,
-                    action: { selectedTab = .menu }
+                    action: { selectedTab = .menu
+                        onMenuTapped?()
+                    }
                 )
 
                 Spacer()

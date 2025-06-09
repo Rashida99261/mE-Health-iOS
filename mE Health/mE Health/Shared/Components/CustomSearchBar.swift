@@ -11,7 +11,7 @@ struct CustomSearchBar: View {
     var body: some View {
         HStack {
             Image(systemName: "magnifyingglass")
-                .foregroundColor(Color(hex: "FF6605"))
+                .foregroundColor(Color(hex: Constants.API.PrimaryColorHex))
                 .padding(.leading, 8)
 
             TextField("Search by Name, City or Country", text: $text)
@@ -23,7 +23,7 @@ struct CustomSearchBar: View {
         .background(Color.white)
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(Color(hex: "FF6605"), lineWidth: 1.5)
+                .stroke(Color(hex: Constants.API.PrimaryColorHex), lineWidth: 1.5)
         )
         .cornerRadius(10)
         .padding(.horizontal)

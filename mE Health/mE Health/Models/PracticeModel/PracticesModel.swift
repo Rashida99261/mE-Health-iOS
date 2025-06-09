@@ -2,8 +2,6 @@
 //  PracticesModel.swift
 //  mE Health
 //
-//  Created by Rashida on 5/06/25.
-//
 
 struct PracticesModel : Codable , Equatable {
     let message : String?
