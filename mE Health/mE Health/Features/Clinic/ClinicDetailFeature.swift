@@ -96,6 +96,8 @@ struct ClinicDetailFeature: Reducer {
                           }
                           let (accessToken, patientID, expiresIn) = try await AuthService.shared.exchangeCodeForToken(code: code)
                           UserDefaults.standard.set(patientID, forKey: "patientId")
+                          print(accessToken)
+                          print(patientID)
                           await AuthService.saveExpiryTimestamp(expiresIn)
                           _ = TokenManager.saveAccessToken(accessToken)
                           await send(.connectionSucceeded(id))

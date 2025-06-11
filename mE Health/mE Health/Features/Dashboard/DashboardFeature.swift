@@ -2,18 +2,6 @@ import ComposableArchitecture
 import Foundation
 
 
-// MARK: - Category Enum
-
-public enum HealthCategory: String, CaseIterable, Identifiable, Equatable {
-    case providers = "Providers"
-    case conditions = "Conditions"
-    case medications = "Medications"
-    case labs = "Labs"
-    case vitals = "Vitals"
-    case uploads = "Uploads"
-    case consents = "Consents"
-    public var id: String { rawValue }
-}
 
 
 struct DashboardFeature: Reducer {
@@ -31,6 +19,8 @@ struct DashboardFeature: Reducer {
         var showMenu: Bool = false
         var personaState: PersonaFeature.State? = nil
         var navigationDestination: NavigationDestination? = nil
+        var dashboardListState: DashboardListFeature.State? = nil
+        var showDashboardList: Bool = false
     }
 
     enum Action: Equatable {
@@ -41,6 +31,7 @@ struct DashboardFeature: Reducer {
         case toggleMenu(Bool)
         case personaAction(PersonaFeature.Action)
         case navigationDestinationChanged(DashboardFeature.NavigationDestination?)
+        case showDashboardList(Bool)
     }
     
     @Dependency(\.fhirClient) var fhirClient
@@ -60,6 +51,9 @@ struct DashboardFeature: Reducer {
             
         case .tabSelected(let tab):
             state.selectedTab = tab
+//            if tab == .dashboard {
+//                state.dashboardListState = DashboardListFeature.State()
+//            }
             return .none
             
         case let .toggleMenu(isOpen):
@@ -88,6 +82,11 @@ struct DashboardFeature: Reducer {
 
         case .personaAction(.itemTapped(_)):
             return .none
+            
+        case let .showDashboardList(show):
+            state.showDashboardList = show
+            return .none
+
         }
                 
     }

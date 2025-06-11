@@ -9,6 +9,7 @@ import ComposableArchitecture
 struct CustomTabBar: View {
     @Binding var selectedTab: DashboardTab
     var onMenuTapped: (() -> Void)? = nil
+    var onDashboardTapped: (() -> Void)? = nil
 
     var body: some View {
         ZStack {
@@ -37,7 +38,9 @@ struct CustomTabBar: View {
                     icon: "dashboard",
                     title: "Dashboard",
                     isSelected: selectedTab == .dashboard,
-                    action: { selectedTab = .dashboard }
+                    action: { selectedTab = .dashboard
+                        onDashboardTapped?()
+                    }
                 )
             }
             .padding(.horizontal, 32)

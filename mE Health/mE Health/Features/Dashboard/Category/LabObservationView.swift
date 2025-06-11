@@ -46,14 +46,13 @@ struct LabObservationView: View {
                                 .fontWeight(.bold)
                                 .padding(.bottom, 8)
                             
-                            conditionRow(title: "Test Name", value: name, icon: "lungs.fill")
-                            conditionRow(title: "Value", value: "Not Available", icon: "calendar.badge.clock")
-                            conditionRow(title: "Units", value: "Not Available", icon: "waveform.path.ecg")
-                            conditionRow(title: "Date", value: "20 Oct 2022", icon: "calendar")
-                            conditionRow(title: "LOINC Code", value: codeLoin, icon: "info.circle")
-                            conditionRow(title: "Normal Range", value: "Not Available", icon: "info.circle")
-                            conditionRow(title: "Interpretation", value: "Not Available", icon: "info.circle")
-                            conditionRow(title: "Source", value: "Not Available", icon: "info.circle")
+                            conditionRow(title: "LadId", value: "f594liZecm9LvIpQLI.QS9Q4", icon: "lungs.fill")
+                            conditionRow(title: "code", value: "27574-3", icon: "calendar.badge.clock")
+                            conditionRow(title: "description", value: "Skilled nursing treatment plan Progress note and attainment of goals (narrative)", icon: "lungs.fill")
+                            conditionRow(title: "result", value: "Signs and Symptoms of listed potential physiological problem will be absent or manageable.", icon: "calendar")
+                            conditionRow(title: "effectiveDate", value: "", icon: "info.circle")
+                            conditionRow(title: "status", value: "final", icon: "lungs.fill")
+                            conditionRow(title: "performer", value: "", icon: "calendar.badge.clock")
                             
                             Spacer()
                         }
@@ -66,7 +65,7 @@ struct LabObservationView: View {
                         .padding()
                     }
                 }
-                .navigationTitle("Condition")
+                .navigationTitle("Lab Observation")
             }
         }
     }

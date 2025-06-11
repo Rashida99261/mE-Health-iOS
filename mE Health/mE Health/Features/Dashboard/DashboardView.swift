@@ -97,13 +97,16 @@ struct DashboardView: View {
                                        } else {
                                            viewStore.send(.tabSelected(.menu))
                                        }
+                                },
+                                onDashboardTapped: {
+                                    viewStore.send(.showDashboardList(true))
+
                                 }
                             )
                             .ignoresSafeArea(edges: .bottom)
                         }
                         .zIndex(3) // Keep it above everything
                     }
-
                     .onAppear {
                         viewStore.send(.onAppear)
                     }
@@ -112,7 +115,22 @@ struct DashboardView: View {
                 
             }
             
-            
+            .navigationDestination(
+                isPresented: viewStore.binding(
+                    get: \.showDashboardList,
+                    send: DashboardFeature.Action.showDashboardList
+                )
+            ) {
+                DashboardViewList(
+                    store: Store(
+                        initialState: DashboardListFeature.State(),
+                        reducer: {
+                            DashboardListFeature()
+                        }
+                    )
+                )
+            }
+
             
             .navigationDestination(
                 isPresented: viewStore.binding(
