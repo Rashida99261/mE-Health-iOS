@@ -1,16 +1,9 @@
-//
-//  OrganisationView.swift
-//  mE Health
-//
-//  Created by Rashida on 11/06/25.
-//
-
 import SwiftUI
 import ComposableArchitecture
 
-struct OrganisationView: View {
+struct PatientView: View {
     
-    let store: StoreOf<LabObservationFeature>
+    let store: StoreOf<PatientFeature>
     
     var body: some View {
         
@@ -18,26 +11,30 @@ struct OrganisationView: View {
             NavigationView {
                 ScrollView {
                     if viewStore.isLoading {
-                        ProgressView("Loading Organization...")
+                        ProgressView("Loading Patient Data...")
                     } else {
                         
-//                        let issueObj = viewStore.labModel?.entry?.first?.resource?.issue?.first
-//                        let name = issueObj?.code ?? "Unknown"  //
-//                        let codeLoin = issueObj?.details?.coding?.first?.code ?? ""
+
+//                        let patientObj = viewStore.patientData
+//                        let patientId = patientObj.id ?? ""
+//                        let name = patientObj.name?.first?.text ?? ""
 
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("No Organization Data Found")
+                            Text("Loading Patient Data")
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .padding(.bottom, 8)
                             
-//                            
-//                            conditionRow(title: "organizationId", value: "", icon: "lungs.fill")
-//                            conditionRow(title: "name", value: "Jessica argonaut", icon: "calendar.badge.clock")
-//                            conditionRow(title: "address", value: "1979 Milky Way\r\nVerona WI 53593-9179\r\nUnited States of America", icon: "waveform.path.ecg")
-//                            conditionRow(title: "telecom", value: "555-555-5555", icon: "calendar")
-//                            conditionRow(title: "type", value: "", icon: "info.circle")
-                            
+                            conditionRow(title: "patientId:", value: "", icon: "lungs.fill")
+                            conditionRow(title: "name:", value: "Jason Argonaut", icon: "calendar.badge.clock")
+                            conditionRow(title: "birthDate:", value: "1985-08-01", icon: "waveform.path.ecg")
+                            conditionRow(title: "gender:", value: "Male", icon: "calendar")
+                            conditionRow(title: "address:", value: "", icon: "calendar")
+                            conditionRow(title: "telecom:", value: "608-555-5555", icon: "calendar")
+                            conditionRow(title: "identifier:", value: "", icon: "calendar")
+                            conditionRow(title: "maritalStatus:", value: "", icon: "calendar")
+                            conditionRow(title: "communication:", value: "", icon: "calendar")
+
                             Spacer()
                         }
                         .padding()
@@ -49,10 +46,10 @@ struct OrganisationView: View {
                         .padding()
                     }
                 }
-                .navigationTitle("Organization")
+                .navigationTitle("Patient")
             }
             .onAppear {
-                viewStore.send(.loadLabObservation)
+                viewStore.send(.onAppear)
             }
 
         }
@@ -80,4 +77,5 @@ struct OrganisationView: View {
 }
 
 
-
+//
+//

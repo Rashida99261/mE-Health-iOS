@@ -12,16 +12,22 @@ import Foundation
 // MARK: - Category Enum
 
 public enum HealthCategory: String, CaseIterable, Identifiable, Equatable {
-    case providers = "Providers"
-    case conditions = "Conditions"
-    case medications = "Medications"
-    case labs = "Labs"
-    case vitals = "Vitals"
-    case uploads = "Uploads"
+    case allergy = "Allergy Intolerance"
+    case appointment = "Appointment"
+    case claim = "Claim"
     case consents = "Consents"
-    case allergy = "Allergy"
+    case conditions = "Conditions"
+    case immunization = "Immunization"
+    case labs = "Labs"
+    case medications = "Medications"
     case organisation = "Organization"
-
+    case patient = "Patient"
+    case providers = "Providers"
+    case practioner = "Practitioner"
+    case procedure = "Procedure"
+    case uploads = "Uploads"
+    case vitals = "Vitals"
+   
     public var id: String { rawValue }
 }
 
@@ -29,14 +35,11 @@ public enum HealthCategory: String, CaseIterable, Identifiable, Equatable {
 struct DashboardListFeature: Reducer {
     struct State: Equatable {
         var selectedCategory: HealthCategory?
-        var patient: Patient?
-        var isLoading: Bool = false
 
     }
 
     enum Action: Equatable {
         case onAppear
-        case patientResponse(Result<Patient, FHIRAPIError>)
         case categoryTapped(HealthCategory)
         case categoryDetailDismissed
     }
@@ -48,32 +51,10 @@ struct DashboardListFeature: Reducer {
             switch action {
                 
             case .onAppear:
-                state.isLoading = true
-                return .run { send in
-                    do {
-                        let result = try await fhirClient.fetchPatient()
-                        await send(.patientResponse(.success(result)))
-                    } catch {
-                        await send(.patientResponse(.failure(error as? FHIRAPIError ?? .invalidResponse)))
-                    }
-                }
-
-            case let .patientResponse(.success(patient)):
-                state.isLoading = false
-                state.patient = patient
-                if let ref = patient.generalPractitioner?.first?.reference {
-                    UserDefaults.standard.set(ref, forKey: "practitionerId")
-                }
-                return .none
-
-            case .patientResponse(.failure):
-                state.isLoading = false
-                // Handle error
                 return .none
 
             case .categoryTapped(let category):
                 print("Tapped: \(category)") // See if this prints!
-
                 state.selectedCategory = category
                 return .none
 

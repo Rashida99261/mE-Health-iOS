@@ -15,22 +15,7 @@ struct DashboardViewList: View {
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             NavigationStack {
-                
-                VStack {
-                    if viewStore.isLoading {
-                        ProgressView("Loading patient...")
-                    } else if let patient = viewStore.patient {
-                        VStack(alignment: .leading, spacing: 8) {
-                            
-                            
-                            
-                            //                            Text("Patient: \(patient.name?.first?.text ?? "Unknown")")
-                            //                            Text("DOB: \(patient.birthDate ?? "N/A")")
-                            //                            Text("Gender: \(patient.gender ?? "N/A")")
-                        }
-                        .padding()
-                    }
-                    }
+
                     List {
                         ForEach(HealthCategory.allCases) { category in
                             Button {
@@ -48,24 +33,22 @@ struct DashboardViewList: View {
                             set: { _ in viewStore.send(.categoryDetailDismissed) }
                         )
                     ) { category in
-                        if let patient = viewStore.patient {
-                            destinationView(for: category, patient: patient)
-                    }
+                        destinationView(for: category)
                     }
                 }
-                    .onAppear {
-                            viewStore.send(.onAppear)  // ✅ Trigger the reducer case
-                        }
+                .onAppear {
+                    viewStore.send(.onAppear)
+                }
             }
         }
         
         @ViewBuilder
-        private func destinationView(for category: HealthCategory,patient: Patient) -> some View {
+        private func destinationView(for category: HealthCategory) -> some View {
             switch category {
             case .providers:
                 ProviderCategoryView(
                     store: Store(
-                        initialState: ProviderCategoryFeature.State(patient: patient),
+                        initialState: ProviderCategoryFeature.State(),
                         reducer: {
                             ProviderCategoryFeature()
                         }
@@ -128,9 +111,9 @@ struct DashboardViewList: View {
             case .allergy:
                 AllergyView(
                     store: Store(
-                        initialState: LabObservationFeature.State(),
+                        initialState: AllergyFeature.State(),
                         reducer: {
-                            LabObservationFeature()
+                            AllergyFeature()
                         }
                     )
                 )
@@ -143,11 +126,69 @@ struct DashboardViewList: View {
                         }
                     )
                 )
+                
+            case .practioner:
+                PractionerView(
+                    store: Store(
+                        initialState: PractionerFeature.State(),
+                        reducer: {
+                            PractionerFeature()
+                        }
+                    )
+                )
+                
+            case .appointment:
+                AppoitmentView(
+                    store: Store(
+                        initialState: AllergyFeature.State(),
+                        reducer: {
+                            AllergyFeature()
+                        }
+                    )
+                )
+            case .procedure:
+                ProcedureView(
+                    store: Store(
+                        initialState: AllergyFeature.State(),
+                        reducer: {
+                            AllergyFeature()
+                        }
+                    )
+                )
+                
+            case .immunization:
+                ImmunisationView(
+                    store: Store(
+                        initialState: AllergyFeature.State(),
+                        reducer: {
+                            AllergyFeature()
+                        }
+                    )
+                )
+            case .claim:
+                ClaimView(
+                    store: Store(
+                        initialState: AllergyFeature.State(),
+                        reducer: {
+                            AllergyFeature()
+                        }
+                    )
+                )
+            case .patient:
+                PatientView(
+                    store: Store(
+                        initialState: PatientFeature.State(),
+                        reducer: {
+                            PatientFeature()
+                        }
+                    )
+                )
             }
         }
         
     }
     
+
     
     
     #Preview {

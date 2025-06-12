@@ -34,6 +34,11 @@ protocol FHIRAPIClient {
     func getVitalObservations() async throws -> ObservationModel
     func getDocumentReferences() async throws -> DocumentReferenceModel
     func getConsents() async throws -> ConsentModel
+    func getOrganisation() async throws -> OrganizationModel
+    func getAppoitment() async throws -> ConsentModel
+    func getProcedure() async throws -> ConsentModel
+    func getAllergy() async throws -> AllergyModel
+    func getImmunization() async throws -> ConsentModel
 }
 
 
@@ -55,9 +60,9 @@ struct FHIRAPIService : FHIRAPIClient{
         request.setValue("application/fhir+json", forHTTPHeaderField: "Accept")
         request.httpMethod = "GET"
         return request
-
+        
     }
-
+    
     private func fetch<T: Decodable>(_ type: T.Type, from path: String, queryItems: [URLQueryItem] = []) async throws -> T {
         let request = try makeRequest(path: path, queryItems: queryItems)
         let (data, response) = try await URLSession.shared.data(for: request)
@@ -66,7 +71,7 @@ struct FHIRAPIService : FHIRAPIClient{
         }
         return try JSONDecoder().decode(T.self, from: data)
     }
-
+    
     // MARK: - Providers
     
     func fetchPatient() async throws -> Patient {
@@ -76,76 +81,119 @@ struct FHIRAPIService : FHIRAPIClient{
         
         return try await fetch(Patient.self, from: "/Patient/\(patientId)")
     }
-
+    
     func getPractitioner() async throws -> Practitioner {
         guard let practitionerId = UserDefaults.standard.string(forKey: "practitionerId") else {
             throw URLError(.badURL)
         }
         return try await fetch(Practitioner.self, from: "/\(practitionerId)")
     }
-
+    
     func getPractitionerRoles(practitionerId: String) async throws -> PractitionerRole {
         return try await fetch(PractitionerRole.self, from: "/PractitionerRole?practitioner=\(practitionerId)")
     }
-
+    
     func getEncounters(participantId: String) async throws -> PractitionerRole {
         return try await fetch(PractitionerRole.self, from: "/Encounter?participant=\(participantId)")
     }
-
-
+    
+    
     // MARK: - Conditions
-
+    
     func getConditions() async throws -> ConditionModel {
         guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
             throw URLError(.badURL)
         }
         return try await fetch(ConditionModel.self, from: "/Condition?patient=\(patientId)")
     }
-
+    
     // MARK: - Medications
-
+    
     func getMedicationRequests() async throws -> MedicationModel {
         guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
             throw URLError(.badURL)
         }
         return try await fetch(MedicationModel.self, from: "/MedicationRequest?patient=\(patientId)")
     }
-//
-//    // MARK: - Labs
-
+    //
+    //    // MARK: - Labs
+    
     func getLabObservations() async throws -> ObservationModel {
         guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
             throw URLError(.badURL)
         }
         return try await fetch(ObservationModel.self, from: "/Observation?patient=\(patientId)&category=laboratory")
     }
-
+    
     // MARK: - Vitals
-
+    
     func getVitalObservations() async throws -> ObservationModel {
         guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
             throw URLError(.badURL)
         }
         return try await fetch(ObservationModel.self, from: "/Observation?patient=\(patientId)&category=vital-signs")
     }
-
+    
     // MARK: - Uploads
-
+    
     func getDocumentReferences() async throws -> DocumentReferenceModel {
         guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
             throw URLError(.badURL)
         }
         return try await fetch(DocumentReferenceModel.self, from: "/DocumentReference?patient=\(patientId)")
     }
-
+    
     // MARK: - Consents
-
+    
     func getConsents() async throws -> ConsentModel {
         guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
             throw URLError(.badURL)
         }
         return try await fetch(ConsentModel.self, from: "/Consent?patient=\(patientId)")
     }
+    
+    func getOrganisation() async throws -> OrganizationModel {
+        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
+            throw URLError(.badURL)
+        }
+        return try await fetch(OrganizationModel.self, from: "/Consent?patient=\(patientId)")
+    }
+    
+    func getPractioner() async throws -> ConsentModel {
+        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
+            throw URLError(.badURL)
+        }
+        return try await fetch(ConsentModel.self, from: "/Consent?patient=\(patientId)")
+    }
+    
+    func getAppoitment() async throws -> ConsentModel {
+        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
+            throw URLError(.badURL)
+        }
+        return try await fetch(ConsentModel.self, from: "/Consent?patient=\(patientId)")
+    }
+    
+    func getProcedure() async throws -> ConsentModel {
+        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
+            throw URLError(.badURL)
+        }
+        return try await fetch(ConsentModel.self, from: "/Consent?patient=\(patientId)")
+    }
+    
+    func getAllergy() async throws -> AllergyModel {
+        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
+            throw URLError(.badURL)
+        }
+        return try await fetch(AllergyModel.self, from: "/AllergyIntolerance?patient=\(patientId)")
+    }
+    
+    func getImmunization() async throws -> ConsentModel {
+        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
+            throw URLError(.badURL)
+        }
+        return try await fetch(ConsentModel.self, from: "/Consent?patient=\(patientId)")
+    }
+    
 }
 
 // MARK: - Expected Bundle Types
@@ -161,7 +209,11 @@ struct FhirClientDependency {
     var getVitalObservations: () async throws -> ObservationModel
     var getDocumentReferences: () async throws -> DocumentReferenceModel
     var getConsents: () async throws -> ConsentModel
-
+    var getOrganisation:() async throws -> OrganizationModel
+    var getAppoitment: () async throws -> ConsentModel
+    var getProcedure: () async throws -> ConsentModel
+    var getAllergy: () async throws -> AllergyModel
+    var getImmunization: () async throws -> ConsentModel
 
 }
 
@@ -196,6 +248,21 @@ enum FhirClientKey: DependencyKey {
         },
         getConsents: {
             try await FHIRAPIService().getConsents()
+        },
+        getOrganisation: {
+            try await FHIRAPIService().getOrganisation()
+        },
+        getAppoitment: {
+            try await FHIRAPIService().getAppoitment()
+        },
+        getProcedure: {
+            try await FHIRAPIService().getProcedure()
+        },
+        getAllergy: {
+            try await FHIRAPIService().getAllergy()
+        },
+        getImmunization: {
+            try await FHIRAPIService().getImmunization()
         }
 
     )

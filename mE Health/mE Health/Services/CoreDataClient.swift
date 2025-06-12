@@ -5,7 +5,7 @@ struct CoreDataClient {
     var saveResourceTree: (MedicationModel) throws -> Void
     var savePatient: (Patient) throws -> Void
     var savePractitioner: (Practitioner) throws -> Void
-    var saveResource: (Resource) throws -> Void
+    var saveResource: (CommonResource) throws -> Void
     var saveConditionModel: (ConditionModel) throws -> Void
     var saveConsentModel: (ConsentModel) throws -> Void
 }
@@ -43,8 +43,8 @@ extension CoreDataClient {
             if let practitioner = resource?.practitioner {
                 let practitionerEntity = PractitionerEntity(context: context)
                 practitionerEntity.id = practitioner.id
-                practitionerEntity.display = practitioner.display
-                practitionerEntity.reference = practitioner.reference
+//                practitionerEntity.display = practitioner.display
+//                practitionerEntity.reference = practitioner.reference
             }
 
             // 🔹 Identifiers
@@ -133,8 +133,8 @@ extension CoreDataClient {
             let context = PersistenceController.shared.context
             let entity = PractitionerEntity(context: context)
             entity.id = practitioner.id
-            entity.reference = practitioner.reference
-            entity.display = practitioner.display
+//            entity.reference = practitioner.reference
+//            entity.display = practitioner.display
 
             do {
                 try context.save()
@@ -148,31 +148,31 @@ extension CoreDataClient {
         saveResource: { resource in
             let context = PersistenceController.shared.context
             let entity = ResourceEntity(context: context)
-            entity.id = resource.Id
+            entity.id = ""
             entity.resourceType = resource.resourceType
-            entity.status = resource.status
-            entity.active = resource.active ?? false
+            entity.status = ""
+            entity.active = false
             
             // Save nested practitioner
-            if let practitioner = resource.practitioner {
-                let practitionerEntity = PractitionerEntity(context: context)
-                practitionerEntity.id = practitioner.id
-                practitionerEntity.display = practitioner.display
-                practitionerEntity.reference = practitioner.reference
-                //entity.practitioner = practitionerEntity
-            }
+//            if let practitioner = resource.practitioner {
+//                let practitionerEntity = PractitionerEntity(context: context)
+//                practitionerEntity.id = practitioner.id
+////                practitionerEntity.display = practitioner.display
+////                practitionerEntity.reference = practitioner.reference
+//                //entity.practitioner = practitionerEntity
+//            }
             
             // Save identifier array
-            if let identifiers = resource.identifier {
-                let identifierEntities = identifiers.map { identifier -> IdentifierEntity in
-                    let idEntity = IdentifierEntity(context: context)
-                    idEntity.use = identifier.use
-                    idEntity.value = identifier.value
-                    idEntity.system = identifier.system
-                    return idEntity
-                }
-               // entity.addToIdentifiers(NSSet(array: identifierEntities))
-            }
+//            if let identifiers = resource.identifier {
+//                let identifierEntities = identifiers.map { identifier -> IdentifierEntity in
+//                    let idEntity = IdentifierEntity(context: context)
+//                    idEntity.use = identifier.use
+//                    idEntity.value = identifier.value
+//                    idEntity.system = identifier.system
+//                    return idEntity
+//                }
+//               // entity.addToIdentifiers(NSSet(array: identifierEntities))
+//            }
             
             // You can add more nested relationships here if needed
             

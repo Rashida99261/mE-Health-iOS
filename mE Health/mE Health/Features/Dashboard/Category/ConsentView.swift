@@ -34,15 +34,11 @@ struct ConsentView: View {
             NavigationView {
                 ScrollView {
                     if viewStore.isLoading {
-                        ProgressView("Loading Providers...")
+                        ProgressView("Loading Consent...")
                     } else {
                         
 
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("Condition Details")
-                                .font(.title2)
-                                .fontWeight(.bold)
-                                .padding(.bottom, 8)
                             
                             Text("No Data Found")
                                 .font(.subheadline)
@@ -61,7 +57,7 @@ struct ConsentView: View {
                         .padding()
                     }
                 }
-                .navigationTitle("Condition")
+                .navigationTitle("Consent")
             }
             .onAppear {
                 viewStore.send(.loadConsent)

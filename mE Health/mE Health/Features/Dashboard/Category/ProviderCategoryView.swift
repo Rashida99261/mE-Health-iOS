@@ -35,17 +35,17 @@ struct ProviderCategoryView: View {
                         ProgressView("Loading Providers...")
                     } else {
                         
-                        let name = viewStore.patient?.name?.first?.text ?? "Unknown"  //
-                        let speciality = viewStore.practitioner?.display ?? "Unknown"
+//                        let name = viewStore.patient?.name?.first?.text ?? "Unknown"  //
+//                        let speciality = viewStore.practitioner?.display ?? "Unknown"
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("Provider Details")
+                            Text("No Data Found")
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .padding(.bottom, 8)
 
-                            providerRow(title: "Name", value: name, icon: "person.fill")
-                            providerRow(title: "Specialty", value: speciality, icon: "stethoscope")
-                            providerRow(title: "Last Visit", value: "Oct 15, 2024", icon: "calendar.badge.clock")
+//                            providerRow(title: "Name", value: name, icon: "person.fill")
+//                            providerRow(title: "Specialty", value: speciality, icon: "stethoscope")
+//                            providerRow(title: "Last Visit", value: "Oct 15, 2024", icon: "calendar.badge.clock")
 
                             Spacer()
                         }
@@ -60,6 +60,9 @@ struct ProviderCategoryView: View {
                 }
                 .navigationTitle("Providers")
 
+            }
+            .onAppear {
+                viewStore.send(.loadProviders)
             }
         }
     }
@@ -86,20 +89,9 @@ struct ProviderCategoryView: View {
 }
 
 #Preview {
-
-    let patientJSON = """
-    {
-      "resourceType": "Patient",
-      "id": "mock-patient",
-      "generalPractitioner": [
-        { "reference": "Practitioner/123" }
-      ]
-    }
-    """.data(using: .utf8)!
-    let mockPatient = try! JSONDecoder().decode(Patient.self, from: patientJSON)
         ProviderCategoryView(
             store: Store(
-                initialState: ProviderCategoryFeature.State(patient: mockPatient),
+                initialState: ProviderCategoryFeature.State(),
                 reducer: {
                     ProviderCategoryFeature()
                 }

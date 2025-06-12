@@ -30,11 +30,11 @@ struct MedicationCategoryView: View {
                 ScrollView {
                     
                     if viewStore.isLoading {
-                        ProgressView("Loading Medical Data...")
+                        ProgressView("Loading Medication Request Data...")
                     } else {
                         
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("Medical Details")
+                            Text("Medication Request")
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .padding(.bottom, 8)
@@ -66,7 +66,7 @@ struct MedicationCategoryView: View {
                         .padding()
                     }
                 }
-                .navigationTitle("Condition")
+                .navigationTitle("Medication Request")
             }
             .onAppear {
                 viewStore.send(.loadMedication)

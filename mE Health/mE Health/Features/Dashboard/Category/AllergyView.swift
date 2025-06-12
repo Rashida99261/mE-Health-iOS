@@ -10,7 +10,7 @@ import ComposableArchitecture
 
 struct AllergyView: View {
     
-    let store: StoreOf<LabObservationFeature>
+    let store: StoreOf<AllergyFeature>
     
     var body: some View {
         
@@ -21,20 +21,21 @@ struct AllergyView: View {
                         ProgressView("Loading Allergy Data...")
                     } else {
                         
-                        let issueObj = viewStore.labModel?.entry?.first?.resource?.issue?.first
-                        let name = issueObj?.code ?? "Unknown"  //
-                        let codeLoin = issueObj?.details?.coding?.first?.code ?? ""
-
+                        let resourceObj = viewStore.allergyModel?.entry?.first?.resource
+                        let clinalStatus = resourceObj?.clinicalStatus?.text ?? "Active"  //
+                        let allergyId = resourceObj?.id ?? ""
+                        let RecordedDate = resourceObj?.recordedDate ?? ""
+                        
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("Loading Allergy Data")
+                            Text("Allergy Data")
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .padding(.bottom, 8)
                             
-                            conditionRow(title: "AllergyId:", value: "e1Ckpez4OVoaobUMGxMonMg3", icon: "lungs.fill")
-                            conditionRow(title: "Code:", value: "N0000170136", icon: "calendar.badge.clock")
-                            conditionRow(title: "Clinical status:", value: "Active", icon: "waveform.path.ecg")
-                            conditionRow(title: "RecordedDate:", value: "2019-04-09T18:36:36Z", icon: "calendar")
+                            conditionRow(title: "AllergyId:", value: allergyId, icon: "lungs.fill")
+                            conditionRow(title: "Code:", value: "", icon: "calendar.badge.clock")
+                            conditionRow(title: "Clinical status:", value: clinalStatus, icon: "waveform.path.ecg")
+                            conditionRow(title: "RecordedDate:", value: RecordedDate, icon: "calendar")
 
                             Spacer()
                         }
@@ -49,6 +50,10 @@ struct AllergyView: View {
                 }
                 .navigationTitle("Allergy")
             }
+            .onAppear {
+                viewStore.send(.loadAllergy)
+            }
+
         }
     }
 

@@ -49,7 +49,7 @@ struct ConditionModel : Codable , Equatable{
 
 struct ConditionEntry : Codable ,Equatable {
     let fullUrl : String?
-    let resource : ConditionResource?
+    let resource : CommonResource?
 
     enum CodingKeys: String, CodingKey {
 
@@ -60,12 +60,12 @@ struct ConditionEntry : Codable ,Equatable {
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         fullUrl = try values.decodeIfPresent(String.self, forKey: .fullUrl)
-        resource = try values.decodeIfPresent(ConditionResource.self, forKey: .resource)
+        resource = try values.decodeIfPresent(CommonResource.self, forKey: .resource)
     }
 
 }
 
-struct ConditionResource : Codable ,Equatable{
+struct CommonResource : Codable ,Equatable{
     let resourceType : String?
     let id : String?
     let clinicalStatus : ClinicalStatus?
@@ -75,6 +75,10 @@ struct ConditionResource : Codable ,Equatable{
     let subject : ConditionSubject?
     let onsetDateTime : String?
     let recordedDate : String?
+    let patient : Patient?
+    let type : String?
+    let criticality : String?
+
 
     enum CodingKeys: String, CodingKey {
 
@@ -87,6 +91,10 @@ struct ConditionResource : Codable ,Equatable{
         case subject = "subject"
         case onsetDateTime = "onsetDateTime"
         case recordedDate = "recordedDate"
+        case type = "type"
+        case criticality = "criticality"
+        case patient = "patient"
+
     }
 
     init(from decoder: Decoder) throws {
@@ -100,6 +108,10 @@ struct ConditionResource : Codable ,Equatable{
         subject = try values.decodeIfPresent(ConditionSubject.self, forKey: .subject)
         onsetDateTime = try values.decodeIfPresent(String.self, forKey: .onsetDateTime)
         recordedDate = try values.decodeIfPresent(String.self, forKey: .recordedDate)
+        type = try values.decodeIfPresent(String.self, forKey: .type)
+        criticality = try values.decodeIfPresent(String.self, forKey: .criticality)
+        patient = try values.decodeIfPresent(Patient.self, forKey: .patient)
+
     }
 
 }

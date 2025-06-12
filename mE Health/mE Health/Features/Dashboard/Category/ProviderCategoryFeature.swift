@@ -4,7 +4,6 @@ import Foundation
 struct ProviderCategoryFeature: Reducer {
     
     struct State: Equatable {
-        var patient: Patient?
         var practitioner: Practitioner?
         var practitionerRole: PractitionerRole?
         var isLoading: Bool = false
@@ -29,10 +28,6 @@ struct ProviderCategoryFeature: Reducer {
 
         case .loadProviders:
             
-            guard let patient = state.patient else {
-                    state.errorMessage = "Missing patient"
-                    return .none
-                }
             state.isLoading = true
             state.errorMessage = nil
 

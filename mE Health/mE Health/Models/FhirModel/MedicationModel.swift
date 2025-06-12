@@ -51,7 +51,7 @@ struct MedicationModel : Codable , Equatable{
 
 struct Entry : Codable , Equatable{
     let fullUrl : String?
-    let resource : Resource?
+    let resource : MedicalResource?
 
     enum CodingKeys: String, CodingKey {
 
@@ -62,12 +62,12 @@ struct Entry : Codable , Equatable{
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         fullUrl = try values.decodeIfPresent(String.self, forKey: .fullUrl)
-        resource = try values.decodeIfPresent(Resource.self, forKey: .resource)
+        resource = try values.decodeIfPresent(MedicalResource.self, forKey: .resource)
     }
 
 }
 
-struct Resource : Codable , Equatable {
+struct MedicalResource : Codable , Equatable {
     let resourceType : String?
     let Id : String?
     let active : Bool?

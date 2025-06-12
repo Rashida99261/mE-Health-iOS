@@ -67,6 +67,11 @@ struct LabObservationView: View {
                 }
                 .navigationTitle("Lab Observation")
             }
+            .onAppear {
+                viewStore.send(.loadLabObservation)
+            }
+
+            
         }
     }
 
@@ -137,7 +142,7 @@ struct VitalObservationView: View {
                         .padding()
                     }
                 }
-                .navigationTitle("Condition")
+                .navigationTitle("Vital Observation")
             }
             .onAppear {
                 viewStore.send(.loadVitalbservation)

@@ -93,23 +93,31 @@ struct GeneralPractitioner : Codable,Equatable {
 }
 
 struct Practitioner: Codable,Equatable {
-    let id: String?
-    let reference : String?
-    let display : String?
+    let resourceType : String?
+    let id : String?
+    let identifier : [Identifier]?
+    let active : Bool?
+    let name : [Name]?
+    let gender : String?
     
     enum CodingKeys: String, CodingKey {
+        
+        case resourceType = "resourceType"
         case id = "id"
-        case reference = "reference"
-        case display = "display"
-
+        case identifier = "identifier"
+        case active = "active"
+        case name = "name"
+        case gender = "gender"
     }
-
+    
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
+        resourceType = try values.decodeIfPresent(String.self, forKey: .resourceType)
         id = try values.decodeIfPresent(String.self, forKey: .id)
-        reference = try values.decodeIfPresent(String.self, forKey: .reference)
-        display = try values.decodeIfPresent(String.self, forKey: .display)
-
+        identifier = try values.decodeIfPresent([Identifier].self, forKey: .identifier)
+        active = try values.decodeIfPresent(Bool.self, forKey: .active)
+        name = try values.decodeIfPresent([Name].self, forKey: .name)
+        gender = try values.decodeIfPresent(String.self, forKey: .gender)
     }
 }
 

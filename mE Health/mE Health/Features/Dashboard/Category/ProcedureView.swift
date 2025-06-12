@@ -1,5 +1,12 @@
 //
-//  OrganisationView.swift
+//  ProcedureView.swift
+//  mE Health
+//
+//  Created by Rashida on 12/06/25.
+//
+
+//
+//  AllergyView.swift
 //  mE Health
 //
 //  Created by Rashida on 11/06/25.
@@ -8,9 +15,9 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct OrganisationView: View {
+struct ProcedureView: View {
     
-    let store: StoreOf<LabObservationFeature>
+    let store: StoreOf<AllergyFeature>
     
     var body: some View {
         
@@ -18,26 +25,15 @@ struct OrganisationView: View {
             NavigationView {
                 ScrollView {
                     if viewStore.isLoading {
-                        ProgressView("Loading Organization...")
+                        ProgressView("Loading ProcedureView Data...")
                     } else {
                         
-//                        let issueObj = viewStore.labModel?.entry?.first?.resource?.issue?.first
-//                        let name = issueObj?.code ?? "Unknown"  //
-//                        let codeLoin = issueObj?.details?.coding?.first?.code ?? ""
-
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("No Organization Data Found")
+                            Text("No Data found")
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .padding(.bottom, 8)
-                            
-//                            
-//                            conditionRow(title: "organizationId", value: "", icon: "lungs.fill")
-//                            conditionRow(title: "name", value: "Jessica argonaut", icon: "calendar.badge.clock")
-//                            conditionRow(title: "address", value: "1979 Milky Way\r\nVerona WI 53593-9179\r\nUnited States of America", icon: "waveform.path.ecg")
-//                            conditionRow(title: "telecom", value: "555-555-5555", icon: "calendar")
-//                            conditionRow(title: "type", value: "", icon: "info.circle")
-                            
+
                             Spacer()
                         }
                         .padding()
@@ -49,10 +45,10 @@ struct OrganisationView: View {
                         .padding()
                     }
                 }
-                .navigationTitle("Organization")
+                .navigationTitle("ProcedureView")
             }
             .onAppear {
-                viewStore.send(.loadLabObservation)
+                viewStore.send(.loadAllergy)
             }
 
         }

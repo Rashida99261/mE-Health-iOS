@@ -59,8 +59,12 @@ struct DocumentReferenceView: View {
                         .padding()
                     }
                 }
-                .navigationTitle("Condition")
+                .navigationTitle("Document Reference")
             }
+            .onAppear {
+                viewStore.send(.loadConsent)
+            }
+
         }
     }
 
