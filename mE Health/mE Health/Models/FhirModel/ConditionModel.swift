@@ -75,7 +75,7 @@ struct CommonResource : Codable ,Equatable{
     let subject : ConditionSubject?
     let onsetDateTime : String?
     let recordedDate : String?
-    let patient : Patient?
+    let patient : PatientModel?
     let type : String?
     let criticality : String?
 
@@ -110,7 +110,7 @@ struct CommonResource : Codable ,Equatable{
         recordedDate = try values.decodeIfPresent(String.self, forKey: .recordedDate)
         type = try values.decodeIfPresent(String.self, forKey: .type)
         criticality = try values.decodeIfPresent(String.self, forKey: .criticality)
-        patient = try values.decodeIfPresent(Patient.self, forKey: .patient)
+        patient = try values.decodeIfPresent(PatientModel.self, forKey: .patient)
 
     }
 

@@ -20,29 +20,44 @@
 //# ============================================================================= on 23/05/25.
 //
 
-struct Patient : Codable, Equatable {
-    let resourceType : String?
+
+struct PatientModel : Codable, Equatable {
     let id : String?
-    let active : Bool?
+    let identifier : [Identifier]?
     let name : [Name]?
-    let generalPractitioner : [GeneralPractitioner]?
+    let telecom : [Telecom]?
+    let gender : String?
+    let birthDate : String?
+    let address : [Address]?
+    let maritalStatus : MaritalStatus?
+    let communication : [Communication]?
+    let careProvider : [CareProvider]?
 
     enum CodingKeys: String, CodingKey {
-
-        case resourceType = "resourceType"
         case id = "id"
-        case active = "active"
+        case identifier = "identifier"
         case name = "name"
-        case generalPractitioner = "generalPractitioner"
+        case telecom = "telecom"
+        case gender = "gender"
+        case birthDate = "birthDate"
+        case address = "address"
+        case maritalStatus = "maritalStatus"
+        case communication = "communication"
+        case careProvider = "careProvider"
     }
 
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        resourceType = try values.decodeIfPresent(String.self, forKey: .resourceType)
         id = try values.decodeIfPresent(String.self, forKey: .id)
-        active = try values.decodeIfPresent(Bool.self, forKey: .active)
+        identifier = try values.decodeIfPresent([Identifier].self, forKey: .identifier)
         name = try values.decodeIfPresent([Name].self, forKey: .name)
-        generalPractitioner = try values.decodeIfPresent([GeneralPractitioner].self, forKey: .generalPractitioner)
+        telecom = try values.decodeIfPresent([Telecom].self, forKey: .telecom)
+        gender = try values.decodeIfPresent(String.self, forKey: .gender)
+        birthDate = try values.decodeIfPresent(String.self, forKey: .birthDate)
+        address = try values.decodeIfPresent([Address].self, forKey: .address)
+        maritalStatus = try values.decodeIfPresent(MaritalStatus.self, forKey: .maritalStatus)
+        communication = try values.decodeIfPresent([Communication].self, forKey: .communication)
+        careProvider = try values.decodeIfPresent([CareProvider].self, forKey: .careProvider)
     }
 
 }
@@ -51,14 +66,12 @@ struct Name : Codable, Equatable {
     let use : String?
     let text : String?
     let family : String?
-    let given : [String]?
 
     enum CodingKeys: String, CodingKey {
 
         case use = "use"
         case text = "text"
         case family = "family"
-        case given = "given"
     }
 
     init(from decoder: Decoder) throws {
@@ -66,7 +79,6 @@ struct Name : Codable, Equatable {
         use = try values.decodeIfPresent(String.self, forKey: .use)
         text = try values.decodeIfPresent(String.self, forKey: .text)
         family = try values.decodeIfPresent(String.self, forKey: .family)
-        given = try values.decodeIfPresent([String].self, forKey: .given)
     }
 
 }
@@ -142,6 +154,162 @@ struct PractitionerRole: Codable, Equatable  {
         type = try values.decodeIfPresent(String.self, forKey: .type)
         total = try values.decodeIfPresent(Int.self, forKey: .total)
         entry = try values.decodeIfPresent([Entry].self, forKey: .entry)
+    }
+
+}
+
+struct Telecom : Codable, Equatable {
+    let system : String?
+    let value : String?
+    let use : String?
+
+    enum CodingKeys: String, CodingKey {
+
+        case system = "system"
+        case value = "value"
+        case use = "use"
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        system = try values.decodeIfPresent(String.self, forKey: .system)
+        value = try values.decodeIfPresent(String.self, forKey: .value)
+        use = try values.decodeIfPresent(String.self, forKey: .use)
+    }
+
+}
+struct Address : Codable,Equatable {
+    let use : String?
+    let line : [String]?
+    let city : String?
+    let state : String?
+    let postalCode : String?
+    let country : String?
+
+    enum CodingKeys: String, CodingKey {
+
+        case use = "use"
+        case line = "line"
+        case city = "city"
+        case state = "state"
+        case postalCode = "postalCode"
+        case country = "country"
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        use = try values.decodeIfPresent(String.self, forKey: .use)
+        line = try values.decodeIfPresent([String].self, forKey: .line)
+        city = try values.decodeIfPresent(String.self, forKey: .city)
+        state = try values.decodeIfPresent(String.self, forKey: .state)
+        postalCode = try values.decodeIfPresent(String.self, forKey: .postalCode)
+        country = try values.decodeIfPresent(String.self, forKey: .country)
+    }
+
+}
+
+struct CareProvider : Codable,Equatable {
+    let display : String?
+    let reference : String?
+
+    enum CodingKeys: String, CodingKey {
+
+        case display = "display"
+        case reference = "reference"
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        display = try values.decodeIfPresent(String.self, forKey: .display)
+        reference = try values.decodeIfPresent(String.self, forKey: .reference)
+    }
+
+}
+
+struct Extension : Codable,Equatable {
+    let url : String?
+    let valueCodeableConcept : ValueCodeableConcept?
+
+    enum CodingKeys: String, CodingKey {
+
+        case url = "url"
+        case valueCodeableConcept = "valueCodeableConcept"
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        url = try values.decodeIfPresent(String.self, forKey: .url)
+        valueCodeableConcept = try values.decodeIfPresent(ValueCodeableConcept.self, forKey: .valueCodeableConcept)
+    }
+
+}
+
+struct MaritalStatus : Codable,Equatable {
+    let text : String?
+
+    enum CodingKeys: String, CodingKey {
+
+        case text = "text"
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        text = try values.decodeIfPresent(String.self, forKey: .text)
+    }
+
+}
+
+struct ValueCodeableConcept : Codable,Equatable {
+    let coding : [Coding]?
+    let text : String?
+
+    enum CodingKeys: String, CodingKey {
+
+        case coding = "coding"
+        case text = "text"
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        coding = try values.decodeIfPresent([Coding].self, forKey: .coding)
+        text = try values.decodeIfPresent(String.self, forKey: .text)
+    }
+
+}
+
+
+struct Communication : Codable, Equatable {
+    let language : LanguageModel?
+    let preferred : Bool?
+
+    enum CodingKeys: String, CodingKey {
+
+        case language = "language"
+        case preferred = "preferred"
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        language = try values.decodeIfPresent(LanguageModel.self, forKey: .language)
+        preferred = try values.decodeIfPresent(Bool.self, forKey: .preferred)
+    }
+
+}
+
+struct LanguageModel : Codable,Equatable {
+    let coding : [Coding]?
+    let text : String?
+
+    enum CodingKeys: String, CodingKey {
+
+        case coding = "coding"
+        case text = "text"
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        coding = try values.decodeIfPresent([Coding].self, forKey: .coding)
+        text = try values.decodeIfPresent(String.self, forKey: .text)
     }
 
 }

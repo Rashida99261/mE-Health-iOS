@@ -1,17 +1,18 @@
+
 import ComposableArchitecture
 import Foundation
 
-struct AllergyFeature: Reducer {
+struct ImmunisationFeature: Reducer {
     struct State: Equatable {
-        var allergyModel: AllergyResource?
+        var immuneModel : ImmunizationResource?
         var isLoading: Bool = false
         var errorMessage: String?
     }
 
     enum Action: Equatable {
-        case loadAllergy
-        case getAllergyData(Result<AllergyModel, FHIRAPIError>)
-        case getAllergyDetail(Result<AllergyResource, FHIRAPIError>)
+        case loadImmunisation
+        case getImmunisationResponse(Result<ImmunizationModel, FHIRAPIError>)
+        case getDetailtResponse(Result<ImmunizationResource, FHIRAPIError>)
         
     }
 
@@ -21,47 +22,46 @@ struct AllergyFeature: Reducer {
     func reduce(into state: inout State, action: Action) -> Effect<Action> {
         switch action {
 
-        case .loadAllergy:
+        case .loadImmunisation:
             
             state.isLoading = true
-            state.errorMessage = nil
+            state.errorMessage = ""
             return .run { send in
                 do {
-                    let conditionModel = try await fhirClient.getAllergy()
-                    await send(.getAllergyData(.success(conditionModel)))
+                    let conditionModel = try await fhirClient.getImmunization()
+                    await send(.getImmunisationResponse(.success(conditionModel)))
                 } catch {
-                    await send(.getAllergyData(.failure(error as? FHIRAPIError ?? .invalidResponse)))
+                    await send(.getImmunisationResponse(.failure(error as? FHIRAPIError ?? .invalidResponse)))
                 }
             }
 
-        case let .getAllergyData(.success(model)):
+        case let .getImmunisationResponse(.success(model)):
             let resource = model.entry?.first?.resource
             let id = resource?.id ?? ""
             return .run { send in
                 do {
-                    let allergyModel = try await fhirClient.getAllergyDetail(id)
-                    await send(.getAllergyDetail(.success(allergyModel)))
+                    let resourceModel = try await fhirClient.getImmunizationDetail(id)
+                    await send(.getDetailtResponse(.success(resourceModel)))
                 } catch {
-                    await send(.getAllergyDetail(.failure(error as? FHIRAPIError ?? .invalidResponse)))
+                    await send(.getDetailtResponse(.failure(error as? FHIRAPIError ?? .invalidResponse)))
                 }
             }
 
-        case let .getAllergyData(.failure(error)):
+        case let .getImmunisationResponse(.failure(error)):
             state.isLoading = false
             state.errorMessage = "Failed to load providers: \(error.localizedDescription)"
             return .none
             
-        case let .getAllergyDetail(.success(model)):
+        case let .getDetailtResponse(.success(model)):
             state.isLoading = false
             state.errorMessage = nil
-            state.allergyModel = model
+            state.immuneModel = model
             return .none
 
-        case let .getAllergyDetail(.failure(error)):
+        case let .getDetailtResponse(.failure(error)):
             state.isLoading = false
             state.errorMessage = "Failed to load providers: \(error.localizedDescription)"
             return .none
-
 
         }
     }

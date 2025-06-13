@@ -2,7 +2,7 @@
 //  DashboardViewList.swift
 //  mE Health
 //
-//  Created by Rashida on 11/06/25.
+//  Created by //# Author(s): Ishant  on 11/06/25.
 //
 
 
@@ -140,9 +140,9 @@ struct DashboardViewList: View {
             case .appointment:
                 AppoitmentView(
                     store: Store(
-                        initialState: AllergyFeature.State(),
+                        initialState: AppoitmentFeature.State(),
                         reducer: {
-                            AllergyFeature()
+                            AppoitmentFeature()
                         }
                     )
                 )
@@ -159,9 +159,9 @@ struct DashboardViewList: View {
             case .immunization:
                 ImmunisationView(
                     store: Store(
-                        initialState: AllergyFeature.State(),
+                        initialState: ImmunisationFeature.State(),
                         reducer: {
-                            AllergyFeature()
+                            ImmunisationFeature()
                         }
                     )
                 )

@@ -14,10 +14,8 @@ struct PatientView: View {
                         ProgressView("Loading Patient Data...")
                     } else {
                         
-
-//                        let patientObj = viewStore.patientData
-//                        let patientId = patientObj.id ?? ""
-//                        let name = patientObj.name?.first?.text ?? ""
+                        let patientName = viewStore.patientData?.name?.first?.text ?? ""
+                        let patientId = viewStore.patientData?.id ?? ""
 
                         VStack(alignment: .leading, spacing: 16) {
                             Text("Loading Patient Data")
@@ -25,8 +23,8 @@ struct PatientView: View {
                                 .fontWeight(.bold)
                                 .padding(.bottom, 8)
                             
-                            conditionRow(title: "patientId:", value: "", icon: "lungs.fill")
-                            conditionRow(title: "name:", value: "Jason Argonaut", icon: "calendar.badge.clock")
+                            conditionRow(title: "patientId:", value: patientId, icon: "lungs.fill")
+                            conditionRow(title: "name:", value: patientName, icon: "calendar.badge.clock")
                             conditionRow(title: "birthDate:", value: "1985-08-01", icon: "waveform.path.ecg")
                             conditionRow(title: "gender:", value: "Male", icon: "calendar")
                             conditionRow(title: "address:", value: "", icon: "calendar")

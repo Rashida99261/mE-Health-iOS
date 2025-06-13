@@ -3,11 +3,12 @@ import ComposableArchitecture
 
 struct CoreDataClient {
     var saveResourceTree: (MedicationModel) throws -> Void
-    var savePatient: (Patient) throws -> Void
+    var savePatient: (PatientModel) throws -> Void
     var savePractitioner: (Practitioner) throws -> Void
     var saveResource: (CommonResource) throws -> Void
     var saveConditionModel: (ConditionModel) throws -> Void
     var saveConsentModel: (ConsentModel) throws -> Void
+    var saveAppoitmentModel: (AppoitmentModel) throws -> Void
 }
 
 enum CoreDataError: Error {
@@ -117,10 +118,11 @@ extension CoreDataClient {
 
         savePatient: { patient in
             let context = PersistenceController.shared.context
-
             let entity = PatientEntity(context: context)
             entity.id = patient.id ?? "1"
-            entity.name = (patient.name?.first?.given?.joined(separator: " ") ?? "") + " " + (patient.name?.first?.family ?? "")
+         //   entity.name = (patient.name?.first?.given?.joined(separator: " ") ?? "") + " " + (patient.name?.first?.family ?? "")
+            entity.gender = patient.gender ?? ""
+            entity.birthDate = patient.birthDate ?? ""
             do {
                 try context.save()
                 print("✅ Saved patient to Core Data")
@@ -317,6 +319,34 @@ extension CoreDataClient {
                 }
             
 
+        },
+        saveAppoitmentModel: { appointmentModel in
+            
+            let context = PersistenceController.shared.context
+            let appointmentEntity = AppoitmentEntity(context: context)
+            appointmentModel.entry?.forEach { entry in
+                let entryEntity = AppointmentEntryEntity(context: context)
+                
+//                let resource = entry.resource
+//                if let resource = resource as? AppointmentResource {
+//                    entryEntity.status = resource.status?.rawValue
+//                    entryEntity.slotStart = resource.slotStart
+//                    entryEntity.slotEnd = resource.slotEnd
+//                    entryEntity.appointmentType = resource.appointmentType?.rawValue
+//                    entryEntity.description_fhir = resource.description_fhir
+//                    
+//                }
+
+                appointmentEntity.addToEntry(entryEntity)
+            }
+
+            
+            do {
+                try context.save()
+                print("Appoitment data saved.")
+            } catch {
+                print("Failed to save consent data: \(error)")
+            }
         }
         
     )

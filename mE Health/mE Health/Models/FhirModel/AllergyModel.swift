@@ -2,54 +2,84 @@
 //  AllergyModel.swift
 //  mE Health
 //
-//  Created by Rashida on 12/06/25.
+//  Created by //# Author(s): Ishant  on 12/06/25.
 //
 
 struct AllergyModel : Codable , Equatable{
-    let resourceType : String?
-    let type : String?
-    let total : Int?
-    let link : [CommonLinkModel]?
-    let entry : [CommonEntry]?
+    let entry : [AllergyEntry]?
 
     enum CodingKeys: String, CodingKey {
 
-        case resourceType = "resourceType"
-        case type = "type"
-        case total = "total"
-        case link = "link"
         case entry = "entry"
     }
 
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        resourceType = try values.decodeIfPresent(String.self, forKey: .resourceType)
-        type = try values.decodeIfPresent(String.self, forKey: .type)
-        total = try values.decodeIfPresent(Int.self, forKey: .total)
-        link = try values.decodeIfPresent([CommonLinkModel].self, forKey: .link)
-        entry = try values.decodeIfPresent([CommonEntry].self, forKey: .entry)
+        entry = try values.decodeIfPresent([AllergyEntry].self, forKey: .entry)
     }
 
 }
 
 
-struct CommonEntry : Codable,Equatable {
-    let link : [CommonLinkModel]?
-    let fullUrl : String?
-    let resource : CommonResource?
+struct AllergyEntry : Codable,Equatable {
+    let resource : AllergyResource?
 
     enum CodingKeys: String, CodingKey {
 
-        case link = "link"
-        case fullUrl = "fullUrl"
         case resource = "resource"
     }
 
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        link = try values.decodeIfPresent([CommonLinkModel].self, forKey: .link)
-        fullUrl = try values.decodeIfPresent(String.self, forKey: .fullUrl)
-        resource = try values.decodeIfPresent(CommonResource.self, forKey: .resource)
+        resource = try values.decodeIfPresent(AllergyResource.self, forKey: .resource)
+    }
+
+}
+
+struct AllergyResource : Codable,Equatable {
+    let resourceType : String?
+    let id : String?
+    let clinicalStatus : ClinicalStatus?
+    let verificationStatus : VerificationStatus?
+    let code : Code?
+    let patient : PatientReference?
+
+    enum CodingKeys: String, CodingKey {
+
+        case resourceType = "resourceType"
+        case id = "id"
+        case clinicalStatus = "clinicalStatus"
+        case verificationStatus = "verificationStatus"
+        case code = "code"
+        case patient = "patient"
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        resourceType = try values.decodeIfPresent(String.self, forKey: .resourceType)
+        id = try values.decodeIfPresent(String.self, forKey: .id)
+        clinicalStatus = try values.decodeIfPresent(ClinicalStatus.self, forKey: .clinicalStatus)
+        verificationStatus = try values.decodeIfPresent(VerificationStatus.self, forKey: .verificationStatus)
+        code = try values.decodeIfPresent(Code.self, forKey: .code)
+        patient = try values.decodeIfPresent(PatientReference.self, forKey: .patient)
+    }
+
+}
+
+struct PatientReference : Codable,Equatable {
+    let reference : String?
+    let display : String?
+
+    enum CodingKeys: String, CodingKey {
+
+        case reference = "reference"
+        case display = "display"
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        reference = try values.decodeIfPresent(String.self, forKey: .reference)
+        display = try values.decodeIfPresent(String.self, forKey: .display)
     }
 
 }

@@ -5,7 +5,7 @@ import Foundation
 struct PatientFeature: Reducer {
     
     struct State: Equatable {
-        var patientData: Patient?
+        var patientData: PatientModel?
         var isLoading: Bool = false
         var errorMessage = ""
 
@@ -13,7 +13,7 @@ struct PatientFeature: Reducer {
 
     enum Action: Equatable {
         case onAppear
-        case patientResponse(Result<Patient, FHIRAPIError>)
+        case patientResponse(Result<PatientModel, FHIRAPIError>)
     }
     
     @Dependency(\.fhirClient) var fhirClient
@@ -36,8 +36,13 @@ struct PatientFeature: Reducer {
             case let .patientResponse(.success(patient)):
                 state.isLoading = false
                 state.patientData = patient
-                if let ref = patient.generalPractitioner?.first?.reference {
-                    UserDefaults.standard.set(ref, forKey: "practitionerId")
+                
+                if let reference = patient.careProvider?.first?.reference {
+                    let components = reference.split(separator: "/")
+                    if let last = components.last {
+                        print("ID: \(last)")
+                        UserDefaults.standard.set(last, forKey: "practitionerId")
+                    }
                 }
                 return .none
 

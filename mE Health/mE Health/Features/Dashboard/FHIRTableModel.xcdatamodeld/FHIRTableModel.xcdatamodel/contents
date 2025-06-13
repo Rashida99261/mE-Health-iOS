@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23231" systemVersion="24A348" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="AppointmentEntryEntity" representedClassName="AppointmentEntryEntity" syncable="YES" codeGenerationType="class">
+        <relationship name="resource" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AppointmentResourceEntity"/>
+    </entity>
+    <entity name="AppointmentResourceEntity" representedClassName="AppointmentResourceEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="created" optional="YES" attributeType="String"/>
+        <attribute name="end" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <attribute name="minutesDuration" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="patientInstruction" optional="YES" attributeType="String"/>
+        <attribute name="resourceType" optional="YES" attributeType="String"/>
+        <attribute name="start" optional="YES" attributeType="String"/>
+        <attribute name="status" optional="YES" attributeType="String"/>
+        <relationship name="identifier" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IdentifierEntity"/>
+    </entity>
+    <entity name="AppoitmentEntity" representedClassName="AppoitmentEntity" syncable="YES" codeGenerationType="class">
+        <relationship name="entry" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AppointmentEntryEntity"/>
+    </entity>
     <entity name="ClinicalStatusEntity" representedClassName="ClinicalStatusEntity" syncable="YES" codeGenerationType="class">
         <attribute name="text" optional="YES" attributeType="String"/>
         <relationship name="coding" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CodingEntity"/>
@@ -82,9 +99,16 @@
         <attribute name="reference" optional="YES" attributeType="String"/>
         <attribute name="subject" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="NameEntity" representedClassName="NameEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="family" optional="YES" attributeType="String"/>
+        <attribute name="text" optional="YES" attributeType="String"/>
+        <attribute name="use" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="PatientEntity" representedClassName="PatientEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="birthDate" optional="YES" attributeType="String"/>
+        <attribute name="gender" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="String"/>
-        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="name" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NameEntity"/>
     </entity>
     <entity name="PractitionerEntity" representedClassName="PractitionerEntity" syncable="YES" codeGenerationType="class">
         <attribute name="display" optional="YES" attributeType="String"/>

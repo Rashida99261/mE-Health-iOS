@@ -2,7 +2,7 @@
 //  ImmunisationView.swift
 //  mE Health
 //
-//  Created by Rashida on 12/06/25.
+//  Created by //# Author(s): Ishant  on 12/06/25.
 //
 
 import SwiftUI
@@ -10,7 +10,7 @@ import ComposableArchitecture
 
 struct ImmunisationView: View {
     
-    let store: StoreOf<AllergyFeature>
+    let store: StoreOf<ImmunisationFeature>
     
     var body: some View {
         
@@ -19,15 +19,27 @@ struct ImmunisationView: View {
                 ScrollView {
                     if viewStore.isLoading {
                         ProgressView("Loading Immunization Data...")
-                    } else {
+                    }
+                    else if viewStore.errorMessage != nil {
+                        Text("No Data found")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .padding(.bottom, 8)
+                    }
+                    else {
                         
-                        
+                        let vaccineCode = viewStore.immuneModel?.vaccineCode?.coding?.first?.code ?? ""
+                        let occurrenceDateTime = viewStore.immuneModel?.occurrenceDateTime ?? ""
+                        let status = viewStore.immuneModel?.status ?? ""
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("No Data found")
+                            Text("Immunization Data")
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .padding(.bottom, 8)
                             
+                            conditionRow(title: "Vaccine Code:", value: vaccineCode, icon: "calendar.badge.clock")
+                            conditionRow(title: "Status:", value: status, icon: "waveform.path.ecg")
+                            conditionRow(title: "occurrenceDate:", value: occurrenceDateTime, icon: "calendar")
 
                             Spacer()
                         }
@@ -43,7 +55,7 @@ struct ImmunisationView: View {
                 .navigationTitle("Immunization")
             }
             .onAppear {
-                viewStore.send(.loadAllergy)
+                viewStore.send(.loadImmunisation)
             }
 
         }

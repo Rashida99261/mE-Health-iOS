@@ -2,7 +2,7 @@
 //  AllergyView.swift
 //  mE Health
 //
-//  Created by Rashida on 11/06/25.
+//  Created by //# Author(s): Ishant  on 11/06/25.
 //
 
 import SwiftUI
@@ -19,23 +19,26 @@ struct AllergyView: View {
                 ScrollView {
                     if viewStore.isLoading {
                         ProgressView("Loading Allergy Data...")
-                    } else {
+                    }
+                    else if viewStore.errorMessage != nil {
+                        Text("No Data found")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .padding(.bottom, 8)
+                    }
+                    else {
                         
-                        let resourceObj = viewStore.allergyModel?.entry?.first?.resource
-                        let clinalStatus = resourceObj?.clinicalStatus?.text ?? "Active"  //
-                        let allergyId = resourceObj?.id ?? ""
-                        let RecordedDate = resourceObj?.recordedDate ?? ""
-                        
+                        let clinalStatus = viewStore.allergyModel?.clinicalStatus?.coding?.first?.display ?? "Active"
+                        let code = viewStore.allergyModel?.clinicalStatus?.coding?.first?.code ?? "Active"
                         VStack(alignment: .leading, spacing: 16) {
                             Text("Allergy Data")
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .padding(.bottom, 8)
                             
-                            conditionRow(title: "AllergyId:", value: allergyId, icon: "lungs.fill")
-                            conditionRow(title: "Code:", value: "", icon: "calendar.badge.clock")
+                            conditionRow(title: "Code:", value: code, icon: "calendar.badge.clock")
                             conditionRow(title: "Clinical status:", value: clinalStatus, icon: "waveform.path.ecg")
-                            conditionRow(title: "RecordedDate:", value: RecordedDate, icon: "calendar")
+                            conditionRow(title: "RecordedDate:", value: "", icon: "calendar")
 
                             Spacer()
                         }

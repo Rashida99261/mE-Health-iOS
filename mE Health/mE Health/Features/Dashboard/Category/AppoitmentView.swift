@@ -3,21 +3,29 @@ import ComposableArchitecture
 
 struct AppoitmentView: View {
     
-    let store: StoreOf<AllergyFeature>
+    let store: StoreOf<AppoitmentFeature>
     
     var body: some View {
         
         WithViewStore(store, observe: { $0 }) { viewStore in
             NavigationView {
                 ScrollView {
+                    
                     if viewStore.isLoading {
                         ProgressView("Loading AppoitmentView Data...")
-                    } else {
+                    }
+                    else if viewStore.errorMessage != nil {
+                        Text("No Data found")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .padding(.bottom, 8)
+                    }
+                    else {
                         
-                        let resourceObj = viewStore.allergyModel?.entry?.first?.resource
-                        let clinalStatus = resourceObj?.clinicalStatus?.text ?? "Unknown"  //
-                        let allergyId = resourceObj?.id ?? ""
-                        let RecordedDate = resourceObj?.recordedDate ?? ""
+                        let startTime = viewStore.appoitmentModel?.start ?? ""
+                        let endTime = viewStore.appoitmentModel?.end ?? ""
+                        let desc = viewStore.appoitmentModel?.patientInstruction ?? ""
+                        let code = viewStore.appoitmentModel?.appointmentType?.coding?.first?.code ?? ""
                         
                         VStack(alignment: .leading, spacing: 16) {
                             Text("AppoitmentView Data")
@@ -25,12 +33,11 @@ struct AppoitmentView: View {
                                 .fontWeight(.bold)
                                 .padding(.bottom, 8)
                             
-                            conditionRow(title: "appointmentId:", value: allergyId, icon: "lungs.fill")
-                            conditionRow(title: "startTime:", value: "", icon: "calendar.badge.clock")
-                            conditionRow(title: "endTime:", value: "", icon: "waveform.path.ecg")
-                            conditionRow(title: "status:", value: clinalStatus, icon: "calendar")
-                            conditionRow(title: "description:", value: "", icon: "calendar")
-                            conditionRow(title: "reasonCode:", value: "", icon: "calendar")
+                            conditionRow(title: "startTime:", value: startTime, icon: "calendar.badge.clock")
+                            conditionRow(title: "endTime:", value: endTime, icon: "waveform.path.ecg")
+                            conditionRow(title: "status:", value: "", icon: "calendar")
+                            conditionRow(title: "description:", value: desc, icon: "calendar")
+                            conditionRow(title: "reasonCode:", value: code, icon: "calendar")
 
                             Spacer()
                         }
@@ -43,10 +50,10 @@ struct AppoitmentView: View {
                         .padding()
                     }
                 }
-                .navigationTitle("AppoitmentView")
+                .navigationTitle("Appoitment")
             }
             .onAppear {
-                viewStore.send(.loadAllergy)
+                viewStore.send(.loadAppoinment)
             }
 
         }
