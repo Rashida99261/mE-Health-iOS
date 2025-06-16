@@ -5,8 +5,11 @@ import ComposableArchitecture
 struct DashboardView: View {
     let store: StoreOf<DashboardFeature>
     let sideMenuWidth: CGFloat = 100.0
+    @State private var showOverlay = false
+    @State private var isAIAssistantActive = false
     @State private var isClinicListActive = false
     @State private var isMenuOpen: Bool = false
+    
     private let loginStore = Store(initialState: LoginFeature.State()) {
         LoginFeature()
     }
@@ -50,13 +53,17 @@ struct DashboardView: View {
                             Spacer()
                             
                             VStack(spacing: 24) {
-                                CardButton(title: "AI Assistant", iconName: "AI", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {}
+                                CardButton(title: "AI Assistant", iconName: "AI", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {
+                                    showOverlay = true
+                                }
                                 
                                 CardButton(title: "Data Marketplace", iconName: "shopping_cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {}
                                 
                                 CardButton(title: "Clinic List", iconName: "shopping_cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {
                                     isClinicListActive = true
                                 }
+                                
+                                
                                 
                                 NavigationLink(
                                     destination: ClinicListView(
@@ -82,6 +89,57 @@ struct DashboardView: View {
                         .offset(x: viewStore.showMenu ? 150 : 0) // 👈 Slide only this
                         .animation(.easeInOut, value: viewStore.showMenu)
                         .zIndex(2)
+                        
+                        
+                        if showOverlay {
+                            ZStack {
+                                Color.black.opacity(0.4)
+                                    .ignoresSafeArea()
+
+                                VStack(spacing: 24) {
+                                    Text("""
+                                    The AI Assistant in mEinstein is your personal, intelligent helper that lives right in the app. It’s designed to understand your preferences, habits, and goals—then use that knowledge to help you make decisions, organize your life, and find insights that matter to you. Think of it as a digital sidekick, always ready to offer suggestions, reminders, and personalized advice to help you get the most out of your data and daily routines.
+                                    """)
+                                    .font(.custom("Montserrat-SemiBold", size: 14))
+                                        .multilineTextAlignment(.center)
+                                        .foregroundColor(.black)
+                                        .padding()
+                                    
+
+                                    Button(action: {
+                                        withAnimation {
+                                            
+                                            showOverlay = false
+                                        }
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                                isAIAssistantActive = true
+                                            }
+                                    }) {
+                                        Text("OK")
+                                            .font(.custom("Montserrat-Bold", size: 20))
+                                            .foregroundColor(.blue)
+                                            .frame(maxWidth: .infinity)
+                                    }
+                                }
+                                .padding(.vertical, 32)
+                                .padding(.horizontal, 16)
+                                .background(Color.white)
+                                .cornerRadius(20)
+                                .shadow(radius: 10)
+                                .padding(.horizontal, 32)
+                            }
+                            .zIndex(99)
+                            .transition(.opacity)
+                            .animation(.easeInOut, value: showOverlay)
+                        }
+                        NavigationLink(
+                            destination: AIAssistantView(),
+                            isActive: $isAIAssistantActive
+                        ) {
+                            EmptyView()
+                        }
+
+
                         
                         // MARK: Fixed Tab Bar (NOT sliding)
                         VStack {
@@ -136,25 +194,16 @@ struct DashboardView: View {
                 isPresented: viewStore.binding(
                     get: { $0.personaState != nil },
                     send: { isPresented in
-                        isPresented
-                            ? .onAppear // or any no-op action like `.none` if you add one
-                            : .personaAction(.navigateBackToHomeTapped)
+                        isPresented ? .onAppear : .personaAction(.navigateBackToHomeTapped)
                     }
-
                 )
             ) {
                 IfLetStore(
-                    store.scope(
-                        state: \.personaState,
-                        action: DashboardFeature.Action.personaAction
-                    )
+                    store.scope(state: \.personaState, action: DashboardFeature.Action.personaAction)
                 ) { personaStore in
                     PersonaView(
                         store: personaStore,
-                        selectedTab: viewStore.binding(
-                            get: \.selectedTab,
-                            send: DashboardFeature.Action.tabSelected
-                        ),
+                        selectedTab: viewStore.binding(get: \.selectedTab, send: DashboardFeature.Action.tabSelected),
                         onMenuTapped: {
                             isMenuOpen.toggle()
                             viewStore.send(.toggleMenu(isMenuOpen))
@@ -162,6 +211,27 @@ struct DashboardView: View {
                     )
                 }
             }
+            
+            .navigationDestination(
+                isPresented: viewStore.binding(
+                    get: { $0.personaSelectedDestination != nil },
+                    send: { _ in .setPersonaSelectedDestination(nil) }
+                )
+            ) {
+                switch viewStore.personaSelectedDestination {
+                case .myHealth:
+                    MyHealthView(store: Store(initialState: MyHealthFeature.State(), reducer: {
+                        MyHealthFeature()
+                    }))
+                case .patientProfile:
+                    PatientProfileView(store: Store(initialState: PatientProfileFeature.State(), reducer: {
+                        PatientProfileFeature()
+                    }))
+                case .none:
+                    EmptyView()
+                }
+            }
+
 
             .navigationDestination(
                 item: viewStore.binding(
