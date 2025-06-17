@@ -38,8 +38,11 @@ struct MyHealthView: View {
                             }
                         }
                     }
+                    .frame(height:180)
                     .padding(.horizontal)
                 }
+                
+                Divider()
                 
                 
                 let selectedTileTitle = viewStore.tiles[viewStore.selectedIndex].title

@@ -158,7 +158,7 @@ struct FHIRAPIService : FHIRAPIClient{
         guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
             throw URLError(.badURL)
         }
-        return try await fetch(OrganizationModel.self, from: "/Consent?patient=\(patientId)")
+        return try await fetch(OrganizationModel.self, from: "/Organization/\(patientId)")
     }
         
     func getAppoitment() async throws -> AppoitmentModel {

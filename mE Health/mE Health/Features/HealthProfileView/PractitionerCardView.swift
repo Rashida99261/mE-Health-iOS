@@ -4,6 +4,7 @@
 //
 //  Created by Ishant on 16/06/25.
 //
+import SwiftUI
 
 struct PractitionerData: Identifiable, Equatable {
     let id: UUID = UUID()
@@ -14,13 +15,13 @@ struct PractitionerData: Identifiable, Equatable {
 }
 
 
-import SwiftUI
+
 struct PractitionerCardView: View {
     let practitioner: PractitionerData
     let onTap: () -> Void
 
     var body: some View {
-        HStack(alignment: .top) {
+        HStack(spacing: 4) {
             VStack(alignment: .leading, spacing: 12) {
                 Text(practitioner.name)
                     .font(.custom("Montserrat-Bold", size: 16))
@@ -42,24 +43,30 @@ struct PractitionerCardView: View {
                     Text(practitioner.email)
                         .font(.custom("Montserrat-Regular", size: 14))
                 }
+                
+                
             }
 
             Spacer()
-
-            // Right section: vertical action buttons
-            PractitionerActionColumn()
             
+            PractitionerActionColumn()
+                .frame(height:150)
+                .padding(.trailing, 0)
+            
+                
         }
-        .padding()
+        .padding(.leading, 12)
+        .frame(height:150)
+        .frame(maxWidth: .infinity, alignment: .topLeading)
         .background(Color.white)
-        .cornerRadius(6)
+        .cornerRadius(12)
         .shadow(radius: 4)
         .onTapGesture {
             onTap()
         }
-
     }
 }
+
 
 struct PractitionerSectionView: View {
     let practitioners: [PractitionerData]
@@ -103,12 +110,16 @@ struct PractitionerActionColumn: View {
                         .foregroundColor(.white)
                         .frame(width: 20, height: 20)
                         .padding()
-                        .frame(width: 40, height: 40)
+                        .frame(width: 50, height: 50)
+                        .background(Color(hex: "FF6605"))
                 }
             }
         }
+        .padding(.trailing,0)
+        .frame(width: 50) // Fixed width for the action column
         .background(
-            RoundedCorners(color: Color(hex: "FF6605"), tl: 10, tr: 0, bl: 0, br: 10)
+            RoundedCorners(color: Color.white, tl: 0, tr: 12, bl: 12, br: 0)
         )
     }
 }
+
