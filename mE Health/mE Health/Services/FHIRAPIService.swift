@@ -37,7 +37,7 @@ protocol FHIRAPIClient {
     func getOrganisation() async throws -> OrganizationModel
     func getAppoitment() async throws -> AppoitmentModel
     func getAppoitmentDetail(appointmentId:String) async throws -> AppoitmentResource
-    func getProcedure() async throws -> ConsentModel
+    func getProcedure() async throws -> ProcedureModel
     func getAllergy() async throws -> AllergyModel
     func getAllergyDetail(id:String) async throws -> AllergyResource
     func getImmunization() async throws -> ImmunizationModel
@@ -160,14 +160,7 @@ struct FHIRAPIService : FHIRAPIClient{
         }
         return try await fetch(OrganizationModel.self, from: "/Consent?patient=\(patientId)")
     }
-    
-    func getPractioner() async throws -> ConsentModel {
-        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
-            throw URLError(.badURL)
-        }
-        return try await fetch(ConsentModel.self, from: "/Consent?patient=\(patientId)")
-    }
-    
+        
     func getAppoitment() async throws -> AppoitmentModel {
         guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
             throw URLError(.badURL)
@@ -179,13 +172,6 @@ struct FHIRAPIService : FHIRAPIClient{
         return try await fetch(AppoitmentResource.self, from: "/Appointment/\(appointmentId)")
     }
 
-    func getProcedure() async throws -> ConsentModel {
-        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
-            throw URLError(.badURL)
-        }
-        return try await fetch(ConsentModel.self, from: "/Consent?patient=\(patientId)")
-    }
-    
     func getAllergy() async throws -> AllergyModel {
         guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
             throw URLError(.badURL)
@@ -208,6 +194,14 @@ struct FHIRAPIService : FHIRAPIClient{
         return try await fetch(ImmunizationResource.self, from: "/Immunization/\(id)")
     }
     
+    func getProcedure() async throws -> ProcedureModel {
+        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
+            throw URLError(.badURL)
+        }
+        return try await fetch(ProcedureModel.self, from: "/Procedure?patient=\(patientId)")
+    }
+
+    
 }
 
 // MARK: - Expected Bundle Types
@@ -226,7 +220,7 @@ struct FhirClientDependency {
     var getOrganisation:() async throws -> OrganizationModel
     var getAppoitment: () async throws -> AppoitmentModel
     var getAppoitmentDetail: (String) async throws -> AppoitmentResource
-    var getProcedure: () async throws -> ConsentModel
+    var getProcedure: () async throws -> ProcedureModel
     var getAllergy: () async throws -> AllergyModel
     var getAllergyDetail: (String) async throws -> AllergyResource
     var getImmunization: () async throws -> ImmunizationModel
