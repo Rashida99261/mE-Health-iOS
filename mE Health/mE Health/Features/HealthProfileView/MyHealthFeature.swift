@@ -23,21 +23,23 @@ struct MyHealthFeature: Reducer {
         
         var tiles: [Tile] = [
             Tile(title: "Practitioner", icon: "bus.fill", countItem: "10"),
-            Tile(title: "Conditions", icon: "doc.text.fill", countItem: "10"),
-            Tile(title: "Medication", icon: "pills.fill", countItem: "10"),
-            Tile(title: "Vitals", icon: "heart.fill", countItem: "10"),
-            Tile(title: "Lab Results", icon: "doc.plaintext", countItem: "10"),
-            Tile(title: "Immunizations", icon: "syringe.fill", countItem: "10"),
-            Tile(title: "Visits", icon: "calendar", countItem: "10")
+            Tile(title: "Appointment", icon: "doc.text.fill", countItem: "10"),
+            Tile(title: "Allergy", icon: "pills.fill", countItem: "10"),
+            Tile(title: "Lab", icon: "doc.plaintext", countItem: "10"),
+            Tile(title: "Immunizations", icon: "syringe.fill", countItem: "10")
         ]
         var selectedIndex: Int = 0
         var selectedPractitioner: PractitionerData? = nil
+        var selelctedAllergy: AllergyDummyData? = nil
     }
 
     enum Action: Equatable {
         case selectTile(Int)
         case practitionerTapped(PractitionerData)
         case dismissPractitionerDetail
+        case allergyTapped(AllergyDummyData)
+        case dismissAllergyDetail
+
 
         
     }
@@ -56,6 +58,15 @@ struct MyHealthFeature: Reducer {
             case .dismissPractitionerDetail:
                 state.selectedPractitioner = nil
                 return .none
+
+            case .allergyTapped(let allergy):
+                state.selelctedAllergy = allergy
+                return .none
+                
+            case .dismissAllergyDetail:
+                state.selelctedAllergy = nil
+                return .none
+
 
             }
         }

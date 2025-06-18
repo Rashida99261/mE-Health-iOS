@@ -9,18 +9,18 @@ import SwiftUI
 
 struct PractitionerDetailView: View {
     
+    @Environment(\.presentationMode) var presentationMode
     let practitioner: PractitionerData
     let organizations: [Organization] = [
-        Organization(name: "City Hospital", type: "General Medicine", imageName: "building.2.crop.circle"),
-        Organization(name: "Sunrise Clinic", type: "Cardiology", imageName: "heart.text.square.fill")
+        Organization(name: "HealthCare", type: "Start Time: Jan 1, 2022", imageName: "organis_placeholder"),
+        Organization(name: "HealthCare", type: "Start Time: Jan 1, 2022", imageName: "organis_placeholder")
     ]
 
 
     var body: some View {
         
         ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 24) {
-                
+            VStack(alignment: .leading, spacing: 24) {
                 Text("Details")
                     .font(.custom("Montserrat-Bold", size: 32))
                     .padding(.horizontal)
@@ -52,29 +52,79 @@ struct PractitionerDetailView: View {
                                 OrganizationCardView(organization: org)
                             }
                         }
+                        .frame(height:110)
                         .padding(.horizontal)
                     }
                 }
                 
                 VStack(spacing: 12) {
-                    
-                    Text("Appointments")
-                        .font(.custom("Montserrat-Bold", size: 22))
-                        .padding(.horizontal)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    
-                    
+                    HStack {
+                        Text("Appointments")
+                            .font(.custom("Montserrat-Bold", size: 22))
+                        
+                        Spacer()
+
+                        Button(action: {
+                            // Handle tap on "View All"
+                        }) {
+                            Text("View All")
+                                .font(.custom("Montserrat-SemiBold", size: 12))
+                                .foregroundColor(Color(hex: "FF6605"))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(Color(hex: "FF6605").opacity(0.1))
+                                .cornerRadius(16)
+                        }
+                    }
+                    .padding(.horizontal)
+
                     VStack(spacing: 16) {
                         ForEach(organizations) { org in
                             AppoitmentCardView(organization: org)
                         }
                     }
                     .padding(.horizontal)
-                    
+                }
+
+                VStack(spacing: 12) {
+                    HStack {
+                        Text("Visits")
+                            .font(.custom("Montserrat-Bold", size: 22))
+                        
+                        Spacer()
+
+                        Button(action: {
+                            // Handle tap on "View All"
+                        }) {
+                            Text("View All")
+                                .font(.custom("Montserrat-SemiBold", size: 12))
+                                .foregroundColor(Color(hex: "FF6605"))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(Color(hex: "FF6605").opacity(0.1))
+                                .cornerRadius(16)
+                        }
+                    }
+                    .padding(.horizontal)
+
+                    VStack(spacing: 16) {
+                        ForEach(organizations) { org in
+                            AppoitmentCardView(organization: org)
+                        }
+                    }
+                    .padding(.horizontal)
                 }
             }
             .padding()
+            .background(Color.white)
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    CustomBackButton {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+            }
         }
     }
 }

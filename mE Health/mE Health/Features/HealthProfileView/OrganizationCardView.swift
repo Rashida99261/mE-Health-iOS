@@ -32,48 +32,45 @@ struct OrganizationCardView: View {
 
             Spacer()
 
-            Image(systemName: organization.imageName)
+            Image(organization.imageName)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 40, height: 40)
-                .foregroundColor(Color(hex: "FF6605"))
+                .frame(width: 60, height: 60)
         }
         .padding()
         .background(Color.white)
         .cornerRadius(6)
         .shadow(radius: 4)
-        .frame(width: 250,height:80)
+        .frame(width: 250,height:90)
     }
 }
 
 struct AppoitmentCardView: View {
     let organization: Organization
-
+    
     var body: some View {
-        HStack {
-            
-            Image(systemName: organization.imageName)
+        HStack(spacing: 12) {
+            Image("date_placeholder")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 40, height: 40)
+                .frame(width: 50, height: 50)
                 .foregroundColor(Color(hex: "FF6605"))
             
-            Spacer()
-
             VStack(alignment: .leading, spacing: 4) {
-                Text(organization.name)
-                    .font(.custom("Montserrat-Bold", size: 16))
+                Text("Jan 1, 2023") // You can pull from organization.type if dynamic
+                    .font(.custom("Montserrat-Medium", size: 16))
                     .foregroundColor(.black)
-
-                Text(organization.type)
-                    .font(.custom("Montserrat-Regular", size: 14))
+                
+                Text(organization.name)
+                    .font(.custom("Montserrat-Regular", size: 12))
                     .foregroundColor(Color(hex: "FF6605"))
             }
+            
+            Spacer() // Optional: pushes content to left, consistent spacing
         }
-        .padding()
+        .padding(.horizontal, 12) // Internal horizontal padding
+        .frame(height: 80)
         .background(Color.white)
-        .cornerRadius(6)
-        .shadow(radius: 4)
-        .frame(height:80)
     }
 }
+

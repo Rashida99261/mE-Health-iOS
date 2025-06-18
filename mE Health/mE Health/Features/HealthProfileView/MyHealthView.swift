@@ -10,10 +10,36 @@ import ComposableArchitecture
 
 struct MyHealthView: View {
     let store: StoreOf<MyHealthFeature>
+    @Environment(\.presentationMode) var presentationMode
     
     var samplePractioner : [PractitionerData] = [
         PractitionerData(name: "Dr. Ashley David", specialty: "Gynecologist", phone: "(212) 555-1234", email: "info@totalcaremaintenance.com"),
         PractitionerData(name: "Dr. Ashley David", specialty: "Gynecologist", phone: "(212) 555-1234", email: "info@totalcaremaintenance.com")]
+    
+    var sampleAppoitmnt : [AppointmentData] = [
+        AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy."),
+        AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy."),
+        AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.")]
+    
+    var sampleAleData : [AllergyDummyData] = [
+        AllergyDummyData(name: "Peanut Allergy", recordDate: "Recorded Date: 05/06/2025"),
+        AllergyDummyData(name: "Dust Allergy", recordDate: "Recorded Date: 05/06/2025"),
+        AllergyDummyData(name: "Penicillin Allergy", recordDate: "Recorded Date: 05/06/2025")
+        ]
+        
+    var sampleLabData : [LabDummyData] = [
+            LabDummyData(name: "Complete Blood Count", recordDate: "Recorded Date: 05/06/2025",isActive:true),
+            LabDummyData(name: "Lipid Panel", recordDate: "Recorded Date: 12/06/2025",isActive:false),
+            LabDummyData(name: "Lipid Panel", recordDate: "Recorded Date: 12/06/2025",isActive:true)
+    ]
+    
+    var sampleImmubeData : [ImmuneDummyData] = [
+        ImmuneDummyData(name: "COVID-19 Vaccine", recordDate: "Occurrence Date: N/A", location: "Location: N/A", isCompleted: false),
+        ImmuneDummyData(name: "COVID-19 Vaccine", recordDate: "Occurrence Date: N/A", location: "Location: N/A", isCompleted: true),
+        ImmuneDummyData(name: "COVID-19 Vaccine", recordDate: "Occurrence Date: N/A", location: "Location: N/A", isCompleted: true)
+    ]
+    
+    
 
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
@@ -55,22 +81,31 @@ struct MyHealthView: View {
                         onCardTap: { practitioner in
                             viewStore.send(.practitionerTapped(practitioner))
                         }
-
                     )
 
-                case "Conditions":
-                    Text("Conditions Section") // Replace with ConditionsView
-
-                case "Medication":
-                    Text("Medication Section")
-
+                case "Appointment":
+                    AppoitmentSectionView(
+                        practitioners: sampleAppoitmnt,
+                        startDate: "06-01-2025", 
+                        endDate: "06-01-2025",
+                        onCardTap:{ practitioner in }
+                        )
+                case "Allergy":
+                    AllergySectionView(allergies: sampleAleData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { allergy in
+                        viewStore.send(.allergyTapped(allergy))
+                    })
+                case "Lab":
+                    LabSectionView(labs: sampleLabData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { lab in
+                    })
+                case "Immunizations":
+                    ImmuneSectionView(immune: sampleImmubeData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { lab in
+                    })
                 default:
                     EmptyView()
                 }
 
             }
             .padding(.top, 8)
-            
             .navigationDestination(
                 isPresented: viewStore.binding(
                     get: { $0.selectedPractitioner != nil },
@@ -81,8 +116,27 @@ struct MyHealthView: View {
                     PractitionerDetailView(practitioner: selected)
                 }
             }
-
             
+            .navigationDestination(
+                isPresented: viewStore.binding(
+                    get: { $0.selelctedAllergy != nil },
+                    send: .dismissAllergyDetail
+                )
+            ) {
+                if let selected = viewStore.selelctedAllergy {
+                    AllergyDetailView(allergy: selected)
+                }
+            }
+            
+            .background(Color.white)
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    CustomBackButton {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+            }
         }
     }
 }
@@ -97,17 +151,17 @@ struct MyHealthTileView: View {
         VStack(spacing: 12) {
             
             Text(title)
-                .font(.custom("Montserrat-Bold", size: 12))
+                .font(.custom("Montserrat-Bold", size: 9))
                 .foregroundColor(.black)
             
             Image(systemName: icon)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 24, height: 24)
+                .frame(width: 22, height: 22)
                 .foregroundColor(Color(hex: "FF6605"))
 
             Text(countItem)
-                .font(.custom("Montserrat-Bold", size: 10))
+                .font(.custom("Montserrat-Bold", size: 9))
                 .foregroundColor(.black)
             
 
@@ -115,20 +169,22 @@ struct MyHealthTileView: View {
             if isSelected {
                 RoundedRectangle(cornerRadius: 5)
                     .fill(Color(hex: "FF6605"))
-                    .frame(height: 10)
-                    .padding(.horizontal, 12)
+                    .frame(width:58)
+                    .frame(height: 6)
+                    .padding(.horizontal, 8)
             }
             else {
                 RoundedRectangle(cornerRadius: 5)
                     .fill(Color(hex: "6E6B78"))
-                    .frame(height: 10)
-                    .padding(.horizontal, 12)
+                    .frame(width:58)
+                    .frame(height: 6)
+                    .padding(.horizontal, 8)
             }
 
             
             
         }
-        .frame(width: 110, height: isSelected ? 170 : 130)
+        .frame(width: 102, height: isSelected ? 168 : 133)
         .background(Color.white)
         .cornerRadius(16)
         .overlay(
