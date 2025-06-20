@@ -1,19 +1,16 @@
 import ComposableArchitecture
 import Foundation
 
-
-
-
-import ComposableArchitecture
-import Foundation
-
-enum PersonaDestination: Equatable {
-    case patientProfile
-    case myHealth
-}
+var userProfileData : ProfileData?
 
 
 struct DashboardFeature: Reducer {
+    
+    struct PersonaFeatureWrapper: Equatable, Identifiable {
+        var id: UUID = UUID()
+        var state: PersonaFeature.State
+    }
+
     
     enum NavigationDestination: Equatable {
         case login
@@ -28,12 +25,26 @@ struct DashboardFeature: Reducer {
         var selectedMenuTab: SideMenuTab = .dashboard
         var showMenu: Bool = false
         
-        var personaState: PersonaFeature.State? = nil
         var personaSelectedDestination: PersonaDestination? = nil
         
         var navigationDestination: NavigationDestination? = nil
         var dashboardListState: DashboardListFeature.State? = nil
         var showDashboardList: Bool = false
+        var persona: PersonaFeatureWrapper?
+        var personaState: PersonaFeature.State? {
+            get { persona?.state }
+            set {
+                if let newValue = newValue {
+                    if var wrapper = persona {
+                        wrapper.state = newValue
+                        persona = wrapper
+                    }
+                } else {
+                    persona = nil
+                }
+            }
+        }
+
     }
 
     enum Action: Equatable {
@@ -43,25 +54,59 @@ struct DashboardFeature: Reducer {
         case tabMenuItemSelected(SideMenuTab)
         case toggleMenu(Bool)
         
-        case personaAction(PersonaFeature.Action)
-        case setPersonaSelectedDestination(PersonaDestination?)
-        
         case navigationDestinationChanged(DashboardFeature.NavigationDestination?)
         case showDashboardList(Bool)
+        
+        case openPersona
+        case closePersona
+        case persona(PersonaFeature.Action)
+        
+        case callApi
+        case userProfileResponse(TaskResult<PatientProfilResponse>)
+
+
     }
 
     @Dependency(\.fhirClient) var fhirClient
     @Dependency(\.coreDataClient) var coreDataClient
-
+    @Dependency(\.profileClient) var profileClient
+    
     func reduce(into state: inout State, action: Action) -> Effect<Action> {
         switch action {
         
         case .onAppear:
             state.isLoading = true
-            state.personaState = nil
+            state.persona = nil
             state.navigationDestination = nil
             state.personaSelectedDestination = nil
+            return .send(.callApi)
+            
+        case .callApi:
+            guard let userId = UserDefaults.standard.value(forKey: "user_id") as? Int else {
+                state.errorMessage = "User ID missing"
+                state.isLoading = false
+                return .none
+            }
+            let request = ProfileRequest(user_id: userId)
+            return .run { send in
+                do {
+                    let result = try await profileClient.getUserProfileApi(request)
+                    await send(.userProfileResponse(.success(result)))
+                } catch {
+                    await send(.userProfileResponse(.failure(error)))
+                }
+            }
+
+        case let .userProfileResponse(.success(response)):
+            userProfileData = response.data
+            state.isLoading = false
             return .none
+
+        case let .userProfileResponse(.failure(error)):
+            state.isLoading = false
+            state.errorMessage = error.localizedDescription
+            return .none
+
 
         case .logoutTapped:
             return .none
@@ -77,7 +122,7 @@ struct DashboardFeature: Reducer {
         case .tabMenuItemSelected(let item):
             switch item {
             case .persona:
-                state.personaState = PersonaFeature.State()
+                return .send(.openPersona)
             case .logout:
                 SessionManager.shared.clearSession()
                 state.navigationDestination = .login
@@ -86,19 +131,6 @@ struct DashboardFeature: Reducer {
             }
             return .none
 
-        case .personaAction(.navigateBackToHomeTapped):
-            state.personaState = nil
-            state.navigationDestination = nil
-            return .none
-
-        case .personaAction(.itemTapped(let destination)):
-            // Forward selected destination to Dashboard
-            state.personaSelectedDestination = destination
-            return .none
-
-        case .setPersonaSelectedDestination(let destination):
-            state.personaSelectedDestination = destination
-            return .none
 
         case .navigationDestinationChanged(let destination):
             state.navigationDestination = destination
@@ -107,18 +139,49 @@ struct DashboardFeature: Reducer {
         case let .showDashboardList(show):
             state.showDashboardList = show
             return .none
+            
+        case .persona(let action):
+            switch action {
+            case .itemTapped(let destination):
+                state.persona?.state.selectedDestination = destination
+                return .none
 
-        case .personaAction(.patientProfile), .personaAction(.dismissPatientProfile), .personaAction(.dismissNavigation):
+            case .dismissDestination:
+                state.persona?.state.selectedDestination = nil
+                // Navigating back from detail inside PersonaView
+               // state.persona?.selectedDestination = nil
+                return .none
+
+            case .navigateBackToHomeTapped:
+                // Navigating back from PersonaView to Dashboard
+                state.persona = nil
+                return .none
+                
+            case .patientProfile, .dismissPatientProfile:
+                return .none
+
+            }
+
+
+        case .openPersona:
+            state.persona = PersonaFeatureWrapper(state: PersonaFeature.State())
             return .none
+
+        case .closePersona:
+            state.persona = nil
+            return .none
+
         }
     }
 
     var body: some ReducerOf<Self> {
         Reduce(self.reduce)
-            .ifLet(\.personaState, action: /Action.personaAction) {
+            .ifLet(\.personaState, action: /Action.persona) {
                 PersonaFeature()
             }
     }
+
+
 }
 
 

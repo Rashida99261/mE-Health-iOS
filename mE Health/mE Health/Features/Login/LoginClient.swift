@@ -33,6 +33,7 @@ struct LoginRequest: Encodable {
 
 protocol LoginClient {
     func login(_ request: LoginRequest) async throws -> LoginResponse
+   
 }
 
 struct ApiLoginClient: LoginClient {
@@ -49,10 +50,45 @@ struct ApiLoginClient: LoginClient {
 
         return try JSONDecoder().decode(LoginResponse.self, from: data)
     }
+
+
+    
+//    func getProfile(_ request: ProfileRequest) async throws -> PatientProfileModel {
+//        guard let token = UserDefaults.standard.string(forKey: "token") else {
+//            throw URLError(.userAuthenticationRequired)
+//        }
+//
+//        var urlRequest = URLRequest(url: URL(string: Constants.API.getProfileApi)!)
+//        urlRequest.httpMethod = "POST"
+//        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//        urlRequest.setValue("Token \(token)", forHTTPHeaderField: "Authorization")
+//        urlRequest.httpBody = try JSONEncoder().encode(request)
+//
+//        let (data, response) = try await URLSession.shared.data(for: urlRequest)
+//
+//        if let jsonString = String(data: data, encoding: .utf8) {
+//            print("Response JSON: \(jsonString)")
+//        }
+//
+//        guard let httpResponse = response as? HTTPURLResponse else {
+//            throw URLError(.badServerResponse)
+//        }
+//
+//        print("Status Code: \(httpResponse.statusCode)")
+//
+//        guard 200..<300 ~= httpResponse.statusCode else {
+//            throw URLError(.badServerResponse)
+//        }
+//
+//        return try JSONDecoder().decode(PatientProfileModel.self, from: data)
+//    }
+
+    
 }
 
 struct LoginClientDependency {
     var login: (_ request: LoginRequest) async throws -> LoginResponse
+   
 }
 
 enum LoginClientKey: DependencyKey {
@@ -74,4 +110,6 @@ extension DependencyValues {
 struct AppEnvironment {
     var loginClient: LoginClient
     var practicesClient:PracticesClient
+    var profileClient:ProfileClient
+    
 }

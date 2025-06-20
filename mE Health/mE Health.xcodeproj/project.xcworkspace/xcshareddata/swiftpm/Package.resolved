@@ -1,5 +1,5 @@
 {
-  "originHash" : "dabe57bc3c854c50cce4dc04d915d84797a9990212d7a702a6c89a799c068623",
+  "originHash" : "0a1640698b2b25b1bfbb76cbf47f54d7d800b5d9cfe473ac4e2da334e2cc8b0a",
   "pins" : [
     {
       "identity" : "appauth-ios",
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-case-paths",
       "state" : {
-        "revision" : "41b89b8b68d8c56c622dbb7132258f1a3e638b25",
-        "version" : "1.7.0"
+        "revision" : "9810c8d6c2914de251e072312f01d3bf80071852",
+        "version" : "1.7.1"
       }
     },
     {

@@ -9,6 +9,7 @@ struct DashboardView: View {
     @State private var isAIAssistantActive = false
     @State private var isClinicListActive = false
     @State private var isMenuOpen: Bool = false
+    @State private var showDMOverlay = false
     
     private let loginStore = Store(initialState: LoginFeature.State()) {
         LoginFeature()
@@ -19,6 +20,7 @@ struct DashboardView: View {
             NavigationStack {
                 GeometryReader { geometry in
                     ZStack(alignment: .leading) {
+                        
                         
                         // MARK: Side Menu
                         SideMenuView(
@@ -46,6 +48,12 @@ struct DashboardView: View {
                         
                         // MARK: Main Content (Sliding)
                         VStack(spacing: 0) {
+                            
+                            if viewStore.isLoading {
+                                ProgressView("")
+                            }
+
+                            
                             Text("How can I help you today?")
                                 .font(.custom("Montserrat-Bold", size: 24))
                                 .padding(.top, 64)
@@ -57,7 +65,9 @@ struct DashboardView: View {
                                     showOverlay = true
                                 }
                                 
-                                CardButton(title: "Data Marketplace", iconName: "shopping_cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {}
+                                CardButton(title: "Data Marketplace", iconName: "shopping_cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {
+                                    showDMOverlay = true
+                                }
                                 
                                 CardButton(title: "Clinic List", iconName: "shopping_cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {
                                     isClinicListActive = true
@@ -96,14 +106,25 @@ struct DashboardView: View {
                                 Color.black.opacity(0.4)
                                     .ignoresSafeArea()
 
-                                VStack(spacing: 24) {
+                                VStack(alignment: .leading,spacing: 16) {
+                                    
+                                    Text("mE AI Assistant")
+                                        .foregroundColor(Color(hex: Constants.API.PrimaryColorHex))
+                                        .font(.custom("Montserrat-Bold", size: 14))
+                                        .padding(.horizontal, 32)
+                                        .padding(.top,12)
+                                    
                                     Text("""
-                                    The AI Assistant in mEinstein is your personal, intelligent helper that lives right in the app. It’s designed to understand your preferences, habits, and goals—then use that knowledge to help you make decisions, organize your life, and find insights that matter to you. Think of it as a digital sidekick, always ready to offer suggestions, reminders, and personalized advice to help you get the most out of your data and daily routines.
+                                    The AI Assistant in mEinstein is your personal, intelligent helper that lives right in the app. It’s designed to understand your preferences, habits, and goals—then use that knowledge to help you make decisions, organize your life, and find insights that matter to you. 
+
+                                    Think of it as a digital sidekick, always ready to offer suggestions, reminders, and personalized advice to help you get the most out of your data and daily routines.
                                     """)
-                                    .font(.custom("Montserrat-SemiBold", size: 14))
-                                        .multilineTextAlignment(.center)
+                                    .font(.custom("Montserrat-Medium", size: 14))
+                                    .multilineTextAlignment(.leading)
                                         .foregroundColor(.black)
-                                        .padding()
+                                        .padding(.horizontal, 32)
+                                    
+                                    Divider()
                                     
 
                                     Button(action: {
@@ -122,11 +143,11 @@ struct DashboardView: View {
                                     }
                                 }
                                 .padding(.vertical, 32)
-                                .padding(.horizontal, 16)
                                 .background(Color.white)
                                 .cornerRadius(20)
                                 .shadow(radius: 10)
                                 .padding(.horizontal, 32)
+                                
                             }
                             .zIndex(99)
                             .transition(.opacity)
@@ -138,6 +159,60 @@ struct DashboardView: View {
                         ) {
                             EmptyView()
                         }
+
+                        
+                        if showDMOverlay {
+                            ZStack {
+                                Color.black.opacity(0.4)
+                                    .ignoresSafeArea()
+
+                                VStack(alignment: .leading,spacing: 16) {
+                                    
+                                    Text("Data Marketplace")
+                                        .foregroundColor(Color(hex: Constants.API.PrimaryColorHex))
+                                        .font(.custom("Montserrat-Bold", size: 14))
+                                        .padding(.horizontal, 32)
+                                        .padding(.top,12)
+                                    
+                                    Text("""
+                                    The Data Marketplace is where users like you can turn the data you generate every day—like your browsing history, shopping habits, travel plans, and more—into a valuable asset. 
+
+                                    You get to decide what data to share, who can buy it, and how it’s used. It’s a secure space that puts you in control, letting you monetize your data directly while ensuring transparency and trust with buyers.
+                                    """)
+                                    .font(.custom("Montserrat-Medium", size: 14))
+                                    .multilineTextAlignment(.leading)
+                                        .foregroundColor(.black)
+                                        .padding(.horizontal, 32)
+                                    
+                                    Divider()
+                                    
+
+                                    Button(action: {
+                                        withAnimation {
+                                            
+                                            showDMOverlay = false
+                                        }
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                            }
+                                    }) {
+                                        Text("OK")
+                                            .font(.custom("Montserrat-Bold", size: 20))
+                                            .foregroundColor(.blue)
+                                            .frame(maxWidth: .infinity)
+                                    }
+                                }
+                                .padding(.vertical, 32)
+                                .background(Color.white)
+                                .cornerRadius(20)
+                                .shadow(radius: 10)
+                                .padding(.horizontal, 32)
+                                
+                            }
+                            .zIndex(99)
+                            .transition(.opacity)
+                            .animation(.easeInOut, value: showDMOverlay)
+                        }
+                        
 
 
                         
@@ -188,51 +263,6 @@ struct DashboardView: View {
                     )
                 )
             }
-
-            
-            .navigationDestination(
-                isPresented: viewStore.binding(
-                    get: { $0.personaState != nil },
-                    send: { isPresented in
-                        isPresented ? .onAppear : .personaAction(.navigateBackToHomeTapped)
-                    }
-                )
-            ) {
-                IfLetStore(
-                    store.scope(state: \.personaState, action: DashboardFeature.Action.personaAction)
-                ) { personaStore in
-                    PersonaView(
-                        store: personaStore,
-                        selectedTab: viewStore.binding(get: \.selectedTab, send: DashboardFeature.Action.tabSelected),
-                        onMenuTapped: {
-                            isMenuOpen.toggle()
-                            viewStore.send(.toggleMenu(isMenuOpen))
-                        }
-                    )
-                }
-            }
-            
-            .navigationDestination(
-                isPresented: viewStore.binding(
-                    get: { $0.personaSelectedDestination != nil },
-                    send: { _ in .setPersonaSelectedDestination(nil) }
-                )
-            ) {
-                switch viewStore.personaSelectedDestination {
-                case .myHealth:
-                    MyHealthView(store: Store(initialState: MyHealthFeature.State(), reducer: {
-                        MyHealthFeature()
-                    }))
-                case .patientProfile:
-                    PatientProfileView(store: Store(initialState: PatientProfileFeature.State(), reducer: {
-                        PatientProfileFeature()
-                    }))
-                case .none:
-                    EmptyView()
-                }
-            }
-
-
             .navigationDestination(
                 item: viewStore.binding(
                     get: \.navigationDestination,
@@ -244,6 +274,26 @@ struct DashboardView: View {
                     LoginView(store: loginStore)
                 }
             }
+
+            NavigationLink(
+                destination:
+                    IfLetStore(
+                        store.scope(
+                            state: \.personaState,
+                            action: DashboardFeature.Action.persona
+                        )
+                    ) { personaStore in
+                        PersonaView(store: personaStore)
+                    },
+                isActive: viewStore.binding(
+                    get: { $0.persona != nil },
+                    send: { $0 ? .tabMenuItemSelected(.persona) : .closePersona }
+                )
+            ) {
+                EmptyView()
+            }
+            .hidden()
+
 
 
         }
@@ -286,6 +336,9 @@ struct CardButton: View {
                     Text(title)
                         .foregroundColor(.white)
                         .font(.custom("Montserrat-Bold", size: 18))
+                    Text("Read more")
+                        .foregroundColor(Color(hex: Constants.API.PrimaryColorHex))
+                        .font(.custom("Montserrat-SemiBold", size: 12))
                 }
                 
                 Spacer()
@@ -302,3 +355,4 @@ struct CardButton: View {
         }
     }
 }
+

@@ -68,6 +68,11 @@ struct MyHealthView: View {
                     .padding(.horizontal)
                 }
                 
+                HeaderView(
+                    store: store.scope(state: \.header, action: MyHealthFeature.Action.header)
+                )
+
+                
                 Divider()
                 
                 
@@ -136,10 +141,50 @@ struct MyHealthView: View {
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                         Button(action: {
+                             // Handle settings
+                         }) {
+                             Image(systemName: "gearshape.fill")
+                                 .foregroundColor(Color(hex: "FF6605"))
+                         }
+                     }
+            }
+            .sheet(
+                isPresented: viewStore.binding(
+                    get: \.header.isFilterPresented,
+                    send: MyHealthFeature.Action.header(.dismissSheet)
+                )
+            ) {
+                FilterPopupView(
+                    store: store.scope(state: \.header, action: MyHealthFeature.Action.header)
+                )
+                .presentationDragIndicator(.visible)
+            }
+
+
+
+        }
+    }
+    
+    private var filterOverlay: some View {
+        WithViewStore(store, observe: { $0 }) { viewStore in
+            Group {
+                if viewStore.header.isFilterPresented {
+                    FilterPopupView(
+                        store: store.scope(state: \.header, action: MyHealthFeature.Action.header)
+                    )
+                } else {
+                    EmptyView()
+                }
             }
         }
     }
+
 }
+
+
 
 struct MyHealthTileView: View {
     let icon: String
@@ -154,7 +199,7 @@ struct MyHealthTileView: View {
                 .font(.custom("Montserrat-Bold", size: 9))
                 .foregroundColor(.black)
             
-            Image(systemName: icon)
+            Image(icon)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 22, height: 22)
@@ -207,3 +252,8 @@ struct MyHealthTileView: View {
         )
     )
 }
+
+struct SearchView: View { var body: some View { Text("Search View") } }
+struct DatePickerView: View { var body: some View { Text("Date Picker View") } }
+struct UploadView: View { var body: some View { Text("Upload View") } }
+struct FilterView: View { var body: some View { Text("Filter View") } }

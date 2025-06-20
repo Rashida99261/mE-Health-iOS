@@ -22,33 +22,56 @@ struct MyHealthFeature: Reducer {
     struct State: Equatable {
         
         var tiles: [Tile] = [
-            Tile(title: "Practitioner", icon: "bus.fill", countItem: "10"),
-            Tile(title: "Appointment", icon: "doc.text.fill", countItem: "10"),
-            Tile(title: "Allergy", icon: "pills.fill", countItem: "10"),
-            Tile(title: "Lab", icon: "doc.plaintext", countItem: "10"),
-            Tile(title: "Immunizations", icon: "syringe.fill", countItem: "10")
+            Tile(title: "Practitioner", icon: "practioner", countItem: "10"),
+            Tile(title: "Appointment", icon: "appoinment", countItem: "10"),
+            Tile(title: "Condition", icon: "conditions", countItem: "10"),
+            Tile(title: "Lab", icon: "Labs", countItem: "10"),
+            Tile(title: "Vital", icon: "vitals", countItem: "10"),
+            Tile(title: "Medication", icon: "Savings", countItem: "10"),
+            Tile(title: "Visits", icon: "Visits", countItem: "10"),
+            Tile(title: "Procedure", icon: "Procedures", countItem: "10"),
+            Tile(title: "Allergy", icon: "Allergy", countItem: "10"),
+            Tile(title: "Immunizations", icon: "Immunization", countItem: "10"),
+            Tile(title: "Billing", icon: "Billing", countItem: "10"),
+            Tile(title: "Upload Documents ", icon: "Upload", countItem: "10")
         ]
         var selectedIndex: Int = 0
         var selectedPractitioner: PractitionerData? = nil
         var selelctedAllergy: AllergyDummyData? = nil
+        var header: HeaderFeature.State = .init()
+        
     }
 
     enum Action: Equatable {
+        case backButtonTapped
         case selectTile(Int)
         case practitionerTapped(PractitionerData)
         case dismissPractitionerDetail
         case allergyTapped(AllergyDummyData)
         case dismissAllergyDetail
+        case header(HeaderFeature.Action)
 
 
         
     }
 
     var body: some ReducerOf<Self> {
+        
+        Scope(state: \.header, action: /Action.header) {
+               HeaderFeature()
+           }
+
         Reduce { state, action in
             switch action {
+                
+            case .backButtonTapped:
+                return .none
+                
             case .selectTile(let index):
                 state.selectedIndex = index
+                let selectedTitle = state.tiles[index].title
+                state.header.title = "List of \(selectedTitle)"
+
                 return .none
                 
             case .practitionerTapped(let practitioner):
@@ -66,6 +89,10 @@ struct MyHealthFeature: Reducer {
             case .dismissAllergyDetail:
                 state.selelctedAllergy = nil
                 return .none
+                
+            case .header:
+                return .none
+
 
 
             }

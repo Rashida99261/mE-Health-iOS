@@ -36,7 +36,7 @@ struct RoundedCorners: View {
 
     var body: some View {
         GeometryReader { geo in
-            Path { path in
+            SwiftUI.Path { path in
                 let w = geo.size.width
                 let h = geo.size.height
 

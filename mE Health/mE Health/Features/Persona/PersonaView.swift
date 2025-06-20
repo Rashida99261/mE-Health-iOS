@@ -6,13 +6,11 @@
 import SwiftUI
 import ComposableArchitecture
 
+import SwiftUI
+import ComposableArchitecture
+
 struct PersonaView: View {
     let store: StoreOf<PersonaFeature>
-    @State private var isMenuOpen: Bool = false
-    let selectedTab: Binding<DashboardTab>
-    let onMenuTapped: () -> Void
-    @Environment(\.presentationMode) var presentationMode
-    @State private var selectedItem: PersonaItem?
 
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
@@ -36,44 +34,47 @@ struct PersonaView: View {
                     .padding(.top)
                 }
             }
+            .onAppear {
+                //viewStore.send(.callApi)
+            }
+
             .background(Color.white)
-            .navigationBarBackButtonHidden(true) // allow system back
+            .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     CustomBackButton {
-                        viewStore.send(.dismissNavigation)
+                        viewStore.send(.navigateBackToHomeTapped)
                     }
                 }
             }
             .navigationDestination(
-                isPresented: viewStore.binding(
-                    get: { $0.selectedDestination != nil },
-                    send: .dismissNavigation
+                item: viewStore.binding(
+                    get: \.selectedDestination,
+                    send: { _ in .dismissDestination }
                 )
-            ) {
-                switch viewStore.selectedDestination {
+            ) { destination in
+                switch destination {
                 case .patientProfile:
                     PatientProfileView(
-                        store: Store(initialState: PatientProfileFeature.State(), reducer: {
-                            PatientProfileFeature()
-                        })
+                        store: Store(
+                            initialState: PatientProfileFeature.State(),
+                            reducer: { PatientProfileFeature() }
+                        )
                     )
                 case .myHealth:
                     MyHealthView(
                         store: Store(
                             initialState: MyHealthFeature.State(),
-                            reducer: {
-                                MyHealthFeature()
-                            }
+                            reducer: { MyHealthFeature() }
                         )
                     )
-                case .none:
-                    EmptyView()
                 }
             }
         }
     }
 }
+
+
 
 
 
@@ -87,9 +88,7 @@ struct PersonaView: View {
             reducer: {
                 PersonaFeature()
             }
-        ),
-        selectedTab: .constant(.menu), // Provide a constant binding
-        onMenuTapped: {} // Provide an empty closure for preview
+        )
     )
 }
 

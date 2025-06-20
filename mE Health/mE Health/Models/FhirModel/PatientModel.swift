@@ -32,6 +32,9 @@ struct PatientModel : Codable, Equatable {
     let maritalStatus : MaritalStatus?
     let communication : [Communication]?
     let careProvider : [CareProvider]?
+    let generalPractitioner : [GeneralPractitioner]?
+    let managingOrganization : ManagingOrganization?
+
 
     enum CodingKeys: String, CodingKey {
         case id = "id"
@@ -44,6 +47,9 @@ struct PatientModel : Codable, Equatable {
         case maritalStatus = "maritalStatus"
         case communication = "communication"
         case careProvider = "careProvider"
+        case generalPractitioner = "generalPractitioner"
+        case managingOrganization = "managingOrganization"
+
     }
 
     init(from decoder: Decoder) throws {
@@ -58,6 +64,9 @@ struct PatientModel : Codable, Equatable {
         maritalStatus = try values.decodeIfPresent(MaritalStatus.self, forKey: .maritalStatus)
         communication = try values.decodeIfPresent([Communication].self, forKey: .communication)
         careProvider = try values.decodeIfPresent([CareProvider].self, forKey: .careProvider)
+        generalPractitioner = try values.decodeIfPresent([GeneralPractitioner].self, forKey: .generalPractitioner)
+        managingOrganization = try values.decodeIfPresent(ManagingOrganization.self, forKey: .managingOrganization)
+
     }
 
 }
@@ -103,6 +112,25 @@ struct GeneralPractitioner : Codable,Equatable {
     }
 
 }
+
+struct ManagingOrganization : Codable, Equatable {
+    let reference : String?
+    let display : String?
+
+    enum CodingKeys: String, CodingKey {
+
+        case reference = "reference"
+        case display = "display"
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        reference = try values.decodeIfPresent(String.self, forKey: .reference)
+        display = try values.decodeIfPresent(String.self, forKey: .display)
+    }
+
+}
+
 
 struct Practitioner: Codable,Equatable {
     let resourceType : String?

@@ -8,74 +8,103 @@
 import SwiftUI
 import ComposableArchitecture
 
+
+
 struct PatientProfileView: View {
     let store: StoreOf<PatientProfileFeature>
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
-        WithViewStore(store, observe: { $0 }) { viewStore in
-            VStack(alignment: .leading, spacing: 0) {
-                Text("My Profile")
-                    .font(.custom("Montserrat-Bold", size: 37))
-                    .padding()
-
-                // Header Card
-                VStack(alignment: .leading,spacing: 24) {
-                    HStack(spacing: 8) {
-                        VStack(alignment: .leading,spacing: 12) {
-                            Text(viewStore.name)
-                                .font(.custom("Montserrat-Bold", size: 24))
-                                .foregroundColor(Color(hex: "FF6605"))
-                            Text(viewStore.addressLine)
-                                .font(.custom("Montserrat-Regular", size: 14))
-                                .foregroundColor(Color(hex: "333333"))
-                            ProgressView(value: viewStore.completion)
-                                .accentColor(.green)
-                                .padding([.top,.bottom],4)
-                                
-                        }
-                        .padding(.leading,8)
-                        Spacer()
-                        Image("profile_placeholder")
-                            .resizable()
-                            .frame(width: 74, height: 74)
-                            .padding(.trailing, 8)
-                    }
-                }
-                .padding()
-                .background(Color.white)
-                .cornerRadius(12)
-                .shadow(radius: 2)
-                .padding(.horizontal)
-                .frame(height:150)
-                
-                Spacer()
-                
-                VStack(alignment: .leading,spacing: 8) {
+        WithViewStore(store, observe: \.self) { viewStore in
+            
+                VStack(alignment: .leading, spacing: 0) {
                     
-                    Text("Basic Details")
-                        .font(.custom("Montserrat-Medium", size: 18))
-                        .foregroundColor(.black)
-                        .padding(.leading,16)
-                        .padding(.top,16)
+                    Text("My Profile")
+                        .font(.custom("Montserrat-Bold", size: 37))
+                        .padding()
+
+                    let firstname = userProfileData?.first_name ?? ""
+                    let last_name = userProfileData?.last_name ?? ""
                         
-                    ScrollView {
-                        VStack(spacing: 24) {
-                            ProfileCardView(icon: "Phone", title: "Phone", value: viewStore.phone)
-                            ProfileCardView(icon: "mail", title: "Email", value: viewStore.email)
-                            ProfileCardView(icon: "address", title: "Address (\(viewStore.addresses.count))", value: viewStore.addresses.first ?? "")
-                            ProfileCardView(icon: "anniversary", title: "Anniversary", value: viewStore.anniversary ?? "")
+                    let address = userProfileData?.address ?? ""
+                    let countryCode = userProfileData?.countryCode ?? ""
+                    let phoneNumber = userProfileData?.phoneNumber ?? ""
+                    let number = "\(countryCode) \(phoneNumber)"
 
-                            MarriedCardView(icon: "married", title: "Married", isOn: viewStore.binding(
-                                get: \.isMarried,
-                                send: PatientProfileFeature.Action.toggleMarried
-                            ))
+                    let email = userProfileData?.email ?? ""
+                        let gender = userProfileData?.gender ?? ""
+                    let dateOfBirth = userProfileData?.dateOfBirth ?? ""
+                        
+                        
 
-                            ProfileCardView(icon: "gender", title: "Gender", value: viewStore.gender)
-                            ProfileCardView(icon: "dob", title: "Date Of Birth", value: viewStore.dob)
+                        // Header Card
+                        VStack(alignment: .leading,spacing: 24) {
+                            HStack(spacing: 8) {
+                                VStack(alignment: .leading,spacing: 12) {
+                                    Text("\(firstname) \(last_name)")
+                                        .font(.custom("Montserrat-Bold", size: 24))
+                                        .foregroundColor(Color(hex: "FF6605"))
+                                    Text(address)
+                                        .font(.custom("Montserrat-Regular", size: 14))
+                                        .foregroundColor(Color(hex: "333333"))
+                                    ProgressView(value: 0.01)
+                                        .accentColor(.green)
+                                        .padding([.top,.bottom],4)
+        
+                                }
+                                .padding(.leading,8)
+                                Spacer()
+                                Image("profile_placeholder")
+                                    .resizable()
+                                    .frame(width: 74, height: 74)
+                                    .padding(.trailing, 8)
+                            }
                         }
                         .padding()
-                    }
+                        .background(Color.white)
+                        .cornerRadius(12)
+                        .shadow(radius: 2)
+                        .padding(.horizontal)
+                        .frame(height:150)
+        
+                        Spacer()
+        
+                        VStack(alignment: .leading,spacing: 8) {
+        
+                            Text("Basic Details")
+                                .font(.custom("Montserrat-Medium", size: 18))
+                                .foregroundColor(.black)
+                                .padding(.leading,16)
+                                .padding(.top,16)
+        
+                            ScrollView {
+                                VStack(spacing: 24) {
+                                    ProfileCardView(icon: "Phone", title: "Phone", value: number)
+                                    ProfileCardView(icon: "mail", title: "Email", value: email)
+                                    ProfileCardView(icon: "address", title: "Address (1)", value: address)
+                                    ProfileCardView(icon: "anniversary", title: "Anniversary", value: "")
+        
+                                    MarriedCardView(icon: "married", title: "Married", isOn: viewStore.binding(
+                                        get: \.isMarried,
+                                        send: PatientProfileFeature.Action.toggleMarried
+                                    ))
+        
+                                    ProfileCardView(icon: "gender", title: "Gender", value: gender)
+                                    ProfileCardView(icon: "dob", title: "Date Of Birth", value: dateOfBirth)
+                                }
+                                .padding()
+                            }
+                        }
+                    
+
+
+                }
+                .onAppear {
+                    print("👀 PatientProfileView appeared")
+                   
+                }
+                .onDisappear {
+                    print("👋 PatientProfileView disappeared")
                 }
 
             }
@@ -89,7 +118,8 @@ struct PatientProfileView: View {
                 }
             }
         }
-    }
+        
+    
 }
 
 

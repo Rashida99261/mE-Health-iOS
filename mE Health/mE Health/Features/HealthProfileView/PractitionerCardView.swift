@@ -76,13 +76,6 @@ struct PractitionerSectionView: View {
 
     var body: some View {
         VStack(spacing: 24) {
-            // Horizontal date cards
-            HStack(spacing: 16) {
-                DateCardView(title: "Start Date", date: startDate)
-                DateCardView(title: "End Date", date: endDate)
-            }
-            
-
             // Practitioner list
             ForEach(practitioners) { practitioner in
                 PractitionerCardView(practitioner: practitioner) {

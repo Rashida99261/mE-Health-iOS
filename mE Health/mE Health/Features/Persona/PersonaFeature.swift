@@ -8,24 +8,34 @@
 import ComposableArchitecture
 import SwiftUI
 
+enum PersonaDestination: Hashable, Identifiable {
+    case patientProfile
+    case myHealth
+
+    var id: String {
+        switch self {
+        case .patientProfile: return "patientProfile"
+        case .myHealth: return "myHealth"
+        }
+    }
+}
+
 
 struct PersonaFeature: Reducer {
     struct State: Equatable {
         var selectedItem: PersonaItem? = nil
         var items: [PersonaItem] = PersonaItem.sampleItems
         var navigateBackToHome: Bool = false
+        var selectedDestination: PersonaDestination? = nil
         var patientProfile: PatientProfileFeature.State? = nil
-        var selectedDestination: PersonaDestination?
     }
 
     enum Action: Equatable {
         case itemTapped(PersonaDestination)
-        case dismissNavigation
-
+        case dismissDestination
         case navigateBackToHomeTapped
         case patientProfile(PatientProfileFeature.Action)
         case dismissPatientProfile
-        
     }
 
     func reduce(into state: inout State, action: Action) -> Effect<Action> {
@@ -34,24 +44,30 @@ struct PersonaFeature: Reducer {
             state.selectedDestination = destination
             return .none
 
+        case .dismissDestination:
+            state.selectedDestination = nil
+            return .none
+
         case .navigateBackToHomeTapped:
             return .none
-            
+
         case .patientProfile:
             return .none
-            
+
         case .dismissPatientProfile:
             state.patientProfile = nil
             return .none
-
-        case .dismissNavigation:
-            state.selectedDestination = nil
-            return .send(.navigateBackToHomeTapped)
-
         }
     }
-    
+
+    var body: some ReducerOf<Self> {
+        Reduce(self.reduce)
+            .ifLet(\.patientProfile, action: /Action.patientProfile) {
+                PatientProfileFeature()
+            }
+    }
 }
+
 
 struct PersonaItem: Equatable, Identifiable {
     let id = UUID()
@@ -60,7 +76,7 @@ struct PersonaItem: Equatable, Identifiable {
     let destination: PersonaDestination
 
     static let sampleItems: [PersonaItem] = [
-        .init(iconName: "PersonalCare", title: "Persona", destination: .patientProfile),
+        .init(iconName: "PersonalCare", title: "My Profile", destination: .patientProfile),
 //        .init(iconName: "familycare", title: "Family"),
 //        .init(iconName: "SocialAccount", title: "My Network"),
 //        .init(iconName: "Finance", title: "Financial Profile"),

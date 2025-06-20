@@ -122,8 +122,10 @@ struct LoginFeature: Reducer {
             let userData = response.data
             state.userData = userData
             let token = userData?.token ?? ""
+            let user_id = userData?.user_id ?? 0
             state.isLoading = false
             UserDefaults.standard.set(token, forKey: "token")
+            UserDefaults.standard.set(user_id, forKey: "user_id")
             SessionManager.shared.saveLoginSession()
             state.isLoggedIn = true
             state.dashboardState = DashboardFeature.State()
