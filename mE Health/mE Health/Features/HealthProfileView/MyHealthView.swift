@@ -11,6 +11,7 @@ import ComposableArchitecture
 struct MyHealthView: View {
     let store: StoreOf<MyHealthFeature>
     @Environment(\.presentationMode) var presentationMode
+    @State private var showAppoitmentOverlay = false
     
     var samplePractioner : [PractitionerData] = [
         PractitionerData(name: "Dr. Ashley David", specialty: "Gynecologist", phone: "(212) 555-1234", email: "info@totalcaremaintenance.com"),
@@ -39,7 +40,26 @@ struct MyHealthView: View {
         ImmuneDummyData(name: "COVID-19 Vaccine", recordDate: "Occurrence Date: N/A", location: "Location: N/A", isCompleted: true)
     ]
     
+    let billingItems: [BillingItem] = [
+        BillingItem(title: "Clinic Name", date: "19/05/2025", amount: "$8.40", status: .planned),
+        BillingItem(title: "Hospital Bills", date: "19/05/2025", amount: "$15.99", status: .planned)
+    ]
     
+    let visitData : [VisitDummyData] = [
+        VisitDummyData(name: "Annual Physical", recordDate: "Date: 05/06/2025", status: .planned),
+        VisitDummyData(name: "Dental Checkup", recordDate: "Date: 05/06/2025", status: .cancel),
+        VisitDummyData(name: "Follow-up Visit", recordDate: "Date: 05/06/2025", status: .schedule),
+        VisitDummyData(name: "Laboratory Visit", recordDate: "Date: 05/06/2025", status: .finish)
+    ]
+    
+    let procedureData : [ProcedureDummyData] = [
+        ProcedureDummyData(name: "Appendectomy", recordDate: "03/15/2024", status: .completed),
+        ProcedureDummyData(name: "Cardiac Catheterization", recordDate: "03/15/2024", status: .progress),
+        ProcedureDummyData(name: "Colonoscopy", recordDate: "03/15/2024", status: .completed),
+        ProcedureDummyData(name: "Hip Replacement", recordDate: "03/15/2024", status: .completed),
+        ProcedureDummyData(name: "Cardiac Catheterization", recordDate: "03/15/2024", status: .progress)
+    ]
+
 
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
@@ -91,10 +111,10 @@ struct MyHealthView: View {
                 case "Appointment":
                     AppoitmentSectionView(
                         practitioners: sampleAppoitmnt,
-                        startDate: "06-01-2025", 
-                        endDate: "06-01-2025",
-                        onCardTap:{ practitioner in }
-                        )
+                        onCardTap:{ practitioner in
+                            showAppoitmentOverlay = true
+                            
+                        })
                 case "Allergy":
                     AllergySectionView(allergies: sampleAleData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { allergy in
                         viewStore.send(.allergyTapped(allergy))
@@ -105,6 +125,19 @@ struct MyHealthView: View {
                 case "Immunizations":
                     ImmuneSectionView(immune: sampleImmubeData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { lab in
                     })
+                    
+                case "Procedure":
+                    ProcedureSectionView(procedure: procedureData, onCardTap: { lab in
+                    })
+                    
+                case "Visits":
+                    VisitsSectionView(visit: visitData, onCardTap: { visit in
+                    })
+                    
+                case "Billing":
+                    BillingSectionView(items: billingItems, onCardTap:{ lab in
+                    })
+                    
                 default:
                     EmptyView()
                 }
@@ -162,6 +195,68 @@ struct MyHealthView: View {
                 )
                 .presentationDragIndicator(.visible)
             }
+            .overlay(
+                Group {
+                    if showAppoitmentOverlay {
+                        Color.black.opacity(0.4)
+                            .edgesIgnoringSafeArea(.all)
+                            .onTapGesture {
+                                showAppoitmentOverlay = false
+                            }
+                            .overlay(
+                                ZStack {
+                                    // Dimmed Background
+                                    Color.black.opacity(0.4)
+                                        .ignoresSafeArea()
+                                        .transition(.opacity)
+
+                                    // Centered Modal with padding
+                                    VStack(spacing: 16) {
+                                        Text("""
+                                        Based on the data provided, here is some advice on savings ratio for your finance profile:
+
+                                        1. Understand Your Financial Goals:
+                                        Start by identifying your short-term and long-term financial goals. Whether it's saving for a vacation, emergency fund, retirement, or any other goal, having clarity on what you are saving for will help determine your savings ratio.
+
+                                        2. *Assess Your Current Financial Situation:* Review your income, expenses, assets, liabilities, and spending habits. Understanding your cash flow will give you a clear...
+                                        """)
+                                        .font(.custom("Montserrat-Semibold", size: 14))
+                                        .foregroundColor(.black)
+                                        .multilineTextAlignment(.center)
+                                        .padding(.horizontal)
+                                        .padding(.top, 24)
+
+                                        Divider()
+
+                                        Button(action: {
+                                            withAnimation {
+                                                showAppoitmentOverlay = false
+                                            }
+                                        }) {
+                                            Text("OK")
+                                                .font(.custom("Montserrat-Bold", size: 20))
+                                                .foregroundColor(.blue)
+                                                .frame(maxWidth: .infinity)
+                                                .padding(.bottom, 12)
+                                        }
+                                    }
+                                    .padding(.vertical, 16)
+                                    .background(Color.white)
+                                    .cornerRadius(20)
+                                    .shadow(radius: 10)
+                                    .padding(.horizontal, 24) // ✅ This is now applied directly to the card
+                                    .transition(.scale)
+                                }
+                                .zIndex(10)
+//                                    .frame(maxWidth: .infinity)
+//                                    .padding()
+                            )
+                            .transition(.opacity)
+                            .animation(.easeInOut(duration: 0.3), value: showAppoitmentOverlay)
+                    }
+                }
+            )
+
 
 
 

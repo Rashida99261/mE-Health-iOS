@@ -2,104 +2,122 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct AdviceItem: Identifiable {
-    let id = UUID()
-    let iconName: String
-    let title: String
-    let count: String
-}
 
-struct AdviceCard: View {
-    
-    let item: AdviceItem
-
-    var body: some View {
-        VStack {
-            Spacer()
-            
-            Image(item.iconName)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 28, height: 28)
-
-
-            Text(item.title)
-                .foregroundColor(.black)
-                .font(.custom("Montserrat-Bold", size: 10))
-                .padding(.top, 8)
-
-            Text(item.count)
-                .foregroundColor(Color(hex: "FB531C"))
-                .font(.custom("Montserrat-Bold", size: 13))
-                .padding(.top, 8)
-
-            Spacer()
-        }
-        .frame(height: 150)
-        .frame(maxWidth: .infinity)
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(radius: 5)
-        .padding(4)
-    }
-}
 
 // MARK: - Clinic List View
 struct AdviceView: View {
     
     @Environment(\.presentationMode) var presentationMode
-    // 2-column grid layout
-    let columns = [GridItem(.flexible()), GridItem(.flexible())]
+    @State private var showOverlay = false
+    
+    @State private var showFilterScreen = false
+    @State private var selectedFilters: Set<FilterOption> = [.all]
+
+    
     let adviceItems = [
-        AdviceItem(iconName: "Finance", title: "Finance", count: "1"),
-        AdviceItem(iconName: "PersonalCare", title: "Personal Care & Activity", count: "2"),
-        AdviceItem(iconName: "familycare", title: "Family Care", count: "3"),
-        AdviceItem(iconName: "carProfile", title: "Auto maintenance", count: "40"),
-        AdviceItem(iconName: "home_p", title: "Home maintenance", count: "99"),
-        AdviceItem(iconName: "Vacations", title: "Vacations", count: "6"),
-        AdviceItem(iconName: "Health", title: "Health", count: "7")
+        AdviceData(name: "Health: Daily Water Intake", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.", date: "03/24/2025"),
+        AdviceData(name: "Health: Sleep Quality", description: "We analyzed your sleep patterns and have tips to improve your sleep quality for better energy, focus, and overall well-being.", date: "03/24/2025"),
+        AdviceData(name: "Health: Heart Health Score", description: "Your recent heart rate data shows room for improvement. Get recommendations to maintain a strong and healthy heart.", date: "03/24/2025"),
+        AdviceData(name: "Health: Nutrient Balance", description: "Your meals seem to lack essential nutrients. Here's a breakdown and suggestions to improve your diet and energy levels.", date: "03/24/2025")
     ]
 
     
-    
-    
-
     var body: some View {
-            NavigationStack {
+        NavigationStack {
+            ZStack {
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Advice")
                         .font(.custom("Montserrat-Bold", size: 34))
                         .padding(.horizontal)
 
-                    // Grid List
-                    ScrollView {
-                        LazyVGrid(columns: columns, spacing: 16) {
+                    ScrollView(.vertical, showsIndicators: false) {
+                        VStack(spacing: 24) {
                             ForEach(adviceItems) { item in
-                                    AdviceCard(item: item)
-                                        .onTapGesture {
-                                            // Handle tap
-                                        }
+                                AdviceCardView(advice: item) {
+                                    withAnimation {
+                                        showOverlay = true
+                                    }
                                 }
+                            }
                         }
                         .padding(.horizontal)
                     }
+                    .padding(.top)
                 }
-                .padding(.top)
-                .onAppear {
-                    
+                .navigationBarBackButtonHidden(true)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        CustomBackButton {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                             Button(action: {
+                                 showFilterScreen = true
+                                 
+                             }) {
+                                 Image("filter")
+                                     .foregroundColor(Color(hex: "FF6605"))
+                             }
+                         }
                 }
                 
-            }
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    CustomBackButton {
-                        presentationMode.wrappedValue.dismiss()
-                    }
+                .fullScreenCover(isPresented: $showFilterScreen) {
+                    AdviceFilterView(selectedFilters: $selectedFilters)
                 }
-            }
 
-        
+                // MARK: - Overlay
+                if showOverlay {
+                    ZStack {
+                        // Dimmed Background
+                        Color.black.opacity(0.4)
+                            .ignoresSafeArea()
+                            .transition(.opacity)
+
+                        // Centered Modal with padding
+                        VStack(spacing: 16) {
+                            Text("""
+                            Based on the data provided, here is some advice on savings ratio for your finance profile:
+
+                            1. Understand Your Financial Goals:
+                            Start by identifying your short-term and long-term financial goals. Whether it's saving for a vacation, emergency fund, retirement, or any other goal, having clarity on what you are saving for will help determine your savings ratio.
+
+                            2. *Assess Your Current Financial Situation:* Review your income, expenses, assets, liabilities, and spending habits. Understanding your cash flow will give you a clear...
+                            """)
+                            .font(.custom("Montserrat-Semibold", size: 14))
+                            .foregroundColor(.black)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                            .padding(.top, 24)
+
+                            Divider()
+
+                            Button(action: {
+                                withAnimation {
+                                    showOverlay = false
+                                }
+                            }) {
+                                Text("OK")
+                                    .font(.custom("Montserrat-Bold", size: 20))
+                                    .foregroundColor(.blue)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.bottom, 12)
+                            }
+                        }
+                        .padding(.vertical, 16)
+                        .background(Color.white)
+                        .cornerRadius(20)
+                        .shadow(radius: 10)
+                        .padding(.horizontal, 24) // ✅ This is now applied directly to the card
+                        .transition(.scale)
+                    }
+                    .zIndex(10)
+                }
+
+
+
+            }
+        }
     }
 
 

@@ -31,7 +31,7 @@ struct AIAssistantView: View {
                                 }
                                 
                                 CardButton(title: "Advice", iconName: "shopping_cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {
-                                   // isAdviceViewActive = true
+                                    isAdviceViewActive = true
                                 }
 
                                 NavigationLink(

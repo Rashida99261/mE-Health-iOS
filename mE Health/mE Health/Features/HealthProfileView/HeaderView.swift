@@ -27,6 +27,7 @@ struct HeaderView: View {
                                 viewStore.send(.iconTapped(icon))
                             } label: {
                                 Image(icon.iconName)
+                                    .foregroundColor(.black)
                             }
                         }
                     }
@@ -69,7 +70,6 @@ struct HeaderView: View {
                 }
                 
 
-                
                 if !viewStore.selectedFilters.isEmpty {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {

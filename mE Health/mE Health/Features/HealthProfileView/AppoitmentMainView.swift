@@ -159,6 +159,10 @@ struct AppoitmentMainView: View {
             .background(Color.white)
             .cornerRadius(12)
             .shadow(radius: 4)
+            .onTapGesture {
+                onTap()
+            }
+
         }
 
 }
@@ -168,33 +172,17 @@ struct AppoitmentMainView: View {
 
 struct AppoitmentSectionView: View {
     let practitioners: [AppointmentData]
-    let startDate: String
-    let endDate: String
     var onCardTap: (AppointmentData) -> Void
 
     var body: some View {
         
         ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: 24) {
-                // Horizontal date cards
-                
-                Spacer()
-                
-                HStack(spacing: 16) {
-                    DateCardView(title: "Start Date", date: startDate)
-                    DateCardView(title: "End Date", date: endDate)
-                }
-                
-                    VStack(spacing: 24) {
-                        
-                        TabSelectorView()
-                        
-                        ForEach(practitioners) { appoitment in
-                            AppoitmentMainView(appoinmnt: appoitment) {
-                                onCardTap(appoitment)
-                            }
-                        }
+                ForEach(practitioners) { appoitment in
+                    AppoitmentMainView(appoinmnt: appoitment) {
+                        onCardTap(appoitment)
                     }
+                }
             }
             .padding(.horizontal)
         }

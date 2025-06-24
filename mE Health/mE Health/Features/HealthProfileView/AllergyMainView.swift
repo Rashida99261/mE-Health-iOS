@@ -80,39 +80,9 @@ struct AllergySectionView: View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: 24) {
                 // Horizontal date cards
-                
-                Spacer()
-                
-                HStack(spacing: 16) {
-                    DateCardView(title: "Start Date", date: startDate)
-                    DateCardView(title: "End Date", date: endDate)
-                }
-                
-                VStack(spacing: 24) {
-                    
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-                            .foregroundColor(Color(hex: Constants.API.PrimaryColorHex))
-                            .padding(.leading, 8)
-                        
-                        TextField("Search allergies....", text: $searchText)
-                            .font(.custom("Montserrat-Regular", size: 14))
-                            .padding(.vertical, 10)
-                            .padding(.horizontal, 4)
-                    }
-                    .frame(height: 50) // 👈 Fixed height
-                    .background(Color.white)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color(hex: Constants.API.PrimaryColorHex), lineWidth: 1.5)
-                    )
-                    .cornerRadius(10)
-                    
-                    
-                    ForEach(allergies) { allergy in
-                        AllergyMainView(allergy: allergy) {
-                            onCardTap(allergy)
-                        }
+                ForEach(allergies) { allergy in
+                    AllergyMainView(allergy: allergy) {
+                        onCardTap(allergy)
                     }
                 }
             }

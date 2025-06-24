@@ -1,71 +1,71 @@
 //
-//  LabMainView.swift
+//  ProcedureMainView.swift
 //  mE Health
 //
-//  Created by Rashida on 18/06/25.
+//  Created by Rashida on 24/06/25.
 //
-
 
 import SwiftUI
 
-struct LabDummyData: Identifiable, Equatable {
+struct ProcedureDummyData: Identifiable, Equatable {
     let id: UUID = UUID()
     let name: String
     let recordDate: String
-    var isActive: Bool = true
+    let status: ProcedureStatus?
+}
+
+enum ProcedureStatus: String {
+    case completed = "Completed"
+    case progress = "In Progress"
 }
 
 
-struct LabMainView: View {
+struct ProcedureMainView: View {
 
-    let lab: LabDummyData
+    let procedure: ProcedureDummyData
     let onTap: () -> Void
-        
         
         var body: some View {
 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text(lab.name)
+                        Text(procedure.name)
                             .font(.custom("Montserrat-Bold", size: 18))
                             .foregroundColor(.black)
                         Spacer()
                         
-                        if lab.isActive {
-                            
-                            Text("Active")
-                                .font(.caption)
+                        if procedure.status ==  .completed {
+                                Text("Completed")
+                                .font(.custom("Montserrat-SemiBold", size: 9))
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 4)
-                                .background(Color.green.opacity(0.2))
-                                .foregroundColor(.green)
+                                .background(Color(hex: "06C270").opacity(0.2))
+                                .foregroundColor(Color(hex: "06C270"))
                                 .clipShape(Capsule())
-
                         }
-                        else {
-                            Text("Preliminary")
-                                .font(.caption)
+                        else if procedure.status ==  .progress {
+                                Text("In Progress")
+                                .font(.custom("Montserrat-SemiBold", size: 9))
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 4)
                                 .background(Color(hex: "F09C00").opacity(0.2))
                                 .foregroundColor(Color(hex: "F09C00"))
                                 .clipShape(Capsule())
                         }
-                        
                     }
                     .padding(.top,12)
                     .padding(.horizontal,12)
 
-                    Text(lab.recordDate)
-                        .font(.custom("Montserrat-Regular", size: 16))
+                    Text(procedure.recordDate)
+                        .font(.custom("Montserrat-Regular", size: 14))
                         .foregroundColor(.black)
                         .padding(.horizontal,12)
 
-                    
                     Button(action: onTap) {
                         Text("View Details")
-                            .font(.custom("Montserrat-Bold", size: 14))
+                            .font(.custom("Montserrat-SemiBold", size: 14))
                             .foregroundColor(.white)
+                            .frame(width:135)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
                             .background(Color(hex: "FF6605"))
@@ -86,12 +86,9 @@ struct LabMainView: View {
 
 }
 
-struct LabSectionView: View {
-    let labs: [LabDummyData]
-    let startDate: String
-    let endDate: String
-    var onCardTap: (LabDummyData) -> Void
-    @State private var searchText = ""
+struct ProcedureSectionView: View {
+    let procedure: [ProcedureDummyData]
+    var onCardTap: (ProcedureDummyData) -> Void
     
     var body: some View {
         
@@ -99,9 +96,9 @@ struct LabSectionView: View {
             VStack(spacing: 24) {
                 // Horizontal date cards
                 
-                ForEach(labs) { labdata in
-                    LabMainView(lab: labdata) {
-                        onCardTap(labdata)
+                ForEach(procedure) { procData in
+                    ProcedureMainView(procedure: procData) {
+                        onCardTap(procData)
                     }
                 }
             }
