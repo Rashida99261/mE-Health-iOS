@@ -11,6 +11,7 @@ import ComposableArchitecture
 struct AssistView: View {
     
     @Environment(\.presentationMode) var presentationMode
+    @State private var navigateToDetail = false
     
     let assistItem = [
         AssistData(name: "Chronic Condition Detector"),
@@ -37,7 +38,7 @@ struct AssistView: View {
                             ForEach(assistItem) { item in
                                 AssistCardView(assist: item) {
                                     withAnimation {
-                                        
+                                        navigateToDetail = true
                                     }
                                 }
                             }
@@ -45,6 +46,14 @@ struct AssistView: View {
                         .padding(.horizontal)
                     }
                     .padding(.top)
+                    NavigationLink(
+                        destination: AssistDetailView()
+                    ,
+                    isActive: $navigateToDetail
+                    ) {
+                        EmptyView()
+                    }
+
                 }
                 .background(Color(hex: "F5F5FC").ignoresSafeArea())
                 .navigationBarBackButtonHidden(true)

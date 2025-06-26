@@ -63,7 +63,7 @@ struct MyHealthView: View {
 
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 12) {
                 Text("My Health")
                     .font(.custom("Montserrat-Bold", size: 32))
                     .padding(.horizontal)
