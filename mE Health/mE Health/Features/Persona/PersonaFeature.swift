@@ -28,6 +28,10 @@ struct PersonaFeature: Reducer {
         var navigateBackToHome: Bool = false
         var selectedDestination: PersonaDestination? = nil
         var patientProfile: PatientProfileFeature.State? = nil
+        var selectedMenuTab: SideMenuTab = .dashboard
+        var showMenu: Bool = false
+        var selectedTab: DashboardTab = .menu
+
     }
 
     enum Action: Equatable {
@@ -36,6 +40,10 @@ struct PersonaFeature: Reducer {
         case navigateBackToHomeTapped
         case patientProfile(PatientProfileFeature.Action)
         case dismissPatientProfile
+        case tabMenuItemSelected(SideMenuTab)
+        case toggleMenu(Bool)
+        case tabSelected(DashboardTab)
+
     }
 
     func reduce(into state: inout State, action: Action) -> Effect<Action> {
@@ -57,6 +65,26 @@ struct PersonaFeature: Reducer {
         case .dismissPatientProfile:
             state.patientProfile = nil
             return .none
+            
+        case .tabSelected(let tab):
+            state.selectedTab = tab
+            return .none
+
+        case let .toggleMenu(isOpen):
+            state.showMenu = isOpen
+            return .none
+
+        case .tabMenuItemSelected(let item):
+            switch item {
+
+            case .logout:
+                SessionManager.shared.clearSession()
+                //state.navigationDestination = .login
+            default:
+                break
+            }
+            return .none
+
         }
     }
 

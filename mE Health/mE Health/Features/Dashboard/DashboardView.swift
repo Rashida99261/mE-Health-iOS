@@ -269,34 +269,35 @@ struct DashboardView: View {
                 case .login:
                     LoginView(store: loginStore)
                     
-                case .persona:
-                    IfLetStore(
-                        store.scope(state: \.persona?.state, action: DashboardFeature.Action.persona),
-                        then: PersonaView.init
-                    )
+                    
+                    
+//                case .persona:
+//                    IfLetStore(
+//                        store.scope(state: \.persona?.state, action: DashboardFeature.Action.persona),
+//                        then: PersonaView.init
+//                    )
                 }
             }
-//            NavigationLink(
-//                destination:
-//                    IfLetStore(
-//                        store.scope(
-//                            state: \.personaState,
-//                            action: DashboardFeature.Action.persona
-//                        )
-//                    ) { personaStore in
-//                        PersonaView(store: personaStore)
-//                    },
-//                isActive: viewStore.binding(
-//                    get: { $0.persona != nil },
-//                    send: { $0 ? .tabMenuItemSelected(.persona) : .closePersona }
-//                )
-//            ) {
-//                EmptyView()
-//            }
-//            .hidden()
+            NavigationLink(
+                destination:
+                    IfLetStore(
+                        store.scope(
+                            state: \.personaState,
+                            action: DashboardFeature.Action.persona
+                        )
+                    ) { personaStore in
+                        PersonaView(store: personaStore)
+                    },
+                isActive: viewStore.binding(
+                    get: { $0.persona != nil },
+                    send: { $0 ? .tabMenuItemSelected(.persona) : .closePersona }
+                )
+            ) {
+                EmptyView()
+            }
         }
     }
-
+    
 }
 
 #Preview {

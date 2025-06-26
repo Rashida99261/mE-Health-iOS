@@ -11,6 +11,7 @@ import ComposableArchitecture
 
 struct PersonaView: View {
     let store: StoreOf<PersonaFeature>
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
@@ -33,46 +34,80 @@ struct PersonaView: View {
                     }
                     .padding(.top)
                 }
+                navigationLinks(viewStore: viewStore)
             }
-            .onAppear {
-                //viewStore.send(.callApi)
-            }
-
             .background(Color.white)
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     CustomBackButton {
-                        viewStore.send(.navigateBackToHomeTapped)
+                        presentationMode.wrappedValue.dismiss()
                     }
                 }
             }
-            .navigationDestination(
-                item: viewStore.binding(
-                    get: \.selectedDestination,
-                    send: { _ in .dismissDestination }
-                )
-            ) { destination in
-                switch destination {
-                case .patientProfile:
-                    PatientProfileView(
-                        store: Store(
-                            initialState: PatientProfileFeature.State(),
-                            reducer: { PatientProfileFeature() }
-                        )
-                    )
-                case .myHealth:
-                    MyHealthView(
-                        store: Store(
-                            initialState: MyHealthFeature.State(),
-                            reducer: { MyHealthFeature() }
-                        )
-                    )
-                }
-            }
+//            .navigationDestination(
+//                item: viewStore.binding(
+//                    get: \.selectedDestination,
+//                    send: { _ in .dismissDestination }
+//                )
+//            ) { destination in
+//                switch destination {
+//                case .patientProfile:
+//                    PatientProfileView(
+//                        store: Store(
+//                            initialState: PatientProfileFeature.State(),
+//                            reducer: { PatientProfileFeature() }
+//                        )
+//                    )
+//                case .myHealth:
+//                    MyHealthView(
+//                        store: Store(
+//                            initialState: MyHealthFeature.State(),
+//                            reducer: { MyHealthFeature() }
+//                        )
+//                    )
+//                }
+//            }
         }
     }
+    
+    @ViewBuilder
+    func navigationLinks(viewStore: ViewStore<PersonaFeature.State, PersonaFeature.Action>) -> some View {
+        NavigationLink(
+            destination: PatientProfileView(
+                store: Store(
+                                            initialState: PatientProfileFeature.State(),
+                                            reducer: { PatientProfileFeature() }
+                                        )
+            ),
+            isActive: Binding(
+                get: { viewStore.selectedDestination == .patientProfile },
+                set: { if !$0 { viewStore.send(.dismissDestination) } }
+            )
+        ) {
+            EmptyView()
+        }
+
+        NavigationLink(
+            destination: MyHealthView(
+                store: Store(
+                    initialState: MyHealthFeature.State(),
+                    reducer: { MyHealthFeature() }
+                )
+
+            ),
+            isActive: Binding(
+                get: { viewStore.selectedDestination == .myHealth },
+                set: { if !$0 { viewStore.send(.dismissDestination) } }
+            )
+        ) {
+            EmptyView()
+        }
+
+    }
+
 }
+
 
 
 

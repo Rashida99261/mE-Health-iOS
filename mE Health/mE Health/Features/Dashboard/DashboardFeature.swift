@@ -14,12 +14,10 @@ struct DashboardFeature: Reducer {
     
     enum NavigationDestination: Equatable, Identifiable {
         case login
-        case persona
 
         var id: String {
             switch self {
             case .login: "login"
-            case .persona: "persona"
             }
         }
     }
@@ -130,8 +128,8 @@ struct DashboardFeature: Reducer {
         case .tabMenuItemSelected(let item):
             switch item {
             case .persona:
-                state.persona = PersonaFeatureWrapper(state: PersonaFeature.State())
-                return .send(.navigationDestinationChanged(.persona))
+                //state.persona = PersonaFeatureWrapper(state: PersonaFeature.State())
+                return .send(.openPersona)
 
             case .logout:
                 SessionManager.shared.clearSession()
@@ -168,9 +166,8 @@ struct DashboardFeature: Reducer {
                 state.navigationDestination = nil
                 return .none
                 
-            case .patientProfile, .dismissPatientProfile:
+            default:
                 return .none
-
             }
 
 
