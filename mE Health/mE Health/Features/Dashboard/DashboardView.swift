@@ -215,9 +215,6 @@ struct DashboardView: View {
                             .animation(.easeInOut, value: showDMOverlay)
                         }
                         
-
-
-                        
                         // MARK: Fixed Tab Bar (NOT sliding)
                         VStack {
                             Spacer()
@@ -235,7 +232,6 @@ struct DashboardView: View {
                                 },
                                 onDashboardTapped: {
                                     viewStore.send(.showDashboardList(true))
-
                                 }
                             )
                             .ignoresSafeArea(edges: .bottom)
@@ -247,9 +243,7 @@ struct DashboardView: View {
                     }
                     .navigationBarBackButtonHidden(true)
                 }
-                
             }
-            
             .navigationDestination(
                 isPresented: viewStore.binding(
                     get: \.showDashboardList,
@@ -277,12 +271,11 @@ struct DashboardView: View {
                     
                 case .persona:
                     IfLetStore(
-                        store.scope(state: \.personaState, action: DashboardFeature.Action.persona),
+                        store.scope(state: \.persona?.state, action: DashboardFeature.Action.persona),
                         then: PersonaView.init
                     )
                 }
             }
-
 //            NavigationLink(
 //                destination:
 //                    IfLetStore(
@@ -301,9 +294,6 @@ struct DashboardView: View {
 //                EmptyView()
 //            }
 //            .hidden()
-
-
-
         }
     }
 

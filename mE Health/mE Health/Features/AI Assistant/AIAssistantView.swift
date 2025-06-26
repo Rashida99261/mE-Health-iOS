@@ -13,6 +13,9 @@ struct AIAssistantView: View {
     
     @State private var isAdviceViewActive = false
     @Environment(\.presentationMode) var presentationMode
+    @State private var isAssistViewActive = false
+    
+    //
     
     var body: some View {
        
@@ -28,7 +31,9 @@ struct AIAssistantView: View {
                             
                             VStack(spacing: 24) {
                                 CardButton(title: "Assist", iconName: "AI", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {
+                                    isAssistViewActive = true
                                 }
+                                
                                 
                                 CardButton(title: "Advice", iconName: "shopping_cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {
                                     isAdviceViewActive = true
@@ -41,6 +46,15 @@ struct AIAssistantView: View {
                                 ) {
                                     EmptyView()
                                 }
+                                
+                                NavigationLink(
+                                    destination: AssistView()
+                                ,
+                                isActive: $isAssistViewActive
+                                ) {
+                                    EmptyView()
+                                }
+
                             }
                             .padding(.horizontal, 0)
                             

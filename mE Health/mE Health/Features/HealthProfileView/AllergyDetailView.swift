@@ -161,19 +161,19 @@ struct ActionButtonsView: View {
     var body: some View {
         HStack(spacing: 32) {
             HStack(spacing: 8) {
-                Image(systemName: "arrow.clockwise")
+                Image("Refresh_data")
                     .foregroundColor(Color(hex: "FF6605"))
                 Text("Refresh Data")
                     .foregroundColor(.black)
-                    .font(.system(size: 16, weight: .medium))
+                    .font(.custom("Montserrat-Medium", size: 16))
             }
 
             HStack(spacing: 8) {
-                Image(systemName: "square.and.arrow.up")
+                Image("ShareRecord")
                     .foregroundColor(Color(hex: "FF6605"))
                 Text("Share Record")
                     .foregroundColor(.black)
-                    .font(.system(size: 16, weight: .medium))
+                    .font(.custom("Montserrat-Medium", size: 16))
             }
         }
         .padding(.horizontal, 24)

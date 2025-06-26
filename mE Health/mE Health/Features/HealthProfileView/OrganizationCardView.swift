@@ -47,6 +47,7 @@ struct OrganizationCardView: View {
 
 struct AppoitmentCardView: View {
     let organization: Organization
+    var showStatus : Bool
     
     var body: some View {
         HStack(spacing: 12) {
@@ -57,16 +58,36 @@ struct AppoitmentCardView: View {
                 .foregroundColor(Color(hex: "FF6605"))
             
             VStack(alignment: .leading, spacing: 4) {
-                Text("Jan 1, 2023") // You can pull from organization.type if dynamic
-                    .font(.custom("Montserrat-Medium", size: 16))
-                    .foregroundColor(.black)
+                
+                HStack(spacing: 8) {
+                    
+                    Text("Jan 1, 2023") // You can pull from organization.type if dynamic
+                        .font(.custom("Montserrat-Medium", size: 16))
+                        .foregroundColor(.black)
+                    
+                    Spacer()
+                    
+                    if showStatus {
+                        Text("Completed")
+                            .font(.caption)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 4)
+                            .background(Color.green.opacity(0.2))
+                            .foregroundColor(.green)
+                            .clipShape(Capsule())
+
+                    }
+                    
+                }
                 
                 Text(organization.name)
                     .font(.custom("Montserrat-Regular", size: 12))
                     .foregroundColor(Color(hex: "FF6605"))
             }
             
-            Spacer() // Optional: pushes content to left, consistent spacing
+            if !showStatus {
+                Spacer() // Optional: pushes content to left, consistent spacing
+            }
         }
         .padding(.horizontal, 12) // Internal horizontal padding
         .frame(height: 80)

@@ -111,16 +111,21 @@ struct MyHealthView: View {
                 case "Appointment":
                     AppoitmentSectionView(
                         practitioners: sampleAppoitmnt,
-                        onCardTap:{ practitioner in
+                        onCardTap:{ appoitmnet in
+                            viewStore.send(.openApoitmentDetial(appoitmnet))
+                        },
+                        onReadMoreTap: { appoitmnet in
                             showAppoitmentOverlay = true
-                            
-                        })
+                        }
+                    )
+                    
                 case "Allergy":
                     AllergySectionView(allergies: sampleAleData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { allergy in
                         viewStore.send(.allergyTapped(allergy))
                     })
                 case "Lab":
                     LabSectionView(labs: sampleLabData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { lab in
+                        viewStore.send(.openLabDetail(lab))
                     })
                 case "Immunizations":
                     ImmuneSectionView(immune: sampleImmubeData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { lab in
@@ -157,12 +162,36 @@ struct MyHealthView: View {
             
             .navigationDestination(
                 isPresented: viewStore.binding(
+                    get: { $0.selelctedApooitment != nil },
+                    send: .closeApoitmentDetial
+                )
+            ) {
+                if let selected = viewStore.selelctedApooitment {
+                    AppoitmentDetailView(appoitment: selected)
+                }
+            }
+            
+
+            
+            .navigationDestination(
+                isPresented: viewStore.binding(
                     get: { $0.selelctedAllergy != nil },
                     send: .dismissAllergyDetail
                 )
             ) {
                 if let selected = viewStore.selelctedAllergy {
                     AllergyDetailView(allergy: selected)
+                }
+            }
+            
+            .navigationDestination(
+                isPresented: viewStore.binding(
+                    get: { $0.selectedLab != nil },
+                    send: .closeLabDetail
+                )
+            ) {
+                if let selected = viewStore.selectedLab {
+                    LabDetailView()
                 }
             }
             

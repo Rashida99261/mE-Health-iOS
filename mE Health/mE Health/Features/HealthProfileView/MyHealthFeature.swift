@@ -38,7 +38,10 @@ struct MyHealthFeature: Reducer {
         var selectedIndex: Int = 0
         var selectedPractitioner: PractitionerData? = nil
         var selelctedAllergy: AllergyDummyData? = nil
+        var selectedLab: LabDummyData? = nil
         var header: HeaderFeature.State = .init()
+        
+        var selelctedApooitment: AppointmentData? = nil
         
     }
 
@@ -50,8 +53,11 @@ struct MyHealthFeature: Reducer {
         case allergyTapped(AllergyDummyData)
         case dismissAllergyDetail
         case header(HeaderFeature.Action)
-
-
+        case openLabDetail(LabDummyData)
+        case closeLabDetail
+        
+        case openApoitmentDetial(AppointmentData)
+        case closeApoitmentDetial
         
     }
 
@@ -90,6 +96,23 @@ struct MyHealthFeature: Reducer {
                 state.selelctedAllergy = nil
                 return .none
                 
+            case .openLabDetail(let lab):
+                state.selectedLab = lab
+                return .none
+                
+            case .closeLabDetail:
+                state.selectedLab = nil
+                return .none
+                
+            case .openApoitmentDetial(let appoitment):
+                state.selelctedApooitment = appoitment
+                return .none
+                
+            case .closeApoitmentDetial:
+                state.selelctedApooitment = nil
+                return .none
+
+
             case .header:
                 return .none
 
