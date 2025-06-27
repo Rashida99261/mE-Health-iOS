@@ -153,7 +153,7 @@ struct MyHealthView: View {
                     
                 case "Vital":
                     VitalsSectionView(vitals: vitalData) { vital in
-                        
+                        viewStore.send(.openVitalDetail(vital))
                     }
                     
                 case "Medication":
@@ -166,7 +166,8 @@ struct MyHealthView: View {
                     })
                     
                 case "Procedure":
-                    ProcedureSectionView(procedure: procedureData, onCardTap: { lab in
+                    ProcedureSectionView(procedure: procedureData, onCardTap: { data in
+                        viewStore.send(.openProcedureDetail(data))
                     })
                     
                 case "Allergy":
@@ -217,8 +218,30 @@ struct MyHealthView: View {
                 }
             }
             
-
+            .navigationDestination(
+                isPresented: viewStore.binding(
+                    get: { $0.selctedProcedure != nil },
+                    send: .closeProcedureDEtail
+                )
+            ) {
+                if let selected = viewStore.selctedProcedure {
+                    ProcedureDetailView(data: selected)
+                }
+            }
             
+            .navigationDestination(
+                isPresented: viewStore.binding(
+                    get: { $0.selctedVital != nil },
+                    send: .closeVitalDEtail
+                )
+            ) {
+                if let selected = viewStore.selctedVital {
+                    VitalDetailView()
+                }
+            }
+
+
+
             .navigationDestination(
                 isPresented: viewStore.binding(
                     get: { $0.selelctedAllergy != nil },
@@ -240,7 +263,7 @@ struct MyHealthView: View {
                     LabDetailView()
                 }
             }
-            
+
             .background(Color.white)
             .navigationBarBackButtonHidden(true)
             .toolbar {

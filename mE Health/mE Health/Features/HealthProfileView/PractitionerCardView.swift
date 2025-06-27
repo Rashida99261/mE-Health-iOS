@@ -73,18 +73,22 @@ struct PractitionerSectionView: View {
     let startDate: String
     let endDate: String
     var onCardTap: (PractitionerData) -> Void
-
+    
     var body: some View {
-        VStack(spacing: 24) {
-            // Practitioner list
-            ForEach(practitioners) { practitioner in
-                PractitionerCardView(practitioner: practitioner) {
-                                    onCardTap(practitioner)
-                    }
+        
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack(spacing: 24) {
+                // Horizontal date cards
+                ForEach(practitioners) { practitioner in
+                    PractitionerCardView(practitioner: practitioner) {
+                                        onCardTap(practitioner)
+                        }
+                }
             }
+            .padding(.horizontal)
         }
-        .padding(.horizontal)
     }
+
 }
 
 

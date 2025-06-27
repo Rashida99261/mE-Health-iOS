@@ -24,7 +24,7 @@ struct LabDetailView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
                         
-                        TopCardView()
+                        TopCardView(title: "Complete Blood Count", subtitle: "Lab ID: 12345", desc: "06/11/2025")
                             .padding(.horizontal)
                         
                         // Allergy Detail Card
@@ -141,8 +141,11 @@ struct LabDetailView: View {
     LabDetailView()
 }
 
-
 struct TopCardView: View {
+    
+    let title : String
+    let subtitle : String
+    let desc : String
     
     var body: some View {
         
@@ -157,14 +160,14 @@ struct TopCardView: View {
                 
                 VStack(alignment: .leading, spacing: 8) {
                     
-                    Text("Complete Blood Count")
+                    Text(title)
                         .font(.custom("Montserrat-Bold", size: 17))
                         .foregroundColor(.black)
                         .multilineTextAlignment(.leading) // or .center, but not justified
                         .lineSpacing(4)
 
                     HStack(spacing: 8) {
-                        Text("Lab ID: 12345")
+                        Text(subtitle)
                             .font(.custom("Montserrat-Regular", size: 13))
                             .foregroundColor(.black)
                         
@@ -180,7 +183,7 @@ struct TopCardView: View {
                         
                     }
                     
-                    Text("06/11/2025")
+                    Text(desc)
                         .font(.custom("Montserrat-Regular", size: 14))
                         .foregroundColor(Color.black)
 
