@@ -33,7 +33,7 @@ struct MyHealthFeature: Reducer {
             Tile(title: "Allergy", icon: "Allergy", countItem: "10"),
             Tile(title: "Immunizations", icon: "Immunization", countItem: "10"),
             Tile(title: "Billing", icon: "Billing", countItem: "10"),
-            Tile(title: "Upload Documents ", icon: "Upload", countItem: "10")
+            Tile(title: "Upload Documents", icon: "Upload", countItem: "10")
         ]
         var selectedIndex: Int = 0
         var selectedPractitioner: PractitionerData? = nil

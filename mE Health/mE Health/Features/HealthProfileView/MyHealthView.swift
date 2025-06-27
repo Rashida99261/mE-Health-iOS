@@ -59,6 +59,28 @@ struct MyHealthView: View {
         ProcedureDummyData(name: "Hip Replacement", recordDate: "03/15/2024", status: .completed),
         ProcedureDummyData(name: "Cardiac Catheterization", recordDate: "03/15/2024", status: .progress)
     ]
+    
+    let conditionData : [ConditionDummyData] = [
+        ConditionDummyData(name: "Blood Pressure", date: "June 12, 2024", status: .active),
+        ConditionDummyData(name: "Hypertension", date: "June 12, 2024", status: .active),
+        ConditionDummyData(name: "Seasonal Allergies", date: "June 12, 2024", status: .resolved)
+    ]
+
+    let vitalData : [VitalDummyData] = [
+        VitalDummyData(name: "Blood Pressure", date: "06//11/2025", mg: "120/80 mmHg"),
+        VitalDummyData(name: "Heart Rate", date: "06//11/2025", mg: "72 bmp")
+    ]
+
+    let medicationData : [MedicationDummyData] = [
+        MedicationDummyData(name: "Lisinopril 10mg", recordDate: "Authored: 05/06/2025", status: .active),
+        MedicationDummyData(name: "Lisinopril 10mg", recordDate: "Authored: 05/06/2025", status: .active)
+    ]
+
+    let filedata : [FilesDummyData] = [
+        FilesDummyData(name: "Blood Test-01.pdf", specialty: "Appointment", date: "3 June 2025"),
+        FilesDummyData(name: "Report4.mp4", specialty: "Labs", date: "3 days ago"),
+        FilesDummyData(name: "Blood Test-01.pdf", specialty: "Appointment", date: "3 June 2025")
+    ]
 
 
     var body: some View {
@@ -119,29 +141,53 @@ struct MyHealthView: View {
                         }
                     )
                     
-                case "Allergy":
-                    AllergySectionView(allergies: sampleAleData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { allergy in
-                        viewStore.send(.allergyTapped(allergy))
-                    })
+                case "Condition":
+                    ConditionSectionView(conditions: conditionData, onCardTap: { appoitmnet in
+                                        
+                        })
+
                 case "Lab":
                     LabSectionView(labs: sampleLabData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { lab in
                         viewStore.send(.openLabDetail(lab))
                     })
-                case "Immunizations":
-                    ImmuneSectionView(immune: sampleImmubeData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { lab in
+                    
+                case "Vital":
+                    VitalsSectionView(vitals: vitalData) { vital in
+                        
+                    }
+                    
+                case "Medication":
+                    MedicationSectionView(medications: medicationData) { medication in
+                        
+                    }
+                    
+                case "Visits":
+                    VisitsSectionView(visit: visitData, onCardTap: { visit in
                     })
                     
                 case "Procedure":
                     ProcedureSectionView(procedure: procedureData, onCardTap: { lab in
                     })
                     
-                case "Visits":
-                    VisitsSectionView(visit: visitData, onCardTap: { visit in
+                case "Allergy":
+                    AllergySectionView(allergies: sampleAleData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { allergy in
+                        viewStore.send(.allergyTapped(allergy))
                     })
+
+                case "Immunizations":
+                    ImmuneSectionView(immune: sampleImmubeData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { lab in
+                    })
+                    
                     
                 case "Billing":
                     BillingSectionView(items: billingItems, onCardTap:{ lab in
                     })
+                    
+               case "Upload Documents":
+                    FilesSectionView(filesArray: filedata) { files in
+                        
+                    }
+                    
                     
                 default:
                     EmptyView()
