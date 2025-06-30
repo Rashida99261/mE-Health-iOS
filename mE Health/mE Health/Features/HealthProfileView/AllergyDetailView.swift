@@ -138,7 +138,7 @@ struct AllergyDetailView: View {
 
 
             // Bottom Buttons
-            ActionButtonsView()
+            ActionButtonsView(title: "Refresh Data")
 
             
             Spacer()
@@ -158,12 +158,14 @@ struct AllergyDetailView: View {
 }
 
 struct ActionButtonsView: View {
+    
+    let title : String
     var body: some View {
         HStack(spacing: 32) {
             HStack(spacing: 8) {
                 Image("Refresh_data")
                     .foregroundColor(Color(hex: "FF6605"))
-                Text("Refresh Data")
+                Text(title)
                     .foregroundColor(.black)
                     .font(.custom("Montserrat-Medium", size: 16))
             }

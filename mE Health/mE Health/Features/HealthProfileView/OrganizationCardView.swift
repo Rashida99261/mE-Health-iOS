@@ -48,6 +48,7 @@ struct OrganizationCardView: View {
 struct AppoitmentCardView: View {
     let organization: Organization
     var showStatus : Bool
+    let status : AppoitmentStatus
     
     var body: some View {
         HStack(spacing: 12) {
@@ -68,13 +69,36 @@ struct AppoitmentCardView: View {
                     Spacer()
                     
                     if showStatus {
-                        Text("Completed")
-                            .font(.caption)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 4)
-                            .background(Color.green.opacity(0.2))
-                            .foregroundColor(.green)
-                            .clipShape(Capsule())
+                        
+                        if status ==  .booked {
+                            
+                            Text("Booked")
+                                .font(.custom("Montserrat-SemiBold", size: 9))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 4)
+                                .background(Color(hex: "0063F7").opacity(0.2))
+                                .foregroundColor(Color(hex: "0063F7"))
+                                .clipShape(Capsule())
+
+                        }
+                        else if status ==  .cancel {
+                            Text("Canceled")
+                                .font(.custom("Montserrat-SemiBold", size: 9))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 4)
+                                .background(Color.red.opacity(0.2))
+                                .foregroundColor(Color.red)
+                                .clipShape(Capsule())
+                        }
+                        else if status ==  .completed {
+                            Text("Completed")
+                                .font(.custom("Montserrat-SemiBold", size: 9))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 4)
+                                .background(Color(hex: "06C270").opacity(0.2))
+                                .foregroundColor(Color(hex: "06C270"))
+                                .clipShape(Capsule())
+                        }
 
                     }
                     

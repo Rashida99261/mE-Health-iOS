@@ -80,7 +80,7 @@ struct PractitionerDetailView: View {
 
                     VStack(spacing: 16) {
                         ForEach(organizations) { org in
-                            AppoitmentCardView(organization: org, showStatus: false)
+                            AppoitmentCardView(organization: org, showStatus: false, status: .booked)
                         }
                     }
                     .padding(.horizontal)
@@ -109,7 +109,7 @@ struct PractitionerDetailView: View {
 
                     VStack(spacing: 16) {
                         ForEach(organizations) { org in
-                            AppoitmentCardView(organization: org,showStatus: false)
+                            AppoitmentCardView(organization: org,showStatus: false, status: .booked)
                         }
                     }
                     .padding(.horizontal)

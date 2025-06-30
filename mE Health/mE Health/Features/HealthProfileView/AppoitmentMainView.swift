@@ -13,6 +13,13 @@ struct AppointmentData: Identifiable, Equatable {
     let hospitalName: String
     let dateTime: String
     let description: String
+    let status : AppoitmentStatus
+}
+
+enum AppoitmentStatus : String {
+    case booked = "Booked"
+    case completed = "Completed"
+    case cancel = "Cancelled"
 }
 
 struct TabSelectorView: View {
@@ -117,13 +124,37 @@ struct AppoitmentMainView: View {
                     .font(.custom("Montserrat-Bold", size: 18))
                     .foregroundColor(.black)
                 Spacer()
-                Text("Booked")
-                    .font(.custom("Montserrat-SemiBold", size: 8))
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 4)
-                    .background(Color.green.opacity(0.2))
-                    .foregroundColor(.green)
-                    .clipShape(Capsule())
+                
+                if appoinmnt.status ==  .booked {
+                    
+                    Text("Booked")
+                        .font(.custom("Montserrat-SemiBold", size: 9))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 4)
+                        .background(Color(hex: "0063F7").opacity(0.2))
+                        .foregroundColor(Color(hex: "0063F7"))
+                        .clipShape(Capsule())
+
+                }
+                else if appoinmnt.status ==  .cancel {
+                    Text("Canceled")
+                        .font(.custom("Montserrat-SemiBold", size: 9))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 4)
+                        .background(Color.red.opacity(0.2))
+                        .foregroundColor(Color.red)
+                        .clipShape(Capsule())
+                }
+                else if appoinmnt.status ==  .completed {
+                    Text("Completed")
+                        .font(.custom("Montserrat-SemiBold", size: 9))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 4)
+                        .background(Color(hex: "06C270").opacity(0.2))
+                        .foregroundColor(Color(hex: "06C270"))
+                        .clipShape(Capsule())
+                }
+
             }
             .padding(.top,12)
             

@@ -33,7 +33,7 @@ struct AppoitmentDetailView: View {
                         
                         VStack(spacing: 16) {
                             ForEach(organizations) { org in
-                                AppoitmentCardView(organization: org, showStatus: true)
+                                AppoitmentCardView(organization: org, showStatus: true, status: appoitment.status)
                             }
                         }
                         .padding(.horizontal)
@@ -99,13 +99,35 @@ struct AppoitmentDetailView: View {
                                 
                                 Spacer()
                                 
-                                Text("Completed")
-                                    .font(.caption)
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 4)
-                                    .background(Color.green.opacity(0.2))
-                                    .foregroundColor(.green)
-                                    .clipShape(Capsule())
+                                if appoitment.status ==  .booked {
+                                    
+                                    Text("Booked")
+                                        .font(.custom("Montserrat-SemiBold", size: 9))
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 4)
+                                        .background(Color(hex: "0063F7").opacity(0.2))
+                                        .foregroundColor(Color(hex: "0063F7"))
+                                        .clipShape(Capsule())
+
+                                }
+                                else if appoitment.status ==  .cancel {
+                                    Text("Canceled")
+                                        .font(.custom("Montserrat-SemiBold", size: 9))
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 4)
+                                        .background(Color.red.opacity(0.2))
+                                        .foregroundColor(Color.red)
+                                        .clipShape(Capsule())
+                                }
+                                else if appoitment.status ==  .completed {
+                                    Text("Completed")
+                                        .font(.custom("Montserrat-SemiBold", size: 9))
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 4)
+                                        .background(Color(hex: "06C270").opacity(0.2))
+                                        .foregroundColor(Color(hex: "06C270"))
+                                        .clipShape(Capsule())
+                                }
                                 
                             }
 
@@ -123,12 +145,51 @@ struct AppoitmentDetailView: View {
 
 
                         // Bottom Buttons
-                        ActionButtonsView()
+                        ActionButtonsView(title: "Sync Data")
 
+
+                        if appoitment.status ==  .booked {
+                            
+                            VStack(alignment: .leading, spacing: 16) {
+                                
+                                Button(action: {
+                                    
+                                }) {
+                                    Text("Edit Appointment")
+                                        .font(.custom("Montserrat-SemiBold", size: 16))
+                                        .foregroundColor(.white)
+                                        .frame(maxWidth: .infinity, alignment: .center)
+                                        .frame(height:45)
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 8)
+                                        .background(Color(hex: "FF6605"))
+                                        .cornerRadius(32)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                .padding(.horizontal,12)
+
+                                Button(action: {
+                                    
+                                }) {
+                                    Text("Cancel Appointment")
+                                        .font(.custom("Montserrat-SemiBold", size: 16))
+                                        .foregroundColor(.white)
+                                        .frame(maxWidth: .infinity, alignment: .center)
+                                        .frame(height:45)
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 8)
+                                        .background(Color(hex: "FF6605"))
+                                        .cornerRadius(32)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                .padding(.horizontal,12)
+
+                            }
+                            
+
+                        }
                         
                         Spacer()
-
-                        
                     }
                 }
             }

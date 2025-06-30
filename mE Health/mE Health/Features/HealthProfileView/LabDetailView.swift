@@ -115,7 +115,7 @@ struct LabDetailView: View {
 
 
                         // Bottom Buttons
-                        ActionButtonsView()
+                        ActionButtonsView(title: "Refresh Data")
 
                         
                         Spacer()

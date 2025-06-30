@@ -18,9 +18,9 @@ struct MyHealthView: View {
         PractitionerData(name: "Dr. Ashley David", specialty: "Gynecologist", phone: "(212) 555-1234", email: "info@totalcaremaintenance.com")]
     
     var sampleAppoitmnt : [AppointmentData] = [
-        AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy."),
-        AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy."),
-        AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.")]
+        AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.",status: .booked),
+        AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.",status: .completed),
+        AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.",status: .cancel)]
     
     var sampleAleData : [AllergyDummyData] = [
         AllergyDummyData(name: "Peanut Allergy", recordDate: "Recorded Date: 05/06/2025"),
@@ -158,7 +158,7 @@ struct MyHealthView: View {
                     
                 case "Medication":
                     MedicationSectionView(medications: medicationData) { medication in
-                        
+                        viewStore.send(.openMedDetail(medication))
                     }
                     
                 case "Visits":
@@ -176,7 +176,10 @@ struct MyHealthView: View {
                     })
 
                 case "Immunizations":
-                    ImmuneSectionView(immune: sampleImmubeData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { lab in
+                    ImmuneSectionView(immune: sampleImmubeData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { immune in
+                       
+                        viewStore.send(.openImmuneDetail(immune))
+                        
                     })
                     
                     
@@ -239,8 +242,28 @@ struct MyHealthView: View {
                     VitalDetailView()
                 }
             }
+            
+            .navigationDestination(
+                isPresented: viewStore.binding(
+                    get: { $0.selectMed != nil },
+                    send: .closeMedDetail
+                )
+            ) {
+                if let selected = viewStore.selectMed {
+                    MedicationDetailView()
+                }
+            }
 
-
+            .navigationDestination(
+                isPresented: viewStore.binding(
+                    get: { $0.selectImune != nil },
+                    send: .closeImmuneDetail
+                )
+            ) {
+                if let selected = viewStore.selectImune {
+                    ImmunizationDetailView()
+                }
+            }
 
             .navigationDestination(
                 isPresented: viewStore.binding(

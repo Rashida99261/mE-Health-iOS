@@ -69,7 +69,7 @@ struct VitalDetailView: View {
                         Spacer()
 
                         // Bottom Buttons
-                        ActionButtonsView()
+                        ActionButtonsView(title: "Sync Data")
 
                         Button(action: {
                             

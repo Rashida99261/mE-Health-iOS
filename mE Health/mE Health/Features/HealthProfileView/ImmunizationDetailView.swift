@@ -1,11 +1,15 @@
+//
+//  .swift
+//  mE Health
+//
+//  Created by Rashida on 29/06/25.
+//
 
 import SwiftUI
 import ComposableArchitecture
+import UIKit
 
-struct ProcedureDetailView: View {
-    
-    let data: ProcedureDummyData
-    
+struct ImmunizationDetailView: View {
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
@@ -24,7 +28,7 @@ struct ProcedureDetailView: View {
                         VStack(alignment: .leading, spacing: 12) {
                             
                             HStack(spacing: 8) {
-                                Text("Appendectomy")
+                                Text("COVID-19 Booster")
                                     .font(.custom("Montserrat-Bold", size: 17))
                                     .foregroundColor(.black)
                                 
@@ -41,8 +45,12 @@ struct ProcedureDetailView: View {
                             }
 
                             
-                            Text("03/15/2024")
+                            Text("Sarah Parker")
                                 .font(.custom("Montserrat-SemiBold", size: 13))
+                            
+                            Text("Initial Consultation")
+                                .font(.custom("Montserrat-SemiBold", size: 13))
+
 
                         }
                         .padding()
@@ -51,43 +59,12 @@ struct ProcedureDetailView: View {
                         .cornerRadius(12)
                         .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 2)
                         .padding(.horizontal)
-
                         
                         
-                        // Allergy Detail Card
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Procedure Details")
-                                .font(.custom("Montserrat-Bold", size: 17))
-
-                            HStack {
-                                Text("Procedure ID")
-                                .font(.custom("Montserrat-Regular", size: 14))
-                                Spacer()
-                                Text("#PRO-2023-091")
-                                .font(.custom("Montserrat-SemiBold", size: 13))
-                            }
-
-                            HStack {
-                                Text("Reason")
-                                .font(.custom("Montserrat-Regular", size: 14))
-                                Spacer()
-                                Text("Acute Appendicitis")
-                                .font(.custom("Montserrat-SemiBold", size: 13))
-                            }
-
-                        }
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(12)
-                        .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 2)
-                        .padding(.horizontal)
-                        
-                        
-
                         VStack(alignment: .leading, spacing: 12) {
                             
                             HStack(spacing: 8) {
-                                Text("Visits")
+                                Text("Visits Status")
                                     .font(.custom("Montserrat-Bold", size: 17))
                                     .foregroundColor(.black)
                                 
@@ -114,20 +91,55 @@ struct ProcedureDetailView: View {
                         .cornerRadius(12)
                         .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 2)
                         .padding(.horizontal)
+
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Record Details")
+                                .font(.custom("Montserrat-Bold", size: 17))
+
+                            HStack {
+                                Text("Immunization ID")
+                                .font(.custom("Montserrat-Regular", size: 14))
+                                Spacer()
+                                Text("#IMM78901")
+                                .font(.custom("Montserrat-SemiBold", size: 13))
+                            }
+
+                            HStack {
+                                Text("Location")
+                                .font(.custom("Montserrat-Regular", size: 14))
+                                Spacer()
+                                Text("Apollo Hospital")
+                                .font(.custom("Montserrat-SemiBold", size: 13))
+                            }
+
+                            HStack {
+                                Text("Provider")
+                                .font(.custom("Montserrat-Regular", size: 14))
+                                Spacer()
+                                Text("Dr. Sarah Johnson")
+                                    .font(.custom("Montserrat-SemiBold", size: 13))
+                            }
+                        }
+                        .padding()
+                        .background(Color.clear)
+                        .cornerRadius(12)
+                        .padding(.horizontal)
                         
-                        Spacer()
 
                         // Bottom Buttons
                         ActionButtonsView(title: "Sync Data")
+
+                        
+                        Spacer()
                         
                         Button(action: {
                             
                         }) {
-                            Text("Add Follow-Up")
+                            Text("Add Immunization")
                                 .font(.custom("Montserrat-SemiBold", size: 16))
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity, alignment: .center)
-                                .frame(height:45)
+                                .frame(height:40)
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 8)
                                 .background(Color(hex: "FF6605"))
@@ -137,13 +149,10 @@ struct ProcedureDetailView: View {
                         .padding(.horizontal,12)
 
 
-                        
-                        Spacer()
-
                     }
                 }
                 .padding(.top)
-                .background(Color.white.ignoresSafeArea())
+                .background(Color(UIColor.systemGray6).ignoresSafeArea())
                 .navigationBarBackButtonHidden(true)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
@@ -158,8 +167,7 @@ struct ProcedureDetailView: View {
 
 
 #Preview {
-    ProcedureDetailView(data: ProcedureDummyData(name: "", recordDate: "", status: .completed))
+    ImmunizationDetailView()
 }
-
 
 
