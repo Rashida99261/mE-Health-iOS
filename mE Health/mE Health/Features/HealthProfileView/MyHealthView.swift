@@ -14,8 +14,14 @@ struct MyHealthView: View {
     @State private var showAppoitmentOverlay = false
     
     var samplePractioner : [PractitionerData] = [
-        PractitionerData(name: "Dr. Ashley David", specialty: "Gynecologist", phone: "(212) 555-1234", email: "info@totalcaremaintenance.com"),
-        PractitionerData(name: "Dr. Ashley David", specialty: "Gynecologist", phone: "(212) 555-1234", email: "info@totalcaremaintenance.com")]
+        PractitionerData(name: "Dr. Emily Carter, MD", specialty: "Family Medicine", phone: "+1-978-683-4000", email: "carter@lawrencegeneral.org"),
+        PractitionerData(name: "Dr. Rajesh Patel, MD", specialty: "Allergy and Immunology", phone: "+1-978-683-4000", email: "rajesh.patel@lawrencegeneral.org"),
+        PractitionerData(name: "Dr. Susan Lee, MD, MD", specialty: "Pulmonary Medicine", phone: "+1-978-683-4000", email: "susan.lee@lawrencegeneral.org"),
+        PractitionerData(name: "Dr. Michael Nguyen, MD", specialty: "Cardiology", phone: "+1-617-726-2000", email: "michael.nguyen@mgh.harvard.edu"),
+        PractitionerData(name: "Dr. Laura Kim, MD", specialty: "Diagnostic Radiology", phone: "+1-978-683-4000", email: "laura.kim@lawrencegeneral.org"),
+        
+        PractitionerData(name: "Dr. James O’Connor, MD", specialty: "Orthopedic Surgery", phone: "+1-617-726-2000", email: "james.oconnor@mgh.harvard.edu"),
+        PractitionerData(name: "Dr. Richard Allara, MD", specialty: "Family Medicine", phone: "+1-978-783-5000", email: "richard.allara@middletonfamily.org")]
     
     var sampleAppoitmnt : [AppointmentData] = [
         AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.",status: .booked),
@@ -23,9 +29,8 @@ struct MyHealthView: View {
         AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.",status: .cancel)]
     
     var sampleAleData : [AllergyDummyData] = [
-        AllergyDummyData(name: "Peanut Allergy", recordDate: "Recorded Date: 05/06/2025"),
-        AllergyDummyData(name: "Dust Allergy", recordDate: "Recorded Date: 05/06/2025"),
-        AllergyDummyData(name: "Penicillin Allergy", recordDate: "Recorded Date: 05/06/2025")
+        AllergyDummyData(name: "Pollen allergy", recordDate: "Recorded Date: 2021-07-01"),
+
         ]
         
     var sampleLabData : [LabDummyData] = [
@@ -35,29 +40,68 @@ struct MyHealthView: View {
     ]
     
     var sampleImmubeData : [ImmuneDummyData] = [
-        ImmuneDummyData(name: "COVID-19 Vaccine", recordDate: "Occurrence Date: N/A", location: "Location: N/A", isCompleted: false),
-        ImmuneDummyData(name: "COVID-19 Vaccine", recordDate: "Occurrence Date: N/A", location: "Location: N/A", isCompleted: true),
-        ImmuneDummyData(name: "COVID-19 Vaccine", recordDate: "Occurrence Date: N/A", location: "Location: N/A", isCompleted: true)
+        ImmuneDummyData(name: "Influenza vaccine", recordDate: "Occurrence Date: 01/07/2021", location: "Location: N/A", isCompleted: true),
+        ImmuneDummyData(name: "COVID-19 vaccine, mRNA, Pfizer, 1st dose", recordDate: "Occurrence Date: 01/07/2021", location: "Location: N/A", isCompleted: true),
+        ImmuneDummyData(name: "COVID-19 vaccine, mRNA, Pfizer, 2nd dose", recordDate: "Occurrence Date: 05/08/2022", location: "Location: N/A", isCompleted: true),
+        
+        ImmuneDummyData(name: "Tdap vaccine", recordDate: "Occurrence Date: 15/10/2022", location: "Location: N/A", isCompleted: true),
+        ImmuneDummyData(name: "Shingles vaccine, recombinant, 1st dose", recordDate: "Occurrence Date: 15/06/2023", location: "Location: N/A", isCompleted: true),
+        ImmuneDummyData(name: "Shingles vaccine, recombinant, 2nd dose", recordDate: "Occurrence Date: 10/09/2023", location: "Location: N/A", isCompleted: true),
+        ImmuneDummyData(name: "Pneumococcal conjugate vaccine, PCV20", recordDate: "Occurrence Date: 15/06/2024", location: "Location: N/A", isCompleted: true)
     ]
     
     let billingItems: [BillingItem] = [
-        BillingItem(title: "Clinic Name", date: "19/05/2025", amount: "$8.40", status: .planned),
-        BillingItem(title: "Hospital Bills", date: "19/05/2025", amount: "$15.99", status: .planned)
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/06/2021", amount: "$150", status: .planned),
+        BillingItem(title: "Blue Cross Blue Shield", date: "01/07/2021", amount: "$100", status: .planned),
+        
+        BillingItem(title: "Blue Cross Blue Shield", date: "01/09/2021", amount: "$1000", status: .planned),
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/09/2021", amount: "$200", status: .planned),
+        
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/02/2023", amount: "$3000", status: .planned),
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/06/2022", amount: "$150", status: .planned),
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/06/2023", amount: "$150", status: .planned),
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/06/2024", amount: "$150", status: .planned),
+        
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/02/2023", amount: "$3000", status: .planned),
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/06/2022", amount: "$4000", status: .planned),
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/06/2023", amount: "$200", status: .planned),
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/06/2024", amount: "$5000", status: .planned)
     ]
     
     let visitData : [VisitDummyData] = [
-        VisitDummyData(name: "Annual Physical", recordDate: "Date: 05/06/2025", status: .planned),
-        VisitDummyData(name: "Dental Checkup", recordDate: "Date: 05/06/2025", status: .cancel),
-        VisitDummyData(name: "Follow-up Visit", recordDate: "Date: 05/06/2025", status: .schedule),
-        VisitDummyData(name: "Laboratory Visit", recordDate: "Date: 05/06/2025", status: .finish)
+        VisitDummyData(name: "Allergy follow-up, prescribed cetirizine", recordDate: "Date: 01/07/2021", status: .finish),
+        VisitDummyData(name: "Pneumonia evaluation, ordered chest X-ray, prescribed amoxicilli", recordDate: "Date: 01/09/2021", status: .finish),
+        VisitDummyData(name: "Chest X-ray for pneumonia evaluation", recordDate: "Date: 01/09/2021", status: .finish),
+        VisitDummyData(name: "Cardiology follow-up, adjusted lisinopril, ordered lipid panel", recordDate: "Date: 01/10/2021", status: .finish),
+       VisitDummyData(name: "Abdominal discomfort evaluation, ordered ultrasound", recordDate: "Date: 01/11/2021", status: .finish),
+        VisitDummyData(name: "Abdominal ultrasound, diagnosed gallstones", recordDate: "Date: 15/11/2021", status: .finish),
+        VisitDummyData(name: "Orthopedic consult for knee pain, ordered MRI", recordDate: "Date: 10/10/2021", status: .finish),
+        VisitDummyData(name: "Knee MRI, confirmed meniscal tear", recordDate: "Date: 20/10/2021", status: .finish),
+        
+        VisitDummyData(name: "Abdominal discomfort evaluation, ordered ultrasound", recordDate: "Date: 01/11/2021", status: .finish),
+         VisitDummyData(name: "Abdominal ultrasound, diagnosed gallstones", recordDate: "Date: 15/11/2021", status: .finish),
+         VisitDummyData(name: "Orthopedic consult for knee pain, ordered MRI", recordDate: "Date: 10/10/2021", status: .finish),
+         VisitDummyData(name: "Knee MRI, confirmed meniscal tear", recordDate: "Date: 20/10/2021", status: .finish),
+        VisitDummyData(name: "Arthroscopic meniscectomy for right knee meniscal tear", recordDate: "Date: 15/02/2023", status: .finish),
+         VisitDummyData(name: "Post-surgical follow-up, prescribed physical therapy", recordDate: "Date: 15/03/2023", status: .finish),
+         VisitDummyData(name: "Revision arthroscopic meniscectomy for incomplete healing", recordDate: "Date: 15/11/2023", status: .finish),
+         VisitDummyData(name: "Follow-up knee MRI, identified scar tissue", recordDate: "Date: 15/10/2024", status: .finish),
+        VisitDummyData(name: "Arthroscopic debridement for scar tissue removal", recordDate: "Date: 15/11/2024", status: .finish),
+         VisitDummyData(name: "Post-surgical follow-up, prescribed physical therapy", recordDate: "Date: 15/03/2025", status: .finish),
+         VisitDummyData(name: "Vaccination visit, administered COVID-19 2nd dose", recordDate: "Date: 05/08/2022", status: .finish),
+         VisitDummyData(name: "Annual well visit, diagnosed hypertension, hyperlipidemia, ordered labs", recordDate: "Date: 15/06/2021", status: .finish),
+        VisitDummyData(name: "Annual well visit, reviewed conditions, ordered labs", recordDate: "Date: 15/06/2022", status: .finish),
+        VisitDummyData(name: "Annual well visit, reviewed conditions, ordered labs", recordDate: "Date: 15/06/2023", status: .finish),
+        VisitDummyData(name: "Annual well visit, reviewed conditions, ordered labs", recordDate: "Date: 15/06/2024", status: .finish),
+        VisitDummyData(name: "Annual well visit, review conditions, order labs", recordDate: "Date: 15/06/2025", status: .finish)
+        
     ]
     
     let procedureData : [ProcedureDummyData] = [
-        ProcedureDummyData(name: "Appendectomy", recordDate: "03/15/2024", status: .completed),
-        ProcedureDummyData(name: "Cardiac Catheterization", recordDate: "03/15/2024", status: .progress),
-        ProcedureDummyData(name: "Colonoscopy", recordDate: "03/15/2024", status: .completed),
-        ProcedureDummyData(name: "Hip Replacement", recordDate: "03/15/2024", status: .completed),
-        ProcedureDummyData(name: "Cardiac Catheterization", recordDate: "03/15/2024", status: .progress)
+        ProcedureDummyData(name: "Arthroscopic meniscectomy", recordDate: "02/15/2023", status: .completed),
+        ProcedureDummyData(name: "Revision arthroscopic meniscectomy", recordDate: "11/15/2023", status: .completed),
+        ProcedureDummyData(name: "Arthroscopic debridement", recordDate: "11/15/2024", status: .completed),
+       
     ]
     
     let conditionData : [ConditionDummyData] = [
@@ -67,12 +111,15 @@ struct MyHealthView: View {
     ]
 
     let vitalData : [VitalDummyData] = [
-        VitalDummyData(name: "Blood Pressure", date: "06//11/2025", mg: "120/80 mmHg"),
-        VitalDummyData(name: "Heart Rate", date: "06//11/2025", mg: "72 bmp")
+        VitalDummyData(name: "Blood pressure panel", date: "01/07/2021", mg: "90/140 mmHg"),
+        VitalDummyData(name: "Heart Rate", date: "06/11/2025", mg: "72 bmp"),
+        
+        VitalDummyData(name: "Blood pressure panel", date: "15/06/2021", mg: "90/140 mmHg"),
+        VitalDummyData(name: "Heart Rate", date: "15/06/2021", mg: "72 bmp")
     ]
 
     let medicationData : [MedicationDummyData] = [
-        MedicationDummyData(name: "Lisinopril 10mg", recordDate: "Authored: 05/06/2025", status: .active),
+        MedicationDummyData(name: "Lisinopril 10mg", recordDate: "Authored: 01/07/2021", status: .active),
         MedicationDummyData(name: "Lisinopril 10mg", recordDate: "Authored: 05/06/2025", status: .active)
     ]
 
