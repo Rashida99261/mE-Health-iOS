@@ -105,9 +105,9 @@ struct MyHealthView: View {
     ]
     
     let conditionData : [ConditionDummyData] = [
-        ConditionDummyData(name: "Blood Pressure", date: "June 12, 2024", status: .active),
-        ConditionDummyData(name: "Hypertension", date: "June 12, 2024", status: .active),
-        ConditionDummyData(name: "Seasonal Allergies", date: "June 12, 2024", status: .resolved)
+        ConditionDummyData(name: "Seasonal allergic rhinitis", date: "July 1, 2021", status: .active),
+        ConditionDummyData(name: "Pneumonia, unspecified", date: "Aug 1, 2021", status: .active),
+        ConditionDummyData(name: "Essential hypertension", date: "June 12, 2024", status: .active)
     ]
 
     let vitalData : [VitalDummyData] = [
