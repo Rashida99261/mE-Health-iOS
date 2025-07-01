@@ -8,7 +8,7 @@
 import SwiftUI
 import Foundation
 
-struct BillingItem: Identifiable {
+struct BillingItem: Identifiable, Equatable {
     let id = UUID()
     let title: String
     let date: String
@@ -21,6 +21,7 @@ enum BillingStatus: String {
 
 struct BillingCardView: View {
     let item: BillingItem
+    let onTap: () -> Void
 
     var body: some View {
         HStack(spacing: 0) {
@@ -75,6 +76,10 @@ struct BillingCardView: View {
         .background(Color.white)
         .cornerRadius(12)
         .shadow(radius: 4)
+        .onTapGesture {
+            onTap()
+        }
+
     }
 }
 
@@ -86,7 +91,9 @@ struct BillingSectionView: View {
         ScrollView {
             VStack(spacing: 12) {
                 ForEach(items) { item in
-                    BillingCardView(item: item)
+                    BillingCardView(item: item) {
+                        onCardTap(item)
+                    }
                 }
             }
             .padding()
