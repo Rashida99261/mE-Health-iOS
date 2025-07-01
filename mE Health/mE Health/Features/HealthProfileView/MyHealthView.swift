@@ -142,8 +142,8 @@ struct MyHealthView: View {
                     )
                     
                 case "Condition":
-                    ConditionSectionView(conditions: conditionData, onCardTap: { appoitmnet in
-                                        
+                    ConditionSectionView(conditions: conditionData, onCardTap: { condition in
+                        viewStore.send(.openConditionDetail(condition))
                         })
 
                 case "Lab":
@@ -223,6 +223,18 @@ struct MyHealthView: View {
                     AppoitmentDetailView(appoitment: selected)
                 }
             }
+            
+            .navigationDestination(
+                isPresented: viewStore.binding(
+                    get: { $0.selectCondition != nil },
+                    send: .closeConditionDetail
+                )
+            ) {
+                if let selected = viewStore.selectCondition {
+                    ConditionDetailView()
+                }
+            }
+
 
             .navigationDestination(
                 isPresented: viewStore.binding(
