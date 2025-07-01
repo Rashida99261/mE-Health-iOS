@@ -163,6 +163,8 @@ struct MyHealthView: View {
                     
                 case "Visits":
                     VisitsSectionView(visit: visitData, onCardTap: { visit in
+                        viewStore.send(.openVisitsDetail(visit))
+                        
                     })
                     
                 case "Procedure":
@@ -184,7 +186,8 @@ struct MyHealthView: View {
                     
                     
                 case "Billing":
-                    BillingSectionView(items: billingItems, onCardTap:{ lab in
+                    BillingSectionView(items: billingItems, onCardTap:{ billing in
+                        viewStore.send(.openBillingDetail(billing))
                     })
                     
                case "Upload Documents":
@@ -220,6 +223,17 @@ struct MyHealthView: View {
                     AppoitmentDetailView(appoitment: selected)
                 }
             }
+
+            .navigationDestination(
+                isPresented: viewStore.binding(
+                    get: { $0.selectVisit != nil },
+                    send: .closeVisitDetail
+                )
+            ) {
+                if let selected = viewStore.selectVisit {
+                    VisitsDetailView(visit: selected)
+                }
+            }
             
             .navigationDestination(
                 isPresented: viewStore.binding(
@@ -240,6 +254,17 @@ struct MyHealthView: View {
             ) {
                 if let selected = viewStore.selctedVital {
                     VitalDetailView()
+                }
+            }
+            
+            .navigationDestination(
+                isPresented: viewStore.binding(
+                    get: { $0.selectBilling != nil },
+                    send: .closeBillingDetail
+                )
+            ) {
+                if let selected = viewStore.selectBilling {
+                    BillingDetailView(billing: selected)
                 }
             }
             
@@ -286,6 +311,7 @@ struct MyHealthView: View {
                     LabDetailView()
                 }
             }
+
 
             .background(Color.white)
             .navigationBarBackButtonHidden(true)

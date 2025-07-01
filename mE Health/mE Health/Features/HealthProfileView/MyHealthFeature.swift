@@ -45,6 +45,8 @@ struct MyHealthFeature: Reducer {
         var selctedVital: VitalDummyData? = nil
         var selectImune: ImmuneDummyData? = nil
         var selectMed : MedicationDummyData? = nil
+        var selectVisit : VisitDummyData? = nil
+        var selectBilling : BillingItem? = nil
         
     }
 
@@ -73,6 +75,12 @@ struct MyHealthFeature: Reducer {
         
         case openMedDetail(MedicationDummyData)
         case closeMedDetail
+
+        case openVisitsDetail(VisitDummyData)
+        case closeVisitDetail
+        
+        case openBillingDetail(BillingItem)
+        case closeBillingDetail
 
 
         
@@ -167,6 +175,22 @@ struct MyHealthFeature: Reducer {
                 state.selectMed = nil
                 return .none
                 
+
+            case .openVisitsDetail(let data):
+                state.selectVisit = data
+                return .none
+                
+            case .closeVisitDetail:
+                state.selectVisit = nil
+                return .none
+                
+            case .openBillingDetail(let data):
+                state.selectBilling = data
+                return .none
+                
+            case .closeBillingDetail:
+                state.selectBilling = nil
+                return .none
 
 
             case .header:
