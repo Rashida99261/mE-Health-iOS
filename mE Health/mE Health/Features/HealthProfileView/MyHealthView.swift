@@ -162,91 +162,96 @@ struct MyHealthView: View {
                 )
 
                 
-                Divider()
-                
-                
-                let selectedTileTitle = viewStore.tiles[viewStore.selectedIndex].title
-                switch selectedTileTitle {
-                case "Practitioner":
-                    PractitionerSectionView(
-                        practitioners: samplePractioner, // Replace with state-driven data
-                        startDate: "06-01-2025",
-                        endDate: "06-16-2025",
-                        onCardTap: { practitioner in
-                            viewStore.send(.practitionerTapped(practitioner))
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        
+                        let selectedTileTitle = viewStore.tiles[viewStore.selectedIndex].title
+                        switch selectedTileTitle {
+                        case "Practitioner":
+                            PractitionerSectionView(
+                                practitioners: samplePractioner, // Replace with state-driven data
+                                startDate: "06-01-2025",
+                                endDate: "06-16-2025",
+                                onCardTap: { practitioner in
+                                    viewStore.send(.practitionerTapped(practitioner))
+                                }
+                            )
+                            
+                        case "Appointment":
+                            AppoitmentSectionView(
+                                practitioners: sampleAppoitmnt,
+                                onCardTap:{ appoitmnet in
+                                    viewStore.send(.openApoitmentDetial(appoitmnet))
+                                },
+                                onReadMoreTap: { appoitmnet in
+                                    showAppoitmentOverlay = true
+                                }
+                            )
+                            
+                        case "Condition":
+                            ConditionSectionView(conditions: conditionData, onCardTap: { condition in
+                                viewStore.send(.openConditionDetail(condition))
+                            })
+                            
+                        case "Lab":
+                            LabSectionView(labs: sampleLabData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { lab in
+                                viewStore.send(.openLabDetail(lab))
+                            })
+                            
+                        case "Vital":
+                            VitalsSectionView(vitals: vitalData) { vital in
+                                viewStore.send(.openVitalDetail(vital))
+                            }
+                            
+                        case "Medication":
+                            MedicationSectionView(medications: medicationData) { medication in
+                                viewStore.send(.openMedDetail(medication))
+                            }
+                            
+                        case "Visits":
+                            VisitsSectionView(visit: visitData, onCardTap: { visit in
+                                viewStore.send(.openVisitsDetail(visit))
+                                
+                            })
+                            
+                        case "Procedure":
+                            ProcedureSectionView(procedure: procedureData, onCardTap: { data in
+                                viewStore.send(.openProcedureDetail(data))
+                            })
+                            
+                        case "Allergy":
+                            AllergySectionView(allergies: sampleAleData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { allergy in
+                                viewStore.send(.allergyTapped(allergy))
+                            })
+                            
+                        case "Immunizations":
+                            ImmuneSectionView(immune: sampleImmubeData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { immune in
+                                
+                                viewStore.send(.openImmuneDetail(immune))
+                                
+                            })
+                            
+                            
+                        case "Billing":
+                            BillingSectionView(items: billingItems, onCardTap:{ billing in
+                                viewStore.send(.openBillingDetail(billing))
+                            })
+                            
+                        case "Upload Documents":
+                            FilesSectionView(filesArray: filedata) { files in
+                                
+                            }
+                            
+                            
+                        default:
+                            EmptyView()
                         }
-                    )
-
-                case "Appointment":
-                    AppoitmentSectionView(
-                        practitioners: sampleAppoitmnt,
-                        onCardTap:{ appoitmnet in
-                            viewStore.send(.openApoitmentDetial(appoitmnet))
-                        },
-                        onReadMoreTap: { appoitmnet in
-                            showAppoitmentOverlay = true
-                        }
-                    )
-                    
-                case "Condition":
-                    ConditionSectionView(conditions: conditionData, onCardTap: { condition in
-                        viewStore.send(.openConditionDetail(condition))
-                        })
-
-                case "Lab":
-                    LabSectionView(labs: sampleLabData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { lab in
-                        viewStore.send(.openLabDetail(lab))
-                    })
-                    
-                case "Vital":
-                    VitalsSectionView(vitals: vitalData) { vital in
-                        viewStore.send(.openVitalDetail(vital))
-                    }
-                    
-                case "Medication":
-                    MedicationSectionView(medications: medicationData) { medication in
-                        viewStore.send(.openMedDetail(medication))
-                    }
-                    
-                case "Visits":
-                    VisitsSectionView(visit: visitData, onCardTap: { visit in
-                        viewStore.send(.openVisitsDetail(visit))
-                        
-                    })
-                    
-                case "Procedure":
-                    ProcedureSectionView(procedure: procedureData, onCardTap: { data in
-                        viewStore.send(.openProcedureDetail(data))
-                    })
-                    
-                case "Allergy":
-                    AllergySectionView(allergies: sampleAleData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { allergy in
-                        viewStore.send(.allergyTapped(allergy))
-                    })
-
-                case "Immunizations":
-                    ImmuneSectionView(immune: sampleImmubeData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { immune in
-                       
-                        viewStore.send(.openImmuneDetail(immune))
-                        
-                    })
-                    
-                    
-                case "Billing":
-                    BillingSectionView(items: billingItems, onCardTap:{ billing in
-                        viewStore.send(.openBillingDetail(billing))
-                    })
-                    
-               case "Upload Documents":
-                    FilesSectionView(filesArray: filedata) { files in
                         
                     }
-                    
-                    
-                default:
-                    EmptyView()
+                    .padding([.top,.bottom], 16)
                 }
-
+                .padding(.top, 8)
+                .padding(.bottom, 40)
             }
             .padding(.top, 8)
             .navigationDestination(

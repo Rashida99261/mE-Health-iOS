@@ -94,17 +94,16 @@ struct ImmuneSectionView: View {
     
     var body: some View {
         
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 24) {
-                // Horizontal date cards
-                ForEach(immune) { labdata in
-                    ImmuneMainView(immune: labdata) {
-                        onCardTap(labdata)
-                    }
+        VStack(spacing: 24) {
+            // Horizontal date cards
+            ForEach(immune) { labdata in
+                ImmuneMainView(immune: labdata) {
+                    onCardTap(labdata)
                 }
-
             }
-            .padding(.horizontal)
+
         }
+        .padding(.horizontal)
+
     }
 }

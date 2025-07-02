@@ -77,16 +77,15 @@ struct AllergySectionView: View {
     
     var body: some View {
         
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 24) {
-                // Horizontal date cards
-                ForEach(allergies) { allergy in
-                    AllergyMainView(allergy: allergy) {
-                        onCardTap(allergy)
-                    }
+        VStack(spacing: 24) {
+            // Horizontal date cards
+            ForEach(allergies) { allergy in
+                AllergyMainView(allergy: allergy) {
+                    onCardTap(allergy)
                 }
             }
-            .padding(.horizontal)
         }
+        .padding(.horizontal)
+
     }
 }

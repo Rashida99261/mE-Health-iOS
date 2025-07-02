@@ -215,23 +215,22 @@ struct AppoitmentSectionView: View {
     
     var body: some View {
         
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 24) {
-                ForEach(practitioners) { appoitment in
-                    AppoitmentMainView(appoinmnt: appoitment,
-                                       onTap: {
-                        onCardTap(appoitment)
-                        },
-                                       onReadMoreTap: {
-                            onReadMoreTap(appoitment)   // <- Pass specific appointment
-                        }
-                    )
-                    
-                    
-                    
-                }
+        VStack(spacing: 24) {
+            ForEach(practitioners) { appoitment in
+                AppoitmentMainView(appoinmnt: appoitment,
+                                   onTap: {
+                    onCardTap(appoitment)
+                    },
+                                   onReadMoreTap: {
+                        onReadMoreTap(appoitment)   // <- Pass specific appointment
+                    }
+                )
+                
+                
+                
             }
-            .padding(.horizontal)
         }
+        .padding(.horizontal)
+
     }
 }

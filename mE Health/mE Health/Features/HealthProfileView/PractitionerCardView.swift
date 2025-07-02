@@ -76,17 +76,17 @@ struct PractitionerSectionView: View {
     
     var body: some View {
         
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 24) {
-                // Horizontal date cards
-                ForEach(practitioners) { practitioner in
-                    PractitionerCardView(practitioner: practitioner) {
-                                        onCardTap(practitioner)
-                        }
-                }
+        VStack(spacing: 24) {
+            // Horizontal date cards
+            ForEach(practitioners) { practitioner in
+                PractitionerCardView(practitioner: practitioner) {
+                                    onCardTap(practitioner)
+                    }
             }
-            .padding(.horizontal)
         }
+        .padding(.horizontal)
+
+
     }
 
 }
