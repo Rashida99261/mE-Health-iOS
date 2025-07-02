@@ -95,17 +95,16 @@ struct LabSectionView: View {
     
     var body: some View {
         
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 24) {
-                // Horizontal date cards
-                
-                ForEach(labs) { labdata in
-                    LabMainView(lab: labdata) {
-                        onCardTap(labdata)
-                    }
+        VStack(spacing: 24) {
+            // Horizontal date cards
+            
+            ForEach(labs) { labdata in
+                LabMainView(lab: labdata) {
+                    onCardTap(labdata)
                 }
             }
-            .padding(.horizontal)
         }
+        .padding(.horizontal)
+
     }
 }

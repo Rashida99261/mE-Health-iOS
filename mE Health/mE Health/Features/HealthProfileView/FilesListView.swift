@@ -64,19 +64,46 @@ struct FilesSectionView: View {
 
     var body: some View {
         
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 24) {
-                // Horizontal date cards
-                
-                ForEach(filesArray) { files in
-                    FilesListView(fileData: files) {
-                                        onCardTap(files)
-                        }
-                }
+        VStack(spacing: 24) {
+            // Horizontal date cards
+            
+            ForEach(filesArray) { files in
+                FilesListView(fileData: files) {
+                                    onCardTap(files)
+                    }
             }
-            .padding(.horizontal)
+            
+            
+            
+            Button(action: {
+                
+            }) {
+                HStack(spacing: 8) {
+                       Image("upload_white") // your custom image asset
+                           .resizable()
+                           .scaledToFit()
+                           .frame(width: 18, height: 18) // adjust size as needed
+
+                       Text("Upload")
+                           .font(.custom("Montserrat-SemiBold", size: 16))
+                   }
+                    .font(.custom("Montserrat-SemiBold", size: 16))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .frame(height:40)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color(hex: "FF6605"))
+                    .cornerRadius(32)
+            }
+            .buttonStyle(PlainButtonStyle())
+            .padding(.horizontal,24)
+
+            
+            
         }
         .padding(.horizontal)
+
     }
 }
 

@@ -88,17 +88,14 @@ struct BillingSectionView: View {
     var onCardTap: (BillingItem) -> Void
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 12) {
-                ForEach(items) { item in
-                    BillingCardView(item: item) {
-                        onCardTap(item)
-                    }
+        VStack(spacing: 12) {
+            ForEach(items) { item in
+                BillingCardView(item: item) {
+                    onCardTap(item)
                 }
             }
-            .padding()
         }
-        .background(Color(.systemBackground))
+        .padding()
     }
 
 }

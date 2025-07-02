@@ -116,17 +116,15 @@ struct VisitsSectionView: View {
     
     var body: some View {
         
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 24) {
-                // Horizontal date cards
-                
-                ForEach(visit) { visitData in
-                    VisitsView(visit: visitData) {
-                        onCardTap(visitData)
-                    }
+        VStack(spacing: 24) {
+            // Horizontal date cards
+            
+            ForEach(visit) { visitData in
+                VisitsView(visit: visitData) {
+                    onCardTap(visitData)
                 }
             }
-            .padding(.horizontal)
         }
+        .padding(.horizontal)
     }
 }

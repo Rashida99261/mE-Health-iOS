@@ -92,17 +92,16 @@ struct ProcedureSectionView: View {
     
     var body: some View {
         
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 24) {
-                // Horizontal date cards
-                
-                ForEach(procedure) { procData in
-                    ProcedureMainView(procedure: procData) {
-                        onCardTap(procData)
-                    }
+        VStack(spacing: 24) {
+            // Horizontal date cards
+            
+            ForEach(procedure) { procData in
+                ProcedureMainView(procedure: procData) {
+                    onCardTap(procData)
                 }
             }
-            .padding(.horizontal)
         }
+        .padding(.horizontal)
+
     }
 }

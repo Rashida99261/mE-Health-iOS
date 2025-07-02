@@ -96,16 +96,15 @@ struct ConditionSectionView: View {
     
     var body: some View {
         
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 24) {
-                // Horizontal date cards
-                ForEach(conditions) { condition in
-                    ConditionListView(condition: condition) {
-                        onCardTap(condition)
-                    }
+        VStack(spacing: 24) {
+            // Horizontal date cards
+            ForEach(conditions) { condition in
+                ConditionListView(condition: condition) {
+                    onCardTap(condition)
                 }
             }
-            .padding(.horizontal)
         }
+        .padding(.horizontal)
+
     }
 }

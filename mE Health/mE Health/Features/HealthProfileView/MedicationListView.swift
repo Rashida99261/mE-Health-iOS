@@ -87,17 +87,16 @@ struct MedicationSectionView: View {
     
     var body: some View {
         
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 24) {
-                // Horizontal date cards
-                
-                ForEach(medications) { medicationData in
-                    MedicationListView(medication: medicationData) {
-                        onCardTap(medicationData)
-                    }
+        VStack(spacing: 24) {
+            // Horizontal date cards
+            
+            ForEach(medications) { medicationData in
+                MedicationListView(medication: medicationData) {
+                    onCardTap(medicationData)
                 }
             }
-            .padding(.horizontal)
         }
+        .padding(.horizontal)
+
     }
 }
