@@ -80,7 +80,6 @@ struct FHIRAPIService : FHIRAPIClient{
         guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
             throw URLError(.badURL)
         }
-        
         return try await fetch(PatientModel.self, from: "/Patient/\(patientId)")
     }
     

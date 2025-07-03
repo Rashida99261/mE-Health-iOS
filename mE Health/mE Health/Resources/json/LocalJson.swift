@@ -273,22 +273,27 @@ class ReadDatapatient: ObservableObject  {
 
 class ReadDatapractitioner: ObservableObject  {
    
+    @Published var practitioners: [PractitionerData] = []
       
     init(){
         loadData()
     }
     
     func loadData()  {
-        guard let url = Bundle.main.url(forResource: "practitioner", withExtension: "json")
-            else {
-                print("Json file not found")
-                return
+        guard let url = Bundle.main.url(forResource: "practitioner", withExtension: "json") else {
+            print("JSON file not found")
+            return
+        }
+
+        do {
+            let data = try Data(contentsOf: url)
+            let decodedResponse = try JSONDecoder().decode(PractitionerResponse.self, from: data)
+            DispatchQueue.main.async {
+                self.practitioners = decodedResponse.practitioners
             }
-        
-        let data = try? Data(contentsOf: url)
-        print(data!)
-       
-        
+        } catch {
+            print("Error decoding JSON: \(error)")
+        }
     }
      
 }
@@ -317,6 +322,7 @@ class ReadDatapractitioner_organization: ObservableObject  {
 
 class ReadDataprocedure: ObservableObject  {
    
+    @Published var procedures: [ProcedureDummyData] = []
       
     init(){
         loadData()
@@ -329,10 +335,16 @@ class ReadDataprocedure: ObservableObject  {
                 return
             }
         
-        let data = try? Data(contentsOf: url)
-        print(data!)
-       
-        
+        do {
+            let data = try Data(contentsOf: url)
+            let decodedResponse = try JSONDecoder().decode(ProcedureJsonResponse.self, from: data)
+            DispatchQueue.main.async {
+                self.procedures = decodedResponse.procedures
+                print(self.procedures)
+            }
+        } catch {
+            print("Error decoding JSON: \(error)")
+        }
     }
      
 }

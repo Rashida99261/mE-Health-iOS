@@ -7,17 +7,60 @@
 
 import SwiftUI
 
-struct ProcedureDummyData: Identifiable, Equatable {
-    let id: UUID = UUID()
-    let name: String
-    let recordDate: String
-    let status: ProcedureStatus?
+struct ProcedureJsonResponse: Codable {
+    let procedures: [ProcedureDummyData]
 }
 
-enum ProcedureStatus: String {
+struct CodeInfo: Codable , Equatable{
+    let system: String
+    let code: String
+    let display: String
+}
+
+
+struct ProcedureDummyData: Codable,Identifiable, Equatable {
+    let id: String
+    let codeSystem: String
+    let rawCode: String
+    let codeDisplay: String
+    let performedDate: String
+    let rawReasonCode: String
+    let patientId: String
+    let encounterId: String
+    let createdAt: String
+    let updatedAt: String
+    let status: ProcedureStatus?
+    
+    var code: CodeInfo? {
+        try? JSONDecoder().decode(CodeInfo.self, from: Data(rawCode.utf8))
+    }
+
+    var reasonCode: CodeInfo? {
+        try? JSONDecoder().decode(CodeInfo.self, from: Data(rawReasonCode.utf8))
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case codeSystem = "code_system"
+        case rawCode = "code"
+        case codeDisplay = "code_display"
+        case status
+        case performedDate
+        case rawReasonCode = "reasonCode"
+        case patientId
+        case encounterId
+        case createdAt
+        case updatedAt
+    }
+
+
+}
+
+enum ProcedureStatus: String, Codable {
     case completed = "Completed"
     case progress = "In Progress"
 }
+
 
 
 struct ProcedureMainView: View {
@@ -29,7 +72,7 @@ struct ProcedureMainView: View {
 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text(procedure.name)
+                        Text(procedure.codeDisplay ?? "Unknown Code")
                             .font(.custom("Montserrat-Bold", size: 18))
                             .foregroundColor(.black)
                         Spacer()
@@ -56,7 +99,7 @@ struct ProcedureMainView: View {
                     .padding(.top,12)
                     .padding(.horizontal,12)
 
-                    Text(procedure.recordDate)
+                    Text(procedure.performedDate)
                         .font(.custom("Montserrat-Regular", size: 14))
                         .foregroundColor(.black)
                         .padding(.horizontal,12)

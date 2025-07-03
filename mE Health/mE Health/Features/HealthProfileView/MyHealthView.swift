@@ -13,15 +13,9 @@ struct MyHealthView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var showAppoitmentOverlay = false
     
-    var samplePractioner : [PractitionerData] = [
-        PractitionerData(name: "Dr. Emily Carter, MD", specialty: "Family Medicine", phone: "+1-978-683-4000", email: "carter@lawrencegeneral.org"),
-        PractitionerData(name: "Dr. Rajesh Patel, MD", specialty: "Allergy and Immunology", phone: "+1-978-683-4000", email: "rajesh.patel@lawrencegeneral.org"),
-        PractitionerData(name: "Dr. Susan Lee, MD, MD", specialty: "Pulmonary Medicine", phone: "+1-978-683-4000", email: "susan.lee@lawrencegeneral.org"),
-        PractitionerData(name: "Dr. Michael Nguyen, MD", specialty: "Cardiology", phone: "+1-617-726-2000", email: "michael.nguyen@mgh.harvard.edu"),
-        PractitionerData(name: "Dr. Laura Kim, MD", specialty: "Diagnostic Radiology", phone: "+1-978-683-4000", email: "laura.kim@lawrencegeneral.org"),
-        
-        PractitionerData(name: "Dr. James O’Connor, MD", specialty: "Orthopedic Surgery", phone: "+1-617-726-2000", email: "james.oconnor@mgh.harvard.edu"),
-        PractitionerData(name: "Dr. Richard Allara, MD", specialty: "Family Medicine", phone: "+1-978-783-5000", email: "richard.allara@middletonfamily.org")]
+    @StateObject private var viewModel = ReadDatapractitioner()
+    @StateObject private var procedureVM = ReadDataprocedure()
+
     
     var sampleAppoitmnt : [AppointmentData] = [
         AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.",status: .booked),
@@ -29,8 +23,7 @@ struct MyHealthView: View {
         AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.",status: .cancel)]
     
     var sampleAleData : [AllergyDummyData] = [
-        AllergyDummyData(name: "Pollen allergy", recordDate: "Recorded Date: 2021-07-01"),
-
+        AllergyDummyData(name: "Pollen allergy", recordDate: "Recorded Date: 2021-07-01")
         ]
         
     var sampleLabData : [LabDummyData] = [
@@ -95,13 +88,6 @@ struct MyHealthView: View {
         VisitDummyData(name: "Annual well visit, reviewed conditions, ordered labs", recordDate: "Date: 15/06/2024", status: .finish),
         VisitDummyData(name: "Annual well visit, review conditions, order labs", recordDate: "Date: 15/06/2025", status: .finish)
         
-    ]
-    
-    let procedureData : [ProcedureDummyData] = [
-        ProcedureDummyData(name: "Arthroscopic meniscectomy", recordDate: "02/15/2023", status: .completed),
-        ProcedureDummyData(name: "Revision arthroscopic meniscectomy", recordDate: "11/15/2023", status: .completed),
-        ProcedureDummyData(name: "Arthroscopic debridement", recordDate: "11/15/2024", status: .completed),
-       
     ]
     
     let conditionData : [ConditionDummyData] = [
@@ -169,7 +155,7 @@ struct MyHealthView: View {
                         switch selectedTileTitle {
                         case "Practitioner":
                             PractitionerSectionView(
-                                practitioners: samplePractioner, // Replace with state-driven data
+                                practitioners: viewModel.practitioners, // Replace with state-driven data
                                 startDate: "06-01-2025",
                                 endDate: "06-16-2025",
                                 onCardTap: { practitioner in
@@ -215,7 +201,7 @@ struct MyHealthView: View {
                             })
                             
                         case "Procedure":
-                            ProcedureSectionView(procedure: procedureData, onCardTap: { data in
+                            ProcedureSectionView(procedure: procedureVM.procedures, onCardTap: { data in
                                 viewStore.send(.openProcedureDetail(data))
                             })
                             
@@ -487,6 +473,9 @@ struct MyHealthView: View {
             }
         }
     }
+    
+
+
 
 }
 
