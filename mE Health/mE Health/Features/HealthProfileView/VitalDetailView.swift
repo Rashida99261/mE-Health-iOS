@@ -24,7 +24,7 @@ struct VitalDetailView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
                         
-                        TopCardView(title: "Blood Pressure", subtitle: "120/80 mmHg", desc: "February 15, 2025 at 09:30 Am")
+                        TopCardView(title: "Blood pressure panel", subtitle: "140/90 mmHg", desc: "July 1, 2021 at 02:00 pm")
                             .padding(.horizontal)
                         
                         
@@ -53,7 +53,7 @@ struct VitalDetailView: View {
                             }
 
                             
-                            Text("Start Date: 11/06/2025")
+                            Text("Start Date: 1/07/2021")
                                 .font(.custom("Montserrat-SemiBold", size: 13))
 
                         }
@@ -138,7 +138,7 @@ struct BottomDetailCardView: View {
                         
                         Spacer()
                         
-                        Text("Jhon Doe")
+                        Text("Prithwi Thakuria")
                             .font(.custom("Montserrat-SemiBold", size: 13))
                             .foregroundColor(.black)
 
@@ -151,7 +151,7 @@ struct BottomDetailCardView: View {
                         
                         Spacer()
                         
-                        Text("obs-123456")
+                        Text("obs-85354-9")
                             .font(.custom("Montserrat-SemiBold", size: 13))
                             .foregroundColor(.black)
 

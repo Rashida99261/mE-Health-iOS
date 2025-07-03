@@ -105,8 +105,8 @@ struct MyHealthView: View {
     ]
 
     let medicationData : [MedicationDummyData] = [
-        MedicationDummyData(name: "Lisinopril 10mg", recordDate: "Authored: 01/07/2021", status: .active),
-        MedicationDummyData(name: "Lisinopril 10mg", recordDate: "Authored: 05/06/2025", status: .active)
+        MedicationDummyData(name: "Cetirizine 10 mg", recordDate: "Authored: 01/07/2021", status: .active),
+        MedicationDummyData(name: "Lisinopril 10 mg", recordDate: "Authored: 15/06/2021", status: .active)
     ]
 
     let filedata : [FilesDummyData] = [
