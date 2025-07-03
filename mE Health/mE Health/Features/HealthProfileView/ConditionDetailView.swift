@@ -30,7 +30,7 @@ struct ConditionDetailView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         
                         HStack(spacing: 8) {
-                            Text("Hypertension")
+                            Text("Seasonal allergic rhinitis")
                                 .font(.custom("Montserrat-Bold", size: 17))
                                 .foregroundColor(.black)
                             
@@ -52,7 +52,7 @@ struct ConditionDetailView: View {
                                 Text("Onset")
                                     .font(.custom("Montserrat-Regular", size: 12))
                                 
-                                Text("01/05/2022")
+                                Text("01/07/2021")
                                     .font(.custom("Montserrat-Regular", size: 14))
                                 
                             }
@@ -63,7 +63,7 @@ struct ConditionDetailView: View {
                                 Text("Recorded")
                                     .font(.custom("Montserrat-Regular", size: 12))
                                 
-                                Text("01/10/2022")
+                                Text("01/07/2021")
                                     .font(.custom("Montserrat-Regular", size: 14))
                                 
                             }
@@ -76,7 +76,7 @@ struct ConditionDetailView: View {
                                 Text("Category")
                                     .font(.custom("Montserrat-Regular", size: 12))
                                 
-                                Text("Chronic")
+                                Text("Problem List Item")
                                     .font(.custom("Montserrat-Regular", size: 14))
                                 
                             }
@@ -87,7 +87,7 @@ struct ConditionDetailView: View {
                                 Text("Condition ID")
                                     .font(.custom("Montserrat-Regular", size: 12))
                                 
-                                Text("#HYP2022105")
+                                Text("#J30.1")
                                     .font(.custom("Montserrat-Regular", size: 14))
                                 
                             }
@@ -130,10 +130,10 @@ struct ConditionDetailView: View {
                                 .clipShape(Circle())
                             
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Dr. John Doe")
+                                Text("Dr. Emily Carter, MD")
                                     .font(.custom("Montserrat-Medium", size: 18))
                                     .foregroundColor(Color(hex: "FF6605"))
-                                Text("Apollo Hospital")
+                                Text("Lawrence General Hospital")
                                     .font(.custom("Montserrat-Regular", size: 14))
                                     .foregroundColor(.gray)
                             }
@@ -181,11 +181,11 @@ struct ConditionDetailView: View {
                                 
                                 VStack(alignment: .leading, spacing: 4) {
                                     
-                                    Text("11 Jun 2025") // You can pull from organization.type if dynamic
+                                    Text("1 July 2021") // You can pull from organization.type if dynamic
                                         .font(.custom("Montserrat-Medium", size: 16))
                                         .foregroundColor(.black)
                                     
-                                    Text("New York Sector C")
+                                    Text("Blood Pressure")
                                         .font(.custom("Montserrat-Regular", size: 12))
                                         .foregroundColor(Color(hex: "FF6605"))
                                 }
@@ -239,11 +239,11 @@ struct ConditionDetailView: View {
                                 
                                 VStack(alignment: .leading, spacing: 4) {
                                     
-                                    Text("ZX Pathology") // You can pull from organization.type if dynamic
+                                    Text("Lipid panel") // You can pull from organization.type if dynamic
                                         .font(.custom("Montserrat-Medium", size: 16))
                                         .foregroundColor(.black)
                                     
-                                    Text("New York Sector C")
+                                    Text("1 General Street, Lawrence, MA 01841")
                                         .font(.custom("Montserrat-Regular", size: 12))
                                         .foregroundColor(Color(hex: "FF6605"))
                                 }
@@ -295,11 +295,11 @@ struct ConditionDetailView: View {
                                 
                                 VStack(alignment: .leading, spacing: 4) {
                                     
-                                    Text("ZX Pathology") // You can pull from organization.type if dynamic
+                                    Text("Ambulatory") // You can pull from organization.type if dynamic
                                         .font(.custom("Montserrat-Medium", size: 16))
                                         .foregroundColor(.black)
                                     
-                                    Text("New York Sector C")
+                                    Text("1 General Street, Lawrence, MA 01841")
                                         .font(.custom("Montserrat-Regular", size: 12))
                                         .foregroundColor(Color(hex: "FF6605"))
                                 }
@@ -351,11 +351,11 @@ struct ConditionDetailView: View {
                                 
                                 VStack(alignment: .leading, spacing: 4) {
                                     
-                                    Text("ZX Pathology") // You can pull from organization.type if dynamic
+                                    Text("Cetirizine 10 mg") // You can pull from organization.type if dynamic
                                         .font(.custom("Montserrat-Medium", size: 16))
                                         .foregroundColor(.black)
                                     
-                                    Text("New York Sector C")
+                                    Text("1 General Street, Lawrence, MA 01841")
                                         .font(.custom("Montserrat-Regular", size: 12))
                                         .foregroundColor(Color(hex: "FF6605"))
                                 }
