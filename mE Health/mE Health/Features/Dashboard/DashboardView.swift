@@ -295,6 +295,16 @@ struct DashboardView: View {
             ) {
                 EmptyView()
             }
+            
+            NavigationLink(
+                destination: SettingView(),
+                isActive: Binding(
+                    get: { viewStore.showSettings },
+                    set: { viewStore.send(.showSettings($0)) }
+                )
+            ) {
+                EmptyView()
+            }
         }
     }
     

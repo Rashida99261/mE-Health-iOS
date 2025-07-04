@@ -41,7 +41,7 @@ struct PatientFeature: Reducer {
                     let components = reference.split(separator: "/")
                     if let last = components.last {
                         print("ID: \(last)")
-                        UserDefaults.standard.set(last, forKey: "practitionerId")
+                        MEUtility.setME_PRACTITIONERD(value: String(last))
                     }
                 }
                 return .none

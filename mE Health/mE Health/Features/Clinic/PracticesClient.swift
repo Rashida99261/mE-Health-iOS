@@ -15,7 +15,9 @@ protocol PracticesClient {
 struct ApiPracticeClient: PracticesClient {
     func getStateList() async throws -> StateModel {
         let url = Constants.API.appBaseUrl + "/api/health/practices/stats/"
-        let token = UserDefaults.standard.value(forKey: "token") as! String
+        guard let token = MEUtility.getME_TOKEN() else {
+            throw URLError(.userAuthenticationRequired)
+        }
         var request = URLRequest(url: URL(string: url)!)
         request.httpMethod = "GET"
         request.setValue("application/json", forHTTPHeaderField: "accept")
@@ -28,7 +30,10 @@ struct ApiPracticeClient: PracticesClient {
     }
     
     func getPracticeList() async throws -> PracticesModel {
-        let token = UserDefaults.standard.value(forKey: "token") as! String
+        
+        guard let token = MEUtility.getME_TOKEN() else {
+            throw URLError(.userAuthenticationRequired)
+        }
         let url = Constants.API.appBaseUrl + "/api/health/practices/"
         var request = URLRequest(url: URL(string: url)!)
         request.httpMethod = "GET"

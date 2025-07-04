@@ -50,6 +50,8 @@ struct DashboardFeature: Reducer {
                 }
             }
         }
+        
+        var showSettings: Bool = false
 
     }
 
@@ -69,6 +71,8 @@ struct DashboardFeature: Reducer {
         
         case callApi
         case userProfileResponse(TaskResult<PatientProfilResponse>)
+        
+        case showSettings(Bool)
 
 
     }
@@ -88,7 +92,7 @@ struct DashboardFeature: Reducer {
             return .send(.callApi)
             
         case .callApi:
-            guard let userId = UserDefaults.standard.value(forKey: "user_id") as? Int else {
+            guard let userId = Int(MEUtility.getME_USERID()) else {
                 state.errorMessage = "User ID missing"
                 state.isLoading = false
                 return .none
@@ -134,6 +138,9 @@ struct DashboardFeature: Reducer {
             case .logout:
                 SessionManager.shared.clearSession()
                 state.navigationDestination = .login
+                
+            case .settings:
+                return .send(.showSettings(true))
             default:
                 break
             }
@@ -178,6 +185,11 @@ struct DashboardFeature: Reducer {
         case .closePersona:
             state.persona = nil
             return .none
+            
+        case let .showSettings(show):
+            state.showSettings = show
+            return .none
+
 
         }
     }
