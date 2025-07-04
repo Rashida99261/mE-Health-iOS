@@ -9,6 +9,7 @@ import Foundation
 
 class ReadDataallergyIntolerances: ObservableObject  {
    
+    @Published var allergy: [AllergyDummyData] = []
       
     init(){
         loadData()
@@ -21,10 +22,15 @@ class ReadDataallergyIntolerances: ObservableObject  {
                 return
             }
         
-        let data = try? Data(contentsOf: url)
-        print(data!)
-       
-        
+        do {
+            let data = try Data(contentsOf: url)
+            let decodedResponse = try JSONDecoder().decode(AllergyResponse.self, from: data)
+            DispatchQueue.main.async {
+                self.allergy = decodedResponse.allergyIntolerances
+            }
+        } catch {
+            print("Error decoding JSON: \(error)")
+        }
     }
      
 }

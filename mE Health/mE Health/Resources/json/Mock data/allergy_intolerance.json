@@ -3,10 +3,9 @@
     {
       "id": "allergy1",
       "code_system": "http://snomed.info/sct",
-      "code": "418689008",
       "code_display": "Pollen allergy",
       "code": "{\"system\":\"http://snomed.info/sct\",\"code\":\"418689008\",\"display\":\"Pollen allergy\"}",
-      "clinicalStatus": "active",
+      "clinicalStatus": "Active",
       "patientId": "patient1",
       "encounterId": "enc1",
       "recordedDate": "2021-07-01T14:00:00Z",

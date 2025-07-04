@@ -15,6 +15,7 @@ struct MyHealthView: View {
     
     @StateObject private var viewModel = ReadDatapractitioner()
     @StateObject private var procedureVM = ReadDataprocedure()
+    @StateObject private var allergyVM = ReadDataallergyIntolerances()
 
     
     var sampleAppoitmnt : [AppointmentData] = [
@@ -22,9 +23,6 @@ struct MyHealthView: View {
         AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.",status: .completed),
         AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.",status: .cancel)]
     
-    var sampleAleData : [AllergyDummyData] = [
-        AllergyDummyData(name: "Pollen allergy", recordDate: "Recorded Date: 2021-07-01")
-        ]
         
     var sampleLabData : [LabDummyData] = [
             LabDummyData(name: "Complete Blood Count", recordDate: "Recorded Date: 05/06/2025",isActive:true),
@@ -206,7 +204,7 @@ struct MyHealthView: View {
                             })
                             
                         case "Allergy":
-                            AllergySectionView(allergies: sampleAleData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { allergy in
+                            AllergySectionView(allergies: allergyVM.allergy, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { allergy in
                                 viewStore.send(.allergyTapped(allergy))
                             })
                             
