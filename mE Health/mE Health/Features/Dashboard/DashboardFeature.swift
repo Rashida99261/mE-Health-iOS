@@ -27,7 +27,7 @@ struct DashboardFeature: Reducer {
         var isLoading: Bool = false
         var showErrorAlert = false
         var errorMessage = ""
-        var selectedTab: DashboardTab = .menu
+        var selectedTab: DashboardTab = .dashboard
         var selectedMenuTab: SideMenuTab = .dashboard
         var showMenu: Bool = false
         
@@ -141,6 +141,9 @@ struct DashboardFeature: Reducer {
                 
             case .settings:
                 return .send(.showSettings(true))
+                
+            case .dashboard:
+                return .send(.tabSelected(.dashboard))
             default:
                 break
             }
