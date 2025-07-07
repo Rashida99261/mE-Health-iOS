@@ -119,11 +119,16 @@ struct VisitsSectionView: View {
         VStack(spacing: 24) {
             // Horizontal date cards
             
-            ForEach(visit) { visitData in
-                VisitsView(visit: visitData) {
-                    onCardTap(visitData)
+            if visit.isEmpty {
+                NoDataView()
+            } else {
+                ForEach(visit) { visitData in
+                    VisitsView(visit: visitData) {
+                        onCardTap(visitData)
+                    }
                 }
             }
+
         }
         .padding(.horizontal)
     }

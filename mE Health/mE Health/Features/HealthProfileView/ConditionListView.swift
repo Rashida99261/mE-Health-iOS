@@ -97,10 +97,13 @@ struct ConditionSectionView: View {
     var body: some View {
         
         VStack(spacing: 24) {
-            // Horizontal date cards
-            ForEach(conditions) { condition in
-                ConditionListView(condition: condition) {
-                    onCardTap(condition)
+            if conditions.isEmpty {
+                        NoDataView()
+            } else {
+                ForEach(conditions) { condition in
+                    ConditionListView(condition: condition) {
+                        onCardTap(condition)
+                    }
                 }
             }
         }

@@ -75,11 +75,16 @@ struct  VitalsSectionView: View {
         
         VStack(spacing: 24) {
             // Horizontal date cards
-            ForEach(vitals) { vital in
-                VitalsListView(vital: vital) {
-                    onCardTap(vital)
+            if vitals.isEmpty {
+                NoDataView()
+            } else {
+                ForEach(vitals) { vital in
+                    VitalsListView(vital: vital) {
+                        onCardTap(vital)
+                    }
                 }
             }
+
         }
         .padding(.horizontal)
 

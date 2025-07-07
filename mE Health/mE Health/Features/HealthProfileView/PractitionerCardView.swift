@@ -93,10 +93,15 @@ struct PractitionerSectionView: View {
         
         VStack(spacing: 24) {
             // Horizontal date cards
-            ForEach(practitioners) { practitioner in
-                PractitionerCardView(practitioner: practitioner) {
-                                    onCardTap(practitioner)
+            
+            if practitioners.isEmpty {
+                NoDataView()
+            } else {
+                ForEach(practitioners) { practitioner in
+                    PractitionerCardView(practitioner: practitioner) {
+                        onCardTap(practitioner)
                     }
+                }
             }
         }
         .padding(.horizontal)

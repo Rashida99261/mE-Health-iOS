@@ -89,11 +89,17 @@ struct BillingSectionView: View {
     
     var body: some View {
         VStack(spacing: 12) {
-            ForEach(items) { item in
-                BillingCardView(item: item) {
-                    onCardTap(item)
+            
+            if items.isEmpty {
+                        NoDataView()
+            } else {
+                ForEach(items) { item in
+                    BillingCardView(item: item) {
+                        onCardTap(item)
+                    }
                 }
             }
+
         }
         .padding()
     }

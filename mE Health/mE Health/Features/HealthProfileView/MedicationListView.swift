@@ -89,12 +89,16 @@ struct MedicationSectionView: View {
         
         VStack(spacing: 24) {
             // Horizontal date cards
-            
-            ForEach(medications) { medicationData in
-                MedicationListView(medication: medicationData) {
-                    onCardTap(medicationData)
+            if medications.isEmpty {
+                NoDataView()
+            } else {
+                ForEach(medications) { medicationData in
+                    MedicationListView(medication: medicationData) {
+                        onCardTap(medicationData)
+                    }
                 }
             }
+
         }
         .padding(.horizontal)
 

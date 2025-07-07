@@ -98,9 +98,13 @@ struct LabSectionView: View {
         VStack(spacing: 24) {
             // Horizontal date cards
             
-            ForEach(labs) { labdata in
-                LabMainView(lab: labdata) {
-                    onCardTap(labdata)
+            if labs.isEmpty {
+                NoDataView()
+            } else {
+                ForEach(labs) { labdata in
+                    LabMainView(lab: labdata) {
+                        onCardTap(labdata)
+                    }
                 }
             }
         }

@@ -102,6 +102,13 @@ struct MyHealthView: View {
         FilesDummyData(name: "Report4.mp4", specialty: "Labs", date: "3 days ago"),
         FilesDummyData(name: "Blood Test-01.pdf", specialty: "Appointment", date: "3 June 2025")
     ]
+    
+    
+    let imagData : [ImagingDummyData] = [
+        ImagingDummyData(title: "X-Ray (DX)", hospitalNAme: "Hospital name", dateValue: "11 Jun 2025", diagnosisValue: "Chest X-ray for bronchitis"),
+        ImagingDummyData(title: "MRI (MR)", hospitalNAme: "Hospital name", dateValue: "11 Jun 2025", diagnosisValue: "Knee MRI for meniscal tear")
+        
+    ]
 
 
     var body: some View {
@@ -194,7 +201,7 @@ struct MyHealthView: View {
                             })
                             
                         case "Allergy":
-                            AllergySectionView(allergies: allergyVM.allergy, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { allergy in
+                            AllergySectionView(allergies: [], startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { allergy in
                                 viewStore.send(.allergyTapped(allergy))
                             })
                             
@@ -215,6 +222,11 @@ struct MyHealthView: View {
                             FilesSectionView(filesArray: filedata) { files in
                                 
                             }
+                            
+                        case "Imaging":
+                            ImagingSectionView(arrayImaging: imagData, onCardTap: { data in
+                                viewStore.send(.openImagingDetail(data))
+                            })
                             
                             
                         default:
@@ -286,6 +298,17 @@ struct MyHealthView: View {
             
             .navigationDestination(
                 isPresented: viewStore.binding(
+                    get: { $0.selectImaging != nil },
+                    send: .closeImagingDetail
+                )
+            ) {
+                if let selected = viewStore.selectImaging {
+                    ImagingDetailView(imaging: selected)
+                }
+            }
+            
+            .navigationDestination(
+                isPresented: viewStore.binding(
                     get: { $0.selctedVital != nil },
                     send: .closeVitalDEtail
                 )
@@ -351,7 +374,7 @@ struct MyHealthView: View {
             }
 
 
-            .background(Color.white)
+            .background(Color(UIColor.systemGray6))
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

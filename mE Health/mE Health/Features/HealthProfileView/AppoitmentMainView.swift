@@ -216,18 +216,23 @@ struct AppoitmentSectionView: View {
     var body: some View {
         
         VStack(spacing: 24) {
-            ForEach(practitioners) { appoitment in
-                AppoitmentMainView(appoinmnt: appoitment,
-                                   onTap: {
-                    onCardTap(appoitment)
+            
+            if practitioners.isEmpty {
+                        NoDataView()
+            } else {
+                ForEach(practitioners) { appoitment in
+                    AppoitmentMainView(appoinmnt: appoitment,
+                                       onTap: {
+                        onCardTap(appoitment)
                     },
-                                   onReadMoreTap: {
+                                       onReadMoreTap: {
                         onReadMoreTap(appoitment)   // <- Pass specific appointment
                     }
-                )
-                
-                
-                
+                    )
+                    
+                    
+                    
+                }
             }
         }
         .padding(.horizontal)

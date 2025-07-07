@@ -138,11 +138,18 @@ struct ImmuneSectionView: View {
         
         VStack(spacing: 24) {
             // Horizontal date cards
-            ForEach(immune) { labdata in
-                ImmuneMainView(immune: labdata) {
-                    onCardTap(labdata)
+            
+            if immune.isEmpty {
+                        NoDataView()
+            } else {
+                ForEach(immune) { labdata in
+                    ImmuneMainView(immune: labdata) {
+                        onCardTap(labdata)
+                    }
                 }
             }
+            
+
 
         }
         .padding(.horizontal)

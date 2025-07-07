@@ -138,11 +138,16 @@ struct ProcedureSectionView: View {
         VStack(spacing: 24) {
             // Horizontal date cards
             
-            ForEach(procedure) { procData in
-                ProcedureMainView(procedure: procData) {
-                    onCardTap(procData)
+            if procedure.isEmpty {
+                NoDataView()
+            } else {
+                ForEach(procedure) { procData in
+                    ProcedureMainView(procedure: procData) {
+                        onCardTap(procData)
+                    }
                 }
             }
+
         }
         .padding(.horizontal)
 

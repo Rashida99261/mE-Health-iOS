@@ -122,9 +122,15 @@ struct AllergySectionView: View {
         
         VStack(spacing: 24) {
             // Horizontal date cards
-            ForEach(allergies) { allergy in
-                AllergyMainView(allergy: allergy) {
-                    onCardTap(allergy)
+            
+            if allergies.isEmpty {
+                        NoDataView()
+            } else {
+                        
+                ForEach(allergies) { allergy in
+                    AllergyMainView(allergy: allergy) {
+                        onCardTap(allergy)
+                    }
                 }
             }
         }

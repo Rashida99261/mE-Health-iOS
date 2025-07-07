@@ -32,8 +32,9 @@ struct MyHealthFeature: Reducer {
             Tile(title: "Procedure", icon: "Procedures", countItem: "10"),
             Tile(title: "Allergy", icon: "Allergy", countItem: "10"),
             Tile(title: "Immunizations", icon: "Immunization", countItem: "10"),
-            Tile(title: "Billing", icon: "Billing", countItem: "10"),
-            Tile(title: "Upload Documents", icon: "Upload", countItem: "10")
+            Tile(title: "Billing", icon: "Billing", countItem: "6"),
+            Tile(title: "Upload Documents", icon: "Upload", countItem: "10"),
+            Tile(title: "Imaging", icon: "Imaging", countItem: "10")
         ]
         var selectedIndex: Int = 0
         var selectedPractitioner: PractitionerData? = nil
@@ -48,6 +49,7 @@ struct MyHealthFeature: Reducer {
         var selectVisit : VisitDummyData? = nil
         var selectBilling : BillingItem? = nil
         var selectCondition : ConditionDummyData? = nil
+        var selectImaging : ImagingDummyData? = nil
         
     }
 
@@ -85,6 +87,10 @@ struct MyHealthFeature: Reducer {
         
         case openConditionDetail(ConditionDummyData)
         case closeConditionDetail
+        
+        case openImagingDetail(ImagingDummyData)
+        case closeImagingDetail
+
 
         
     }
@@ -201,6 +207,16 @@ struct MyHealthFeature: Reducer {
                 
             case .closeConditionDetail:
                 state.selectCondition = nil
+                return .none
+
+                
+            case .openImagingDetail(let data):
+                state.selectImaging = data
+                return .none
+
+                
+            case .closeImagingDetail:
+                state.selectImaging = nil
                 return .none
 
 
