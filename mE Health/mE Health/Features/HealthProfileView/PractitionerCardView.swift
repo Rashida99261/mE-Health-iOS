@@ -6,15 +6,30 @@
 //
 import SwiftUI
 
-struct PractitionerData: Identifiable, Equatable {
-    let id: UUID = UUID()
-    let name: String
-    let specialty: String
-    let phone: String
-    let email: String
+struct PractitionerResponse: Codable {
+    let practitioners: [PractitionerData]
 }
 
+struct PractitionerData: Codable, Equatable , Identifiable{
+    let id: String
+    let name: String
+    let specialty: String
+    let telecom: String
+    let qualification: String
+    var phone: String? {
+        telecom
+            .components(separatedBy: ";")
+            .first(where: { $0.hasPrefix("phone:") })?
+            .replacingOccurrences(of: "phone:", with: "")
+    }
 
+    var email: String? {
+        telecom
+            .components(separatedBy: ";")
+            .first(where: { $0.hasPrefix("email:") })?
+            .replacingOccurrences(of: "email:", with: "")
+    }
+}
 
 struct PractitionerCardView: View {
     let practitioner: PractitionerData
@@ -33,14 +48,14 @@ struct PractitionerCardView: View {
                 HStack(spacing: 8) {
                     Image(systemName: "phone.fill")
                         .foregroundColor(Color(hex: "FF6605"))
-                    Text(practitioner.phone)
+                    Text(practitioner.phone ?? "")
                         .font(.custom("Montserrat-Regular", size: 14))
                 }
 
                 HStack(spacing: 8) {
                     Image(systemName: "envelope.fill")
                         .foregroundColor(Color(hex: "FF6605"))
-                    Text(practitioner.email)
+                    Text(practitioner.email ?? "")
                         .font(.custom("Montserrat-Regular", size: 14))
                 }
                 
@@ -76,17 +91,15 @@ struct PractitionerSectionView: View {
     
     var body: some View {
         
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 24) {
-                // Horizontal date cards
-                ForEach(practitioners) { practitioner in
-                    PractitionerCardView(practitioner: practitioner) {
-                                        onCardTap(practitioner)
-                        }
-                }
+        VStack(spacing: 24) {
+            // Horizontal date cards
+            ForEach(practitioners) { practitioner in
+                PractitionerCardView(practitioner: practitioner) {
+                                    onCardTap(practitioner)
+                    }
             }
-            .padding(.horizontal)
         }
+        .padding(.horizontal)
     }
 
 }

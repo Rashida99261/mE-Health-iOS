@@ -12,6 +12,7 @@ struct AllergyDetailView: View {
     @Environment(\.presentationMode) var presentationMode
     let allergy: AllergyDummyData
 
+
     var body: some View {
         
         ZStack {
@@ -27,13 +28,13 @@ struct AllergyDetailView: View {
                     
                     // Allergy Detail Card
                     VStack(alignment: .leading, spacing: 16) {
-                        Text("Dust Allergy")
+                        Text(allergy.code?.display ?? "")
                             .font(.custom("Montserrat-Bold", size: 19))
 
                         HStack {
                             Text("Clinical Status")
                             Spacer()
-                            Text("Active")
+                            Text(allergy.clinicalStatus)
                                 .font(.custom("Montserrat-SemiBold", size: 8))
                                 .padding(.vertical, 4)
                                 .padding(.horizontal, 10)
@@ -47,7 +48,7 @@ struct AllergyDetailView: View {
                             Text("Recorded Date")
                             .font(.custom("Montserrat-Regular", size: 14))
                             Spacer()
-                            Text("Mar 15, 2024")
+                            Text(allergy.formattedRecordedDate)
                             .font(.custom("Montserrat-SemiBold", size: 13))
                         }
 
@@ -55,7 +56,7 @@ struct AllergyDetailView: View {
                             Text("Allergy ID")
                             .font(.custom("Montserrat-Regular", size: 14))
                             Spacer()
-                            Text("ALG-2024-392")
+                            Text("ALG-\(allergy.id)")
                                 .font(.custom("Montserrat-SemiBold", size: 13))
                         }
                     }
@@ -72,12 +73,12 @@ struct AllergyDetailView: View {
                             .resizable()
                             .frame(width: 50, height: 50)
                             .clipShape(Circle())
-
+                        
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Sarah Johnson")
+                            Text("\(userProfileData?.first_name ?? "") \(userProfileData?.last_name ?? "")")
                                 .font(.custom("Montserrat-Medium", size: 18))
                                 .foregroundColor(Color(hex: "FF6605"))
-                            Text("34 years - Female")
+                            Text("34 years - \(userProfileData?.gender ?? "M")")
                                 .font(.custom("Montserrat-Regular", size: 14))
                                 .foregroundColor(.gray)
                         }
@@ -114,7 +115,7 @@ struct AllergyDetailView: View {
                         }
 
                         
-                        Text("Recorded Date: 06/11/2025")
+                        Text("Recorded Date: \(allergy.formattedRecordedDate)")
                             .font(.custom("Montserrat-SemiBold", size: 13))
 
                     }

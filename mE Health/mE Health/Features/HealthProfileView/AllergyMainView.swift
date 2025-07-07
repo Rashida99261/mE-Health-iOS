@@ -7,12 +7,55 @@
 
 import SwiftUI
 
-struct AllergyDummyData: Identifiable, Equatable {
-    let id: UUID = UUID()
-    let name: String
-    let recordDate: String
+
+struct AllergyResponse: Codable {
+    let allergyIntolerances: [AllergyDummyData]
 }
 
+
+struct AllergyDummyData: Identifiable, Equatable, Codable {
+    let id: String
+    let codeSystem: String
+    let codeDisplay: String
+    let rawCode: String
+    let clinicalStatus: String
+    let patientId: String
+    let encounterId: String
+    let recordedDate: String
+    let createdAt: String
+    let updatedAt: String
+
+    // Parsed code object
+    var code: CodeInfo? {
+        try? JSONDecoder().decode(CodeInfo.self, from: Data(rawCode.utf8))
+    }
+    
+    var formattedRecordedDate: String {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime]
+
+        if let date = isoFormatter.date(from: recordedDate) {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd/MM/yyyy"
+            return formatter.string(from: date)
+        }
+        return recordedDate
+    }
+
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case codeSystem = "code_system"
+        case codeDisplay = "code_display"
+        case rawCode = "code"
+        case clinicalStatus
+        case patientId
+        case encounterId
+        case recordedDate
+        case createdAt
+        case updatedAt
+    }
+}
 
 struct AllergyMainView: View {
     
@@ -24,7 +67,7 @@ struct AllergyMainView: View {
         
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text(allergy.name)
+                Text(allergy.code?.display ?? "")
                     .font(.custom("Montserrat-Medium", size: 20))
                     .foregroundColor(.black)
                 Spacer()
@@ -39,7 +82,7 @@ struct AllergyMainView: View {
             .padding(.top,12)
             .padding(.horizontal,12)
             
-            Text(allergy.recordDate)
+            Text("Recorded Date: \(allergy.formattedRecordedDate)")
                 .font(.custom("Montserrat-Regular", size: 16))
                 .foregroundColor(.black)
                 .padding(.horizontal,12)
@@ -77,16 +120,15 @@ struct AllergySectionView: View {
     
     var body: some View {
         
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 24) {
-                // Horizontal date cards
-                ForEach(allergies) { allergy in
-                    AllergyMainView(allergy: allergy) {
-                        onCardTap(allergy)
-                    }
+        VStack(spacing: 24) {
+            // Horizontal date cards
+            ForEach(allergies) { allergy in
+                AllergyMainView(allergy: allergy) {
+                    onCardTap(allergy)
                 }
             }
-            .padding(.horizontal)
         }
+        .padding(.horizontal)
+
     }
 }

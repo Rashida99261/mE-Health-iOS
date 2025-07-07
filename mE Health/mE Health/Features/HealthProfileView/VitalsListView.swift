@@ -73,16 +73,15 @@ struct  VitalsSectionView: View {
     
     var body: some View {
         
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 24) {
-                // Horizontal date cards
-                ForEach(vitals) { vital in
-                    VitalsListView(vital: vital) {
-                        onCardTap(vital)
-                    }
+        VStack(spacing: 24) {
+            // Horizontal date cards
+            ForEach(vitals) { vital in
+                VitalsListView(vital: vital) {
+                    onCardTap(vital)
                 }
             }
-            .padding(.horizontal)
         }
+        .padding(.horizontal)
+
     }
 }

@@ -13,19 +13,20 @@ struct ProfileRequest: Encodable {
     let user_id: Int
 }
 
-
 protocol ProfileClient {
     func getUserProfileApi(_ request: ProfileRequest) async throws -> PatientProfilResponse
 }
+
 struct ApiProfileClient: ProfileClient {
     
 
-    
     func getUserProfileApi(_ request: ProfileRequest) async throws -> PatientProfilResponse {
         var urlRequest = URLRequest(url: URL(string: Constants.API.getProfileApi)!)
-        guard let token = UserDefaults.standard.string(forKey: "token") else {
-                throw URLError(.userAuthenticationRequired)
+        
+        guard let token = MEUtility.getME_TOKEN() else {
+            throw URLError(.userAuthenticationRequired)
         }
+
         urlRequest.httpMethod = "POST"
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.setValue("Token \(token)", forHTTPHeaderField: "Authorization")
@@ -38,15 +39,6 @@ struct ApiProfileClient: ProfileClient {
 
         return try JSONDecoder().decode(PatientProfilResponse.self, from: data)
     }
-
-    
-
-    
-
-    
-
-    
-
 }
 
 struct ProfileClientDependency {

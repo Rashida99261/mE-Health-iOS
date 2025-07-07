@@ -46,7 +46,7 @@ final class AuthService: NSObject, ASWebAuthenticationPresentationContextProvidi
         self.accessToken = newToken
         self.patientID = patientID
         self.expiryDate = Date().addingTimeInterval(TimeInterval(expiresIn - 60))
-        UserDefaults.standard.set(patientID, forKey: "patientId")
+        MEUtility.setME_PATIENTID(value: patientID)
         _ = TokenManager.saveAccessToken(newToken)
         AuthService.saveExpiryTimestamp(expiresIn)
         
@@ -74,7 +74,7 @@ final class AuthService: NSObject, ASWebAuthenticationPresentationContextProvidi
     func logout() {
         TokenManager.deleteAccessToken()
         AuthService.clearExpiryTimestamp()
-        UserDefaults.standard.removeObject(forKey: "patientId")
+        MEUtility.setME_PATIENTID(value: "")
     }
 
 

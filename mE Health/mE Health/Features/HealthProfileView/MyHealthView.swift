@@ -13,20 +13,17 @@ struct MyHealthView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var showAppoitmentOverlay = false
     
-    var samplePractioner : [PractitionerData] = [
-        PractitionerData(name: "Dr. Ashley David", specialty: "Gynecologist", phone: "(212) 555-1234", email: "info@totalcaremaintenance.com"),
-        PractitionerData(name: "Dr. Ashley David", specialty: "Gynecologist", phone: "(212) 555-1234", email: "info@totalcaremaintenance.com")]
+    @StateObject private var viewModel = ReadDatapractitioner()
+    @StateObject private var procedureVM = ReadDataprocedure()
+    @StateObject private var allergyVM = ReadDataallergyIntolerances()
+    @StateObject private var immuneVM = ReadDataimmunization()
+
     
     var sampleAppoitmnt : [AppointmentData] = [
         AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.",status: .booked),
         AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.",status: .completed),
         AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.",status: .cancel)]
     
-    var sampleAleData : [AllergyDummyData] = [
-        AllergyDummyData(name: "Peanut Allergy", recordDate: "Recorded Date: 05/06/2025"),
-        AllergyDummyData(name: "Dust Allergy", recordDate: "Recorded Date: 05/06/2025"),
-        AllergyDummyData(name: "Penicillin Allergy", recordDate: "Recorded Date: 05/06/2025")
-        ]
         
     var sampleLabData : [LabDummyData] = [
             LabDummyData(name: "Complete Blood Count", recordDate: "Recorded Date: 05/06/2025",isActive:true),
@@ -34,46 +31,70 @@ struct MyHealthView: View {
             LabDummyData(name: "Lipid Panel", recordDate: "Recorded Date: 12/06/2025",isActive:true)
     ]
     
-    var sampleImmubeData : [ImmuneDummyData] = [
-        ImmuneDummyData(name: "COVID-19 Vaccine", recordDate: "Occurrence Date: N/A", location: "Location: N/A", isCompleted: false),
-        ImmuneDummyData(name: "COVID-19 Vaccine", recordDate: "Occurrence Date: N/A", location: "Location: N/A", isCompleted: true),
-        ImmuneDummyData(name: "COVID-19 Vaccine", recordDate: "Occurrence Date: N/A", location: "Location: N/A", isCompleted: true)
-    ]
-    
     let billingItems: [BillingItem] = [
-        BillingItem(title: "Clinic Name", date: "19/05/2025", amount: "$8.40", status: .planned),
-        BillingItem(title: "Hospital Bills", date: "19/05/2025", amount: "$15.99", status: .planned)
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/06/2021", amount: "$150", status: .planned),
+        BillingItem(title: "Blue Cross Blue Shield", date: "01/07/2021", amount: "$100", status: .planned),
+        
+        BillingItem(title: "Blue Cross Blue Shield", date: "01/09/2021", amount: "$1000", status: .planned),
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/09/2021", amount: "$200", status: .planned),
+        
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/02/2023", amount: "$3000", status: .planned),
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/06/2022", amount: "$150", status: .planned),
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/06/2023", amount: "$150", status: .planned),
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/06/2024", amount: "$150", status: .planned),
+        
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/02/2023", amount: "$3000", status: .planned),
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/06/2022", amount: "$4000", status: .planned),
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/06/2023", amount: "$200", status: .planned),
+        BillingItem(title: "Blue Cross Blue Shield", date: "15/06/2024", amount: "$5000", status: .planned)
     ]
     
     let visitData : [VisitDummyData] = [
-        VisitDummyData(name: "Annual Physical", recordDate: "Date: 05/06/2025", status: .planned),
-        VisitDummyData(name: "Dental Checkup", recordDate: "Date: 05/06/2025", status: .cancel),
-        VisitDummyData(name: "Follow-up Visit", recordDate: "Date: 05/06/2025", status: .schedule),
-        VisitDummyData(name: "Laboratory Visit", recordDate: "Date: 05/06/2025", status: .finish)
-    ]
-    
-    let procedureData : [ProcedureDummyData] = [
-        ProcedureDummyData(name: "Appendectomy", recordDate: "03/15/2024", status: .completed),
-        ProcedureDummyData(name: "Cardiac Catheterization", recordDate: "03/15/2024", status: .progress),
-        ProcedureDummyData(name: "Colonoscopy", recordDate: "03/15/2024", status: .completed),
-        ProcedureDummyData(name: "Hip Replacement", recordDate: "03/15/2024", status: .completed),
-        ProcedureDummyData(name: "Cardiac Catheterization", recordDate: "03/15/2024", status: .progress)
+        VisitDummyData(name: "Allergy follow-up, prescribed cetirizine", recordDate: "Date: 01/07/2021", status: .finish),
+        VisitDummyData(name: "Pneumonia evaluation, ordered chest X-ray, prescribed amoxicilli", recordDate: "Date: 01/09/2021", status: .finish),
+        VisitDummyData(name: "Chest X-ray for pneumonia evaluation", recordDate: "Date: 01/09/2021", status: .finish),
+        VisitDummyData(name: "Cardiology follow-up, adjusted lisinopril, ordered lipid panel", recordDate: "Date: 01/10/2021", status: .finish),
+       VisitDummyData(name: "Abdominal discomfort evaluation, ordered ultrasound", recordDate: "Date: 01/11/2021", status: .finish),
+        VisitDummyData(name: "Abdominal ultrasound, diagnosed gallstones", recordDate: "Date: 15/11/2021", status: .finish),
+        VisitDummyData(name: "Orthopedic consult for knee pain, ordered MRI", recordDate: "Date: 10/10/2021", status: .finish),
+        VisitDummyData(name: "Knee MRI, confirmed meniscal tear", recordDate: "Date: 20/10/2021", status: .finish),
+        
+        VisitDummyData(name: "Abdominal discomfort evaluation, ordered ultrasound", recordDate: "Date: 01/11/2021", status: .finish),
+         VisitDummyData(name: "Abdominal ultrasound, diagnosed gallstones", recordDate: "Date: 15/11/2021", status: .finish),
+         VisitDummyData(name: "Orthopedic consult for knee pain, ordered MRI", recordDate: "Date: 10/10/2021", status: .finish),
+         VisitDummyData(name: "Knee MRI, confirmed meniscal tear", recordDate: "Date: 20/10/2021", status: .finish),
+        VisitDummyData(name: "Arthroscopic meniscectomy for right knee meniscal tear", recordDate: "Date: 15/02/2023", status: .finish),
+         VisitDummyData(name: "Post-surgical follow-up, prescribed physical therapy", recordDate: "Date: 15/03/2023", status: .finish),
+         VisitDummyData(name: "Revision arthroscopic meniscectomy for incomplete healing", recordDate: "Date: 15/11/2023", status: .finish),
+         VisitDummyData(name: "Follow-up knee MRI, identified scar tissue", recordDate: "Date: 15/10/2024", status: .finish),
+        VisitDummyData(name: "Arthroscopic debridement for scar tissue removal", recordDate: "Date: 15/11/2024", status: .finish),
+         VisitDummyData(name: "Post-surgical follow-up, prescribed physical therapy", recordDate: "Date: 15/03/2025", status: .finish),
+         VisitDummyData(name: "Vaccination visit, administered COVID-19 2nd dose", recordDate: "Date: 05/08/2022", status: .finish),
+         VisitDummyData(name: "Annual well visit, diagnosed hypertension, hyperlipidemia, ordered labs", recordDate: "Date: 15/06/2021", status: .finish),
+        VisitDummyData(name: "Annual well visit, reviewed conditions, ordered labs", recordDate: "Date: 15/06/2022", status: .finish),
+        VisitDummyData(name: "Annual well visit, reviewed conditions, ordered labs", recordDate: "Date: 15/06/2023", status: .finish),
+        VisitDummyData(name: "Annual well visit, reviewed conditions, ordered labs", recordDate: "Date: 15/06/2024", status: .finish),
+        VisitDummyData(name: "Annual well visit, review conditions, order labs", recordDate: "Date: 15/06/2025", status: .finish)
+        
     ]
     
     let conditionData : [ConditionDummyData] = [
-        ConditionDummyData(name: "Blood Pressure", date: "June 12, 2024", status: .active),
-        ConditionDummyData(name: "Hypertension", date: "June 12, 2024", status: .active),
-        ConditionDummyData(name: "Seasonal Allergies", date: "June 12, 2024", status: .resolved)
+        ConditionDummyData(name: "Seasonal allergic rhinitis", date: "July 1, 2021", status: .active),
+        ConditionDummyData(name: "Pneumonia, unspecified", date: "Aug 1, 2021", status: .active),
+        ConditionDummyData(name: "Essential hypertension", date: "June 12, 2024", status: .active)
     ]
 
     let vitalData : [VitalDummyData] = [
-        VitalDummyData(name: "Blood Pressure", date: "06//11/2025", mg: "120/80 mmHg"),
-        VitalDummyData(name: "Heart Rate", date: "06//11/2025", mg: "72 bmp")
+        VitalDummyData(name: "Blood pressure panel", date: "01/07/2021", mg: "90/140 mmHg"),
+        VitalDummyData(name: "Heart Rate", date: "06/11/2025", mg: "72 bmp"),
+        
+        VitalDummyData(name: "Blood pressure panel", date: "15/06/2021", mg: "90/140 mmHg"),
+        VitalDummyData(name: "Heart Rate", date: "15/06/2021", mg: "72 bmp")
     ]
 
     let medicationData : [MedicationDummyData] = [
-        MedicationDummyData(name: "Lisinopril 10mg", recordDate: "Authored: 05/06/2025", status: .active),
-        MedicationDummyData(name: "Lisinopril 10mg", recordDate: "Authored: 05/06/2025", status: .active)
+        MedicationDummyData(name: "Cetirizine 10 mg", recordDate: "Authored: 01/07/2021", status: .active),
+        MedicationDummyData(name: "Lisinopril 10 mg", recordDate: "Authored: 15/06/2021", status: .active)
     ]
 
     let filedata : [FilesDummyData] = [
@@ -115,91 +136,96 @@ struct MyHealthView: View {
                 )
 
                 
-                Divider()
-                
-                
-                let selectedTileTitle = viewStore.tiles[viewStore.selectedIndex].title
-                switch selectedTileTitle {
-                case "Practitioner":
-                    PractitionerSectionView(
-                        practitioners: samplePractioner, // Replace with state-driven data
-                        startDate: "06-01-2025",
-                        endDate: "06-16-2025",
-                        onCardTap: { practitioner in
-                            viewStore.send(.practitionerTapped(practitioner))
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        
+                        let selectedTileTitle = viewStore.tiles[viewStore.selectedIndex].title
+                        switch selectedTileTitle {
+                        case "Practitioner":
+                            PractitionerSectionView(
+                                practitioners: viewModel.practitioners, // Replace with state-driven data
+                                startDate: "06-01-2025",
+                                endDate: "06-16-2025",
+                                onCardTap: { practitioner in
+                                    viewStore.send(.practitionerTapped(practitioner))
+                                }
+                            )
+                            
+                        case "Appointment":
+                            AppoitmentSectionView(
+                                practitioners: sampleAppoitmnt,
+                                onCardTap:{ appoitmnet in
+                                    viewStore.send(.openApoitmentDetial(appoitmnet))
+                                },
+                                onReadMoreTap: { appoitmnet in
+                                    showAppoitmentOverlay = true
+                                }
+                            )
+                            
+                        case "Condition":
+                            ConditionSectionView(conditions: conditionData, onCardTap: { condition in
+                                viewStore.send(.openConditionDetail(condition))
+                            })
+                            
+                        case "Lab":
+                            LabSectionView(labs: sampleLabData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { lab in
+                                viewStore.send(.openLabDetail(lab))
+                            })
+                            
+                        case "Vital":
+                            VitalsSectionView(vitals: vitalData) { vital in
+                                viewStore.send(.openVitalDetail(vital))
+                            }
+                            
+                        case "Medication":
+                            MedicationSectionView(medications: medicationData) { medication in
+                                viewStore.send(.openMedDetail(medication))
+                            }
+                            
+                        case "Visits":
+                            VisitsSectionView(visit: visitData, onCardTap: { visit in
+                                viewStore.send(.openVisitsDetail(visit))
+                                
+                            })
+                            
+                        case "Procedure":
+                            ProcedureSectionView(procedure: procedureVM.procedures, onCardTap: { data in
+                                viewStore.send(.openProcedureDetail(data))
+                            })
+                            
+                        case "Allergy":
+                            AllergySectionView(allergies: allergyVM.allergy, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { allergy in
+                                viewStore.send(.allergyTapped(allergy))
+                            })
+                            
+                        case "Immunizations":
+                            ImmuneSectionView(immune: immuneVM.immune, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { immune in
+                                
+                                viewStore.send(.openImmuneDetail(immune))
+                                
+                            })
+                            
+                            
+                        case "Billing":
+                            BillingSectionView(items: billingItems, onCardTap:{ billing in
+                                viewStore.send(.openBillingDetail(billing))
+                            })
+                            
+                        case "Upload Documents":
+                            FilesSectionView(filesArray: filedata) { files in
+                                
+                            }
+                            
+                            
+                        default:
+                            EmptyView()
                         }
-                    )
-
-                case "Appointment":
-                    AppoitmentSectionView(
-                        practitioners: sampleAppoitmnt,
-                        onCardTap:{ appoitmnet in
-                            viewStore.send(.openApoitmentDetial(appoitmnet))
-                        },
-                        onReadMoreTap: { appoitmnet in
-                            showAppoitmentOverlay = true
-                        }
-                    )
-                    
-                case "Condition":
-                    ConditionSectionView(conditions: conditionData, onCardTap: { condition in
-                        viewStore.send(.openConditionDetail(condition))
-                        })
-
-                case "Lab":
-                    LabSectionView(labs: sampleLabData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { lab in
-                        viewStore.send(.openLabDetail(lab))
-                    })
-                    
-                case "Vital":
-                    VitalsSectionView(vitals: vitalData) { vital in
-                        viewStore.send(.openVitalDetail(vital))
-                    }
-                    
-                case "Medication":
-                    MedicationSectionView(medications: medicationData) { medication in
-                        viewStore.send(.openMedDetail(medication))
-                    }
-                    
-                case "Visits":
-                    VisitsSectionView(visit: visitData, onCardTap: { visit in
-                        viewStore.send(.openVisitsDetail(visit))
-                        
-                    })
-                    
-                case "Procedure":
-                    ProcedureSectionView(procedure: procedureData, onCardTap: { data in
-                        viewStore.send(.openProcedureDetail(data))
-                    })
-                    
-                case "Allergy":
-                    AllergySectionView(allergies: sampleAleData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { allergy in
-                        viewStore.send(.allergyTapped(allergy))
-                    })
-
-                case "Immunizations":
-                    ImmuneSectionView(immune: sampleImmubeData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { immune in
-                       
-                        viewStore.send(.openImmuneDetail(immune))
-                        
-                    })
-                    
-                    
-                case "Billing":
-                    BillingSectionView(items: billingItems, onCardTap:{ billing in
-                        viewStore.send(.openBillingDetail(billing))
-                    })
-                    
-               case "Upload Documents":
-                    FilesSectionView(filesArray: filedata) { files in
                         
                     }
-                    
-                    
-                default:
-                    EmptyView()
+                    .padding([.top,.bottom], 16)
                 }
-
+                .padding(.top, 8)
+                .padding(.bottom, 40)
             }
             .padding(.top, 8)
             .navigationDestination(
@@ -298,7 +324,7 @@ struct MyHealthView: View {
                 )
             ) {
                 if let selected = viewStore.selectImune {
-                    ImmunizationDetailView()
+                    ImmunizationDetailView(immune: selected)
                 }
             }
 
@@ -435,6 +461,9 @@ struct MyHealthView: View {
             }
         }
     }
+    
+
+
 
 }
 

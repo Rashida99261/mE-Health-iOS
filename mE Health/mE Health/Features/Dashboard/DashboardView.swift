@@ -30,6 +30,7 @@ struct DashboardView: View {
                             onItemTap: { tab in
                                 viewStore.send(.tabMenuItemSelected(tab))
                                 viewStore.send(.toggleMenu(false))
+                               
                             }
                         )
                         .frame(width: 150)
@@ -231,7 +232,8 @@ struct DashboardView: View {
                                        }
                                 },
                                 onDashboardTapped: {
-                                    viewStore.send(.showDashboardList(true))
+                                    viewStore.send(.tabSelected(.dashboard))
+                                   // viewStore.send(.showDashboardList(true))
                                 }
                             )
                             .ignoresSafeArea(edges: .bottom)
@@ -244,21 +246,21 @@ struct DashboardView: View {
                     .navigationBarBackButtonHidden(true)
                 }
             }
-            .navigationDestination(
-                isPresented: viewStore.binding(
-                    get: \.showDashboardList,
-                    send: DashboardFeature.Action.showDashboardList
-                )
-            ) {
-                DashboardViewList(
-                    store: Store(
-                        initialState: DashboardListFeature.State(),
-                        reducer: {
-                            DashboardListFeature()
-                        }
-                    )
-                )
-            }
+//            .navigationDestination(
+//                isPresented: viewStore.binding(
+//                    get: \.showDashboardList,
+//                    send: DashboardFeature.Action.showDashboardList
+//                )
+//            ) {
+//                DashboardViewList(
+//                    store: Store(
+//                        initialState: DashboardListFeature.State(),
+//                        reducer: {
+//                            DashboardListFeature()
+//                        }
+//                    )
+//                )
+//            }
             .navigationDestination(
                 item: viewStore.binding(
                     get: \.navigationDestination,
@@ -270,12 +272,6 @@ struct DashboardView: View {
                     LoginView(store: loginStore)
                     
                     
-                    
-//                case .persona:
-//                    IfLetStore(
-//                        store.scope(state: \.persona?.state, action: DashboardFeature.Action.persona),
-//                        then: PersonaView.init
-//                    )
                 }
             }
             NavigationLink(
@@ -291,6 +287,16 @@ struct DashboardView: View {
                 isActive: viewStore.binding(
                     get: { $0.persona != nil },
                     send: { $0 ? .tabMenuItemSelected(.persona) : .closePersona }
+                )
+            ) {
+                EmptyView()
+            }
+            
+            NavigationLink(
+                destination: SettingView(),
+                isActive: Binding(
+                    get: { viewStore.showSettings },
+                    set: { viewStore.send(.showSettings($0)) }
                 )
             ) {
                 EmptyView()

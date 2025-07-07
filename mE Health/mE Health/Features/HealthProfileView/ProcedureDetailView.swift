@@ -24,7 +24,7 @@ struct ProcedureDetailView: View {
                         VStack(alignment: .leading, spacing: 12) {
                             
                             HStack(spacing: 8) {
-                                Text("Appendectomy")
+                                Text(data.codeDisplay)
                                     .font(.custom("Montserrat-Bold", size: 17))
                                     .foregroundColor(.black)
                                 
@@ -41,7 +41,7 @@ struct ProcedureDetailView: View {
                             }
 
                             
-                            Text("03/15/2024")
+                            Text(data.performedDate)
                                 .font(.custom("Montserrat-SemiBold", size: 13))
 
                         }
@@ -63,7 +63,7 @@ struct ProcedureDetailView: View {
                                 Text("Procedure ID")
                                 .font(.custom("Montserrat-Regular", size: 14))
                                 Spacer()
-                                Text("#PRO-2023-091")
+                                Text("#PRO-\(data.id)")
                                 .font(.custom("Montserrat-SemiBold", size: 13))
                             }
 
@@ -71,7 +71,7 @@ struct ProcedureDetailView: View {
                                 Text("Reason")
                                 .font(.custom("Montserrat-Regular", size: 14))
                                 Spacer()
-                                Text("Acute Appendicitis")
+                                Text(data.reasonCode?.display ?? "")
                                 .font(.custom("Montserrat-SemiBold", size: 13))
                             }
 
@@ -104,7 +104,7 @@ struct ProcedureDetailView: View {
                             }
 
                             
-                            Text("Recorded Date: 06/11/2025")
+                            Text("Recorded Date: \(data.performedDate)")
                                 .font(.custom("Montserrat-SemiBold", size: 13))
 
                         }
@@ -154,11 +154,6 @@ struct ProcedureDetailView: View {
                 }
             }
     }
-}
-
-
-#Preview {
-    ProcedureDetailView(data: ProcedureDummyData(name: "", recordDate: "", status: .completed))
 }
 
 

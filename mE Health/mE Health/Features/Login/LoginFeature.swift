@@ -124,64 +124,22 @@ struct LoginFeature: Reducer {
             let token = userData?.token ?? ""
             let user_id = userData?.user_id ?? 0
             state.isLoading = false
-            UserDefaults.standard.set(token, forKey: "token")
-            UserDefaults.standard.set(user_id, forKey: "user_id")
+            MEUtility.setME_TOKEN(value: token)
+            MEUtility.setME_USERID(value: String(user_id))
             SessionManager.shared.saveLoginSession()
             state.isLoggedIn = true
             state.dashboardState = DashboardFeature.State()
             state.navigateToDashboard = true
             return .none
-
-//            return .run { send in
-//                            do {
-//                                let callbackURL = try await authService.startOAuthFlow()
-//                                await send(.oauthResponse(.success(callbackURL)))
-//                            } catch {
-//                                let authError = error as? AuthError ?? .unknown
-//                                await send(.oauthResponse(.failure(authError)))
-//                            }
-//                        }
-            
-//        case let .oauthResponse(result):
-//            state.isLoading = false
-//            switch result {
-//            case let .success(url):
-//                print("✅ Callback URL: \(url)")
-//                guard let code = extractCode(from: url) else {
-//                    return .send(.tokenExchangeResponse(.failure(.authFailed)))
-//                }
-//                return .run { send in
-//                    do {
-//                        let (token, patientID,expiresIn) = try await authService.exchangeCodeForToken(code)
-//                        await send(.tokenExchangeResponse(.success(TokenExchangeResult(accessToken: token, patientID: patientID, expiresIn: expiresIn))))
-//                    } catch {
-//                        await send(.tokenExchangeResponse(.failure(error as? AuthError ?? .unknown)))
-//                    }
-//                }
-//            case let .failure(error):
-//                state.authError = error.localizedDescription
-//            }
-//            return .none
-
             
         case let .loginResponse(.failure(error)):
             state.isLoading = false
-            SessionManager.shared.saveLoginSession()
-            state.isLoggedIn = true
-            state.dashboardState = DashboardFeature.State()
-            state.navigateToDashboard = true
+            state.isLoggedIn = false
+            state.navigateToDashboard = false
+            state.showErrorAlert = true
+            state.errorMessage = "Login failed: \(error.localizedDescription)"
             return .none
-//            state.showErrorAlert = false
-//            state.errorMessage = "Login failed: \(error.localizedDescription)"
-//            return .run { send in
-//                            do {
-//                                let callbackURL = try await authService.startOAuthFlow()
-//                                await send(.oauthResponse(.success(callbackURL)))
-//                            } catch {
-//                                let authError = error as? AuthError ?? .unknown
-//                                await send(.oauthResponse(.failure(authError)))
-//                            }
-//                        }
+
 
         case .forgotPasswordTapped:
             state.showForgotPassword = true
@@ -218,30 +176,6 @@ struct LoginFeature: Reducer {
             state.navigateToAlreadyAUser = false
             state.alreadyUserState = nil
             return .none
-            
-//        case .tokenExchangeResponse(.success(let tokenResult)):
-//            state.isLoading = false
-//            UserDefaults.standard.set(tokenResult.patientID, forKey: "patientId")
-//            state.isLoggedIn = true
-//            
-//            let expiresIn = tokenResult.expiresIn
-//            let expiryDate = Date().addingTimeInterval(TimeInterval(expiresIn - 60))
-//            UserDefaults.standard.set(expiryDate, forKey: "tokenExpiryDate")
-//            _ = TokenManager.saveAccessToken(tokenResult.accessToken)
-//            
-//            let loginTimestamp = Date()
-//            UserDefaults.standard.set(loginTimestamp, forKey: "loginTimestamp")
-//           
-//            state.dashboardState = DashboardFeature.State()
-//            state.navigateToDashboard = true
-//            return .none
-//            
-//
-//        case .tokenExchangeResponse(.failure(let error)):
-//            state.isLoading = false
-//            state.errorMessage = error.localizedDescription
-//            return .none
-
            
         case .dismissDashboardView:
             state.navigateToDashboard = false

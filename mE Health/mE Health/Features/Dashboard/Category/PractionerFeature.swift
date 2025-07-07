@@ -68,7 +68,7 @@ struct PractionerFeature: Reducer {
             return .run { send in
                 do {
                     
-                    if let practitionerId = UserDefaults.standard.string(forKey: "practitionerId") {
+                    if let practitionerId = MEUtility.getME_PRACTITIONERD() {
                         let conditionModel = try await fhirClient.getPractitionerRoles(practitionerId)
                         await send(.getPractionerRoleResponse(.success(conditionModel)))
                     }

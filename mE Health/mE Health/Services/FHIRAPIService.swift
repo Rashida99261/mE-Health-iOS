@@ -77,18 +77,11 @@ struct FHIRAPIService : FHIRAPIClient{
     // MARK: - Providers
     
     func fetchPatient() async throws -> PatientModel {
-        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
-            throw URLError(.badURL)
-        }
-        
-        return try await fetch(PatientModel.self, from: "/Patient/\(patientId)")
+        return try await fetch(PatientModel.self, from: "/Patient/\(MEUtility.getME_PATIENTID())")
     }
     
     func getPractitioner() async throws -> Practitioner {
-        guard let practitionerId = UserDefaults.standard.string(forKey: "practitionerId") else {
-            throw URLError(.badURL)
-        }
-        return try await fetch(Practitioner.self, from: "/\(practitionerId)")
+        return try await fetch(Practitioner.self, from: "/\(MEUtility.getME_PRACTITIONERD())")
     }
     
     func getPractitionerRoles(practitionerId: String) async throws -> PractitionerRole {
@@ -103,69 +96,53 @@ struct FHIRAPIService : FHIRAPIClient{
     // MARK: - Conditions
     
     func getConditions() async throws -> ConditionModel {
-        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
-            throw URLError(.badURL)
-        }
-        return try await fetch(ConditionModel.self, from: "/Condition?patient=\(patientId)")
+       
+        return try await fetch(ConditionModel.self, from: "/Condition?patient=\(MEUtility.getME_PATIENTID())")
     }
     
     // MARK: - Medications
     
     func getMedicationRequests() async throws -> MedicationModel {
-        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
-            throw URLError(.badURL)
-        }
-        return try await fetch(MedicationModel.self, from: "/MedicationRequest?patient=\(patientId)")
+       
+        return try await fetch(MedicationModel.self, from: "/MedicationRequest?patient=\(MEUtility.getME_PATIENTID())")
     }
     //
     //    // MARK: - Labs
     
     func getLabObservations() async throws -> ObservationModel {
-        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
-            throw URLError(.badURL)
-        }
-        return try await fetch(ObservationModel.self, from: "/Observation?patient=\(patientId)&category=laboratory")
+       
+        return try await fetch(ObservationModel.self, from: "/Observation?patient=\(MEUtility.getME_PATIENTID())&category=laboratory")
     }
     
     // MARK: - Vitals
     
     func getVitalObservations() async throws -> ObservationModel {
-        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
-            throw URLError(.badURL)
-        }
-        return try await fetch(ObservationModel.self, from: "/Observation?patient=\(patientId)&category=vital-signs")
+       
+        return try await fetch(ObservationModel.self, from: "/Observation?patient=\(MEUtility.getME_PATIENTID())&category=vital-signs")
     }
     
     // MARK: - Uploads
     
     func getDocumentReferences() async throws -> DocumentReferenceModel {
-        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
-            throw URLError(.badURL)
-        }
-        return try await fetch(DocumentReferenceModel.self, from: "/DocumentReference?patient=\(patientId)")
+        
+        return try await fetch(DocumentReferenceModel.self, from: "/DocumentReference?patient=\(MEUtility.getME_PATIENTID())")
     }
     
     // MARK: - Consents
     
     func getConsents() async throws -> ConsentModel {
-        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
-            throw URLError(.badURL)
-        }
-        return try await fetch(ConsentModel.self, from: "/Consent?patient=\(patientId)")
+        
+        return try await fetch(ConsentModel.self, from: "/Consent?patient=\(MEUtility.getME_PATIENTID())")
     }
     
     func getOrganisation() async throws -> OrganizationModel {
-        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
-            throw URLError(.badURL)
-        }
-        return try await fetch(OrganizationModel.self, from: "/Organization/\(patientId)")
+       
+        return try await fetch(OrganizationModel.self, from: "/Organization/\(MEUtility.getME_PATIENTID())")
     }
         
     func getAppoitment() async throws -> AppoitmentModel {
-        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
-            throw URLError(.badURL)
-        }
-        return try await fetch(AppoitmentModel.self, from: "/Appointment?patient=\(patientId)")
+       
+        return try await fetch(AppoitmentModel.self, from: "/Appointment?patient=\(MEUtility.getME_PATIENTID())")
     }
     
     func getAppoitmentDetail(appointmentId:String) async throws -> AppoitmentResource {
@@ -173,10 +150,8 @@ struct FHIRAPIService : FHIRAPIClient{
     }
 
     func getAllergy() async throws -> AllergyModel {
-        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
-            throw URLError(.badURL)
-        }
-        return try await fetch(AllergyModel.self, from: "/AllergyIntolerance?patient=\(patientId)")
+       
+        return try await fetch(AllergyModel.self, from: "/AllergyIntolerance?patient=\(MEUtility.getME_PATIENTID())")
     }
     
     func getAllergyDetail(id:String) async throws -> AllergyResource {
@@ -184,10 +159,8 @@ struct FHIRAPIService : FHIRAPIClient{
     }
     
     func getImmunization() async throws -> ImmunizationModel {
-        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
-            throw URLError(.badURL)
-        }
-        return try await fetch(ImmunizationModel.self, from: "/Immunization?patient=\(patientId)")
+        
+        return try await fetch(ImmunizationModel.self, from: "/Immunization?patient=\(MEUtility.getME_PATIENTID())")
     }
     
     func getImmunizationDetail(id:String) async throws -> ImmunizationResource {
@@ -195,10 +168,8 @@ struct FHIRAPIService : FHIRAPIClient{
     }
     
     func getProcedure() async throws -> ProcedureModel {
-        guard let patientId = UserDefaults.standard.string(forKey: "patientId") else {
-            throw URLError(.badURL)
-        }
-        return try await fetch(ProcedureModel.self, from: "/Procedure?patient=\(patientId)")
+        
+        return try await fetch(ProcedureModel.self, from: "/Procedure?patient=\(MEUtility.getME_PATIENTID())")
     }
 
     
@@ -294,6 +265,7 @@ extension DependencyValues {
         set { self[FhirClientKey.self] = newValue }
     }
 }
+
 
 
 

@@ -38,6 +38,7 @@ enum Constants {
         static let PrimaryColorHex = "FF6605"
         static let loginApi = appBaseUrl + "/user/login/"
         static let getProfileApi = appBaseUrl + "/user/get-profile/"
+        static let assistGetApi = appBaseUrl + "/core/assist-data-list/"
     }
 
     enum Strings {
