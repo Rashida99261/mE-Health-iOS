@@ -16,6 +16,7 @@ struct MyHealthView: View {
     @StateObject private var viewModel = ReadDatapractitioner()
     @StateObject private var procedureVM = ReadDataprocedure()
     @StateObject private var allergyVM = ReadDataallergyIntolerances()
+    @StateObject private var immuneVM = ReadDataimmunization()
 
     
     var sampleAppoitmnt : [AppointmentData] = [
@@ -28,17 +29,6 @@ struct MyHealthView: View {
             LabDummyData(name: "Complete Blood Count", recordDate: "Recorded Date: 05/06/2025",isActive:true),
             LabDummyData(name: "Lipid Panel", recordDate: "Recorded Date: 12/06/2025",isActive:false),
             LabDummyData(name: "Lipid Panel", recordDate: "Recorded Date: 12/06/2025",isActive:true)
-    ]
-    
-    var sampleImmubeData : [ImmuneDummyData] = [
-        ImmuneDummyData(name: "Influenza vaccine", recordDate: "Occurrence Date: 01/07/2021", location: "Location: N/A", isCompleted: true),
-        ImmuneDummyData(name: "COVID-19 vaccine, mRNA, Pfizer, 1st dose", recordDate: "Occurrence Date: 01/07/2021", location: "Location: N/A", isCompleted: true),
-        ImmuneDummyData(name: "COVID-19 vaccine, mRNA, Pfizer, 2nd dose", recordDate: "Occurrence Date: 05/08/2022", location: "Location: N/A", isCompleted: true),
-        
-        ImmuneDummyData(name: "Tdap vaccine", recordDate: "Occurrence Date: 15/10/2022", location: "Location: N/A", isCompleted: true),
-        ImmuneDummyData(name: "Shingles vaccine, recombinant, 1st dose", recordDate: "Occurrence Date: 15/06/2023", location: "Location: N/A", isCompleted: true),
-        ImmuneDummyData(name: "Shingles vaccine, recombinant, 2nd dose", recordDate: "Occurrence Date: 10/09/2023", location: "Location: N/A", isCompleted: true),
-        ImmuneDummyData(name: "Pneumococcal conjugate vaccine, PCV20", recordDate: "Occurrence Date: 15/06/2024", location: "Location: N/A", isCompleted: true)
     ]
     
     let billingItems: [BillingItem] = [
@@ -209,7 +199,7 @@ struct MyHealthView: View {
                             })
                             
                         case "Immunizations":
-                            ImmuneSectionView(immune: sampleImmubeData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { immune in
+                            ImmuneSectionView(immune: immuneVM.immune, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { immune in
                                 
                                 viewStore.send(.openImmuneDetail(immune))
                                 
@@ -334,7 +324,7 @@ struct MyHealthView: View {
                 )
             ) {
                 if let selected = viewStore.selectImune {
-                    ImmunizationDetailView()
+                    ImmunizationDetailView(immune: selected)
                 }
             }
 

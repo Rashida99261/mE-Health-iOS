@@ -11,6 +11,8 @@ import UIKit
 
 struct ImmunizationDetailView: View {
     @Environment(\.presentationMode) var presentationMode
+    let immune: ImmuneDummyData
+    
     
     var body: some View {
             ZStack {
@@ -28,13 +30,13 @@ struct ImmunizationDetailView: View {
                         VStack(alignment: .leading, spacing: 12) {
                             
                             HStack(spacing: 8) {
-                                Text("COVID-19 Booster")
+                                Text(immune.vaccineCodeDisplay)
                                     .font(.custom("Montserrat-Bold", size: 17))
                                     .foregroundColor(.black)
                                 
                                 Spacer()
                                 
-                                Text("Completed")
+                                Text(immune.status)
                                     .font(.caption)
                                     .padding(.horizontal, 12)
                                     .padding(.vertical, 4)
@@ -45,7 +47,7 @@ struct ImmunizationDetailView: View {
                             }
 
                             
-                            Text("Sarah Parker")
+                            Text("\(userProfileData?.first_name ?? "") \(userProfileData?.last_name ?? "")")
                                 .font(.custom("Montserrat-SemiBold", size: 13))
                             
                             Text("Initial Consultation")
@@ -81,7 +83,7 @@ struct ImmunizationDetailView: View {
                             }
 
                             
-                            Text("Recorded Date: 06/11/2025")
+                            Text("Occurrence Date: \(immune.formattedOccurrenceDate)")
                                 .font(.custom("Montserrat-SemiBold", size: 13))
 
                         }
@@ -100,7 +102,7 @@ struct ImmunizationDetailView: View {
                                 Text("Immunization ID")
                                 .font(.custom("Montserrat-Regular", size: 14))
                                 Spacer()
-                                Text("#IMM78901")
+                                Text("#\(immune.id)")
                                 .font(.custom("Montserrat-SemiBold", size: 13))
                             }
 
@@ -108,7 +110,7 @@ struct ImmunizationDetailView: View {
                                 Text("Location")
                                 .font(.custom("Montserrat-Regular", size: 14))
                                 Spacer()
-                                Text("Apollo Hospital")
+                                Text("")
                                 .font(.custom("Montserrat-SemiBold", size: 13))
                             }
 
@@ -116,7 +118,7 @@ struct ImmunizationDetailView: View {
                                 Text("Provider")
                                 .font(.custom("Montserrat-Regular", size: 14))
                                 Spacer()
-                                Text("Dr. Sarah Johnson")
+                                Text("Dr. ")
                                     .font(.custom("Montserrat-SemiBold", size: 13))
                             }
                         }
@@ -164,10 +166,3 @@ struct ImmunizationDetailView: View {
             }
     }
 }
-
-
-#Preview {
-    ImmunizationDetailView()
-}
-
-

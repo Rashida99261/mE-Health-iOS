@@ -169,7 +169,8 @@ class ReadDatimaging_study: ObservableObject  {
 
 class ReadDataimmunization: ObservableObject  {
    
-      
+    @Published var immune: [ImmuneDummyData] = []
+    
     init(){
         loadData()
     }
@@ -180,11 +181,15 @@ class ReadDataimmunization: ObservableObject  {
                 print("Json file not found")
                 return
             }
-        
-        let data = try? Data(contentsOf: url)
-        print(data!)
-       
-        
+        do {
+            let data = try Data(contentsOf: url)
+            let decodedResponse = try JSONDecoder().decode(ImmuneResponse.self, from: data)
+            DispatchQueue.main.async {
+                self.immune = decodedResponse.immunizations
+            }
+        } catch {
+            print("Error decoding JSON: \(error)")
+        }
     }
      
 }
