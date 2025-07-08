@@ -14,7 +14,7 @@ struct FilterPopupView: View {
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             ZStack {
-                Color.black.opacity(0.3)
+                Color.white
                     .ignoresSafeArea()
                     .background(.ultraThinMaterial) //
                     .onTapGesture {
@@ -25,8 +25,6 @@ struct FilterPopupView: View {
                     Spacer()
 
                     ZStack(alignment: .top) {
-                        
-
                         
                         VStack(spacing: 20) {
                             Spacer().frame(height: 28)
@@ -75,7 +73,6 @@ struct FilterPopupView: View {
                         .background(Color(hex: "F5F5FC"))
                         .cornerRadius(30, corners: [.topLeft, .topRight])
                         .ignoresSafeArea(.all, edges: .bottom)
-
 
                         Button(action: {
                             viewStore.send(.dismissSheet)

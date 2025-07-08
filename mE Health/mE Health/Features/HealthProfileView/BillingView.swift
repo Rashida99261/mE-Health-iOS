@@ -88,7 +88,7 @@ struct BillingSectionView: View {
     var onCardTap: (BillingItem) -> Void
     
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 20) {
             
             if items.isEmpty {
                         NoDataView()
@@ -101,7 +101,7 @@ struct BillingSectionView: View {
             }
 
         }
-        .padding()
+        .padding(.horizontal)
     }
 
 }

@@ -130,7 +130,6 @@ struct MyHealthView: View {
                     HStack(spacing: 16) {
                         ForEach(viewStore.tiles.indices, id: \.self) { index in
                             let tile = viewStore.tiles[index]
-
                             MyHealthTileView(
                                 icon: tile.icon,
                                 title: tile.title,
@@ -156,7 +155,7 @@ struct MyHealthView: View {
                         
                         let selectedTileTitle = viewStore.tiles[viewStore.selectedIndex].title
                         switch selectedTileTitle {
-                        case "Practitioner":
+                        case "Practitioners":
                             PractitionerSectionView(
                                 practitioners: viewModel.practitioners, // Replace with state-driven data
                                 startDate: "06-01-2025",
@@ -166,7 +165,7 @@ struct MyHealthView: View {
                                 }
                             )
                             
-                        case "Appointment":
+                        case "Appointments":
                             AppoitmentSectionView(
                                 practitioners: sampleAppoitmnt,
                                 onCardTap:{ appoitmnet in
@@ -177,22 +176,22 @@ struct MyHealthView: View {
                                 }
                             )
                             
-                        case "Condition":
+                        case "Conditions":
                             ConditionSectionView(conditions: conditionData, onCardTap: { condition in
                                 viewStore.send(.openConditionDetail(condition))
                             })
                             
-                        case "Lab":
+                        case "Labs":
                             LabSectionView(labs: sampleLabData, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { lab in
                                 viewStore.send(.openLabDetail(lab))
                             })
                             
-                        case "Vital":
+                        case "Vitals":
                             VitalsSectionView(vitals: vitalData) { vital in
                                 viewStore.send(.openVitalDetail(vital))
                             }
                             
-                        case "Medication":
+                        case "Medications":
                             MedicationSectionView(medications: medicationData) { medication in
                                 viewStore.send(.openMedDetail(medication))
                             }
@@ -203,13 +202,13 @@ struct MyHealthView: View {
                                 
                             })
                             
-                        case "Procedure":
+                        case "Procedures":
                             ProcedureSectionView(procedure: procedureVM.procedures, onCardTap: { data in
                                 viewStore.send(.openProcedureDetail(data))
                             })
                             
-                        case "Allergy":
-                            AllergySectionView(allergies: [], startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { allergy in
+                        case "Allergies":
+                            AllergySectionView(allergies: allergyVM.allergy, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { allergy in
                                 viewStore.send(.allergyTapped(allergy))
                             })
                             
@@ -226,7 +225,7 @@ struct MyHealthView: View {
                                 viewStore.send(.openBillingDetail(billing))
                             })
                             
-                        case "Upload Documents":
+                        case "Records Vault":
                             FilesSectionView(filesArray: filedata) { files in
                                 
                             }
@@ -570,4 +569,3 @@ struct MyHealthTileView: View {
 struct SearchView: View { var body: some View { Text("Search View") } }
 struct DatePickerView: View { var body: some View { Text("Date Picker View") } }
 struct UploadView: View { var body: some View { Text("Upload View") } }
-struct FilterView: View { var body: some View { Text("Filter View") } }

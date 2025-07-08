@@ -78,7 +78,7 @@ struct FilesSectionView: View {
     var body: some View {
       
        // NavigationStack {
-        VStack(spacing: 24) {
+        VStack(spacing: 20) {
             // Horizontal date cards
             
             if filesArray.isEmpty {

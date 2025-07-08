@@ -96,7 +96,7 @@ struct ConditionSectionView: View {
     
     var body: some View {
         
-        VStack(spacing: 24) {
+        VStack(spacing: 20) {
             if conditions.isEmpty {
                         NoDataView()
             } else {
