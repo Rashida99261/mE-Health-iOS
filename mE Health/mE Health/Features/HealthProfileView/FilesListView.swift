@@ -117,6 +117,11 @@ struct FilesSectionView: View {
             ActionSheet(
                 title: Text("Select Type"),
                 buttons: [
+                    .default(Text("Camera")) {
+                        mediaSource = .camera
+                        showImagePicker = true
+                        
+                    },
                     .default(Text("Picture")) {
                         mediaSource = .photoLibrary
                         showImagePicker = true

@@ -66,7 +66,7 @@ struct AssistListCardView: View {
 
 
 struct AssistColumn: View {
-    let icons = ["envelope.fill", "phone.fill"]
+    let icons = ["AI Advice", "delete"]
 
     var body: some View {
         VStack(spacing: 1) {
@@ -74,7 +74,7 @@ struct AssistColumn: View {
                 Button(action: {
                     // Handle tap
                 }) {
-                    Image(systemName: icon)
+                    Image(icon)
                         .resizable()
                         .scaledToFit()
                         .foregroundColor(.white)
