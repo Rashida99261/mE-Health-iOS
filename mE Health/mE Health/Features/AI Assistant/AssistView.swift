@@ -45,8 +45,10 @@ struct AssistView: View {
                             }
                         }
                         .padding(.horizontal)
+                        .padding(.top,1)
                     }
                     .padding(.top)
+                    
                 }
 
                 NavigationLink(
