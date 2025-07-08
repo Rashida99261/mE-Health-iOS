@@ -91,7 +91,7 @@ struct ImagingSectionView: View {
     
     var body: some View {
         
-        VStack(spacing: 24) {
+        VStack(spacing: 20) {
             // Horizontal date cards
             
             if arrayImaging.isEmpty {

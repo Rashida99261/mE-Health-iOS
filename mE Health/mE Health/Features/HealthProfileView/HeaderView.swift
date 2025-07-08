@@ -10,9 +10,15 @@ import ComposableArchitecture
 
 struct HeaderView: View {
     let store: StoreOf<HeaderFeature>
+    @State private var startDate: Date? = nil
+    @State private var endDate: Date? = nil
+    @State private var isStartDatePickerPresented = false
+    @State private var isEndDatePickerPresented = false
+    @State private var selectedDate = Date()
 
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
+            
             VStack(spacing: 16) {
                 HStack {
                     Text(viewStore.title)
@@ -100,17 +106,99 @@ struct HeaderView: View {
                         .padding(.horizontal)
                     }
                 }
+                
+                if viewStore.isDatePickerPresented {
+                    if let start = startDate, let end = endDate {
+                        HStack {
+                            HStack(spacing: 8) {
+                                Text("Date Range: ")
+                                    .font(.custom("Montserrat-Medium", size: 12))
+                                    .foregroundColor(.black)
+
+                                Text("\(formattedRange(start: start, end: end))")
+                                    .font(.custom("Montserrat-Medium", size: 12))
+                                    .foregroundColor(.black)
+                                
+                                Spacer()
+
+                                Button(action: {
+                                    // Clear selected dates
+                                    isStartDatePickerPresented = false
+                                    isEndDatePickerPresented = false
+                                    startDate = nil
+                                    endDate = nil
+                                    viewStore.send(.removeDate)
+                                    
+                                }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                            .frame(height: 40)
+                            .background(Color.clear)
+                            .padding(.leading,4)
+                        }
+                        .padding(.horizontal)
+                    } else {
+                        // Show start and end date pickers
+                        HStack(spacing: 12) {
+                            Button(action: {
+                                isStartDatePickerPresented = true
+                            }) {
+                                DateCardView(title: "Start Date", date: formattedDate(startDate))
+                            }
+                            .sheet(isPresented: $isStartDatePickerPresented) {
+                                DatePickerModalView(
+                                    title: "Start Date",
+                                    isPresented: $isStartDatePickerPresented,
+                                    selectedDate: Binding(
+                                        get: { startDate ?? Date() },
+                                        set: { startDate = $0 }
+                                    ),
+                                    minimumDate: nil
+                                )
+                            }
+
+                            Button(action: {
+                                if startDate != nil {
+                                    isEndDatePickerPresented = true
+                                }
+                            }) {
+                                DateCardView(title: "End Date", date: formattedDate(endDate))
+                            }
+                            .disabled(startDate == nil)
+                            .opacity(startDate == nil ? 0.5 : 1.0)
+                            .sheet(isPresented: $isEndDatePickerPresented) {
+                                if let safeStartDate = startDate {
+                                    DatePickerModalView(
+                                        title: "End Date",
+                                        isPresented: $isEndDatePickerPresented,
+                                        selectedDate: Binding(
+                                            get: { endDate ?? safeStartDate },
+                                            set: {
+                                                if $0 >= safeStartDate {
+                                                    endDate = $0
+                                                }
+                                            }
+                                        ),
+                                        minimumDate: safeStartDate
+                                    )
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                }
+
 
             }
 
             .sheet(isPresented: Binding(get: {
-                viewStore.isDatePickerPresented || viewStore.isUploadPresented
+                viewStore.isUploadPresented
             }, set: { _ in
                 viewStore.send(.dismissSheet)
             })) {
-                if viewStore.isDatePickerPresented {
-                    DatePickerView()
-                } else if viewStore.isUploadPresented {
+                if viewStore.isUploadPresented {
                     UploadView()
                 }
             }
@@ -118,6 +206,20 @@ struct HeaderView: View {
         }
 
     }
+    
+    private func formattedDate(_ date: Date?) -> String {
+        guard let date = date else { return "MM-DD-YYYY" }
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
+    }
+    
+    private func formattedRange(start: Date, end: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd MMM yyyy"
+        return "\(formatter.string(from: start)) - \(formatter.string(from: end))"
+    }
+
 }
 
 

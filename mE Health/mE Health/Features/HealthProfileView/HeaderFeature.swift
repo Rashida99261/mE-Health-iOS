@@ -37,7 +37,7 @@ enum FilterType: String, CaseIterable, Identifiable, Equatable {
 
 struct HeaderFeature: Reducer {
     struct State: Equatable {
-        var title: String = "List of Practitioner"
+        var title: String = "List of Practitioners"
         var isSearchVisible = false
         var searchText: String = ""
         var isDatePickerPresented = false
@@ -57,18 +57,20 @@ struct HeaderFeature: Reducer {
         case applyFilters
         case clearFilters
         case removeFilter(FilterType)
+        
+        case removeDate
 
     }
 
     enum HeaderIcon: CaseIterable, Identifiable, Equatable {
-        case search, date, upload, filter
+        case date,search, upload, filter
 
         var id: Self { self }
 
         var iconName: String {
             switch self {
-            case .search: return "Search"
             case .date: return "datepicker"
+            case .search: return "Search"
             case .upload: return "file_upload"
             case .filter: return "filter"
             }
@@ -89,7 +91,6 @@ struct HeaderFeature: Reducer {
                 return .none
 
             case .dismissSheet:
-                state.isDatePickerPresented = false
                 state.isUploadPresented = false
                 state.isFilterPresented = false
                 return .none
@@ -102,6 +103,11 @@ struct HeaderFeature: Reducer {
                 state.isSearchVisible = false
                 state.searchText = ""
                 return .none
+                
+            case .removeDate:
+                state.isDatePickerPresented = false
+                return .none
+                
                 
             case .toggleFilter(let filter):
                 if state.selectedFilters.contains(filter) {
