@@ -53,10 +53,10 @@ struct AppoitmentDetailView: View {
                                 .clipShape(Circle())
 
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Dr. Davide Joe")
+                                Text(appoitment.drName)
                                     .font(.custom("Montserrat-Medium", size: 18))
                                     .foregroundColor(Color(hex: "FF6605"))
-                                Text("Hospital Name")
+                                Text(appoitment.hospitalName)
                                     .font(.custom("Montserrat-Regular", size: 14))
                                     .foregroundColor(.gray)
                             }
@@ -131,9 +131,11 @@ struct AppoitmentDetailView: View {
                                 
                             }
 
-                            
-                            Text("Start Date: 11/06/2025")
+                           
+                            Text("Start Date: \(appoitment.dateTime)")
                                 .font(.custom("Montserrat-SemiBold", size: 13))
+                           // Text("Start Date: 11/06/2025")
+                                //.font(.custom("Montserrat-SemiBold", size: 13))
 
                         }
                         .padding()

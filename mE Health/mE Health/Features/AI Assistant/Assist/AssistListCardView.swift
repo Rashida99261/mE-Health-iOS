@@ -15,8 +15,10 @@ struct AssistListData: Identifiable, Equatable {
 
 
 
+
+
 struct AssistListCardView: View {
-    let assistData: AssistListData
+    let assistData: Condition
     let onTap: () -> Void
 
     var body: some View {
@@ -26,18 +28,18 @@ struct AssistListCardView: View {
                 HStack(spacing: 0) {
                     Text("Date Range:")
                         .font(.custom("Montserrat-Bold", size: 14))
-                    Text(assistData.dateRange)
+                    Text("\(assistData.date)")
                         .font(.custom("Montserrat-Bold", size: 16))
                 }
                 
                 HStack(spacing: 0) {
                     Text("Category:")
                         .font(.custom("Montserrat-Bold", size: 14))
-                    Text(assistData.category)
+                    Text(assistData.name)
                         .font(.custom("Montserrat-Regular", size: 12))
                 }
 
-                Text(assistData.time)
+                Text(assistData.code)
                     .font(.custom("Montserrat-Regular", size: 12))
 
                                 

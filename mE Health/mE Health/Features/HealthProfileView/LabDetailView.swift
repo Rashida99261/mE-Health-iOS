@@ -11,6 +11,8 @@ import ComposableArchitecture
 struct LabDetailView: View {
     @Environment(\.presentationMode) var presentationMode
     
+  
+    
     var body: some View {
             ZStack {
                 
@@ -24,7 +26,7 @@ struct LabDetailView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
                         
-                        TopCardView(title: "Complete Blood Count", subtitle: "Lab ID: 12345", desc: "06/11/2025")
+                        TopCardView(title: "", subtitle: "Lab ID: 12345", desc: "")
                             .padding(.horizontal)
                         
                         // Allergy Detail Card
@@ -137,9 +139,9 @@ struct LabDetailView: View {
 }
 
 
-#Preview {
-    LabDetailView()
-}
+//#Preview {
+//    LabDetailView()
+//}
 
 struct TopCardView: View {
     

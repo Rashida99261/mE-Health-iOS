@@ -114,50 +114,6 @@
             endingLineNumber = "25"
             landmarkName = "getUserProfileApi(_:)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "63EBA50E-9082-48DC-8863-6FD1EF3AF1A4 - 9f3cc9728cee15f3"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(1) suspend resume partial function for mE_Health.ApiProfileClient.getUserProfileApi(mE_Health.ProfileRequest) async throws -&gt; mE_Health.PatientProfilResponse"
-                  moduleName = "mE Health.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/ishanttiwari/Documents/mE-Health-iOS_new/mE%20Health/mE%20Health/Features/PatientProfile/ProfileClient.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "26"
-                  endingLineNumber = "26">
-               </Location>
-               <Location
-                  uuid = "63EBA50E-9082-48DC-8863-6FD1EF3AF1A4 - 9dc9be96aac7c9f1"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(3) suspend resume partial function for mE_Health.ApiProfileClient.getUserProfileApi(mE_Health.ProfileRequest) async throws -&gt; mE_Health.PatientProfilResponse"
-                  moduleName = "mE Health.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/ishanttiwari/Documents/mE-Health-iOS_new/mE%20Health/mE%20Health/Features/PatientProfile/ProfileClient.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "26"
-                  endingLineNumber = "26">
-               </Location>
-               <Location
-                  uuid = "63EBA50E-9082-48DC-8863-6FD1EF3AF1A4 - 1d60c80954286ff6"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(4) suspend resume partial function for mE_Health.ApiProfileClient.getUserProfileApi(mE_Health.ProfileRequest) async throws -&gt; mE_Health.PatientProfilResponse"
-                  moduleName = "mE Health.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/ishanttiwari/Documents/mE-Health-iOS_new/mE%20Health/mE%20Health/Features/PatientProfile/ProfileClient.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "26"
-                  endingLineNumber = "26">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -220,6 +176,22 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "23"
             endingLineNumber = "23"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4DD79FC8-FB50-4578-9AA9-379062769CA5"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "mE Health/Features/AI Assistant/AssistDetailView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>

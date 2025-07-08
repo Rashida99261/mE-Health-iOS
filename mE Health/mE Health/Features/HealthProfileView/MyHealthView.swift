@@ -20,15 +20,23 @@ struct MyHealthView: View {
 
     
     var sampleAppoitmnt : [AppointmentData] = [
-        AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.",status: .booked),
-        AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.",status: .completed),
-        AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.",status: .cancel)]
+        AppointmentData(drName: "Dr. Richard Allara, MD", hospitalName: "Middleton Family Practice", dateTime: "15 Jun 2021,09:00 AM - 09:30 AM", description: "Annual well visit",status: .completed),
+        AppointmentData(drName: "Dr. Rajesh Patel, MD", hospitalName: "Massachusetts General Hospital", dateTime: "01 July 2021,02:00 PM - 02:20 PM", description: "Allergy follow-up",status: .completed),
+        AppointmentData(drName: "Dr. Susan Lee, MD", hospitalName: "Massachusetts General Hospital", dateTime: "09 Sep 2021,10:00 AM - 10:30 AM", description: "Pneumonia evaluation",status: .cancel)]
     
         
     var sampleLabData : [LabDummyData] = [
-            LabDummyData(name: "Complete Blood Count", recordDate: "Recorded Date: 05/06/2025",isActive:true),
-            LabDummyData(name: "Lipid Panel", recordDate: "Recorded Date: 12/06/2025",isActive:false),
-            LabDummyData(name: "Lipid Panel", recordDate: "Recorded Date: 12/06/2025",isActive:true)
+            LabDummyData(name: "Lipid panel", recordDate: "Recorded Date: 15/06/2021",isActive:true),
+            LabDummyData(name: "Complete blood count", recordDate: "Recorded Date: 15/06/2021",isActive:false),
+            LabDummyData(name: "Lipid panel", recordDate: "Recorded Date: 15/06/2022",isActive:true),
+            LabDummyData(name: "Complete blood count", recordDate: "Recorded Date: 15/06/2022",isActive:true),
+             LabDummyData(name: "Lipid panel", recordDate: "Recorded Date: 15/06/2023",isActive:true),
+            LabDummyData(name: "Complete blood count", recordDate: "Recorded Date: 15/06/2023",isActive:false),
+            LabDummyData(name: "Lipid panel", recordDate: "Recorded Date: 15/06/2024",isActive:true),
+            LabDummyData(name: "Complete blood count", recordDate: "Recorded Date: 15/06/2024",isActive:true),
+            
+            LabDummyData(name: "Lipid panel", recordDate: "Recorded Date: 15/06/2025",isActive:true),
+            LabDummyData(name: "Complete blood count", recordDate: "Recorded Date: 15/06/2025",isActive:true)
     ]
     
     let billingItems: [BillingItem] = [
