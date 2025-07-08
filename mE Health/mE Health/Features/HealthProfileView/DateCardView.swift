@@ -61,18 +61,35 @@ struct DatePickerModalView: View {
     var body: some View {
         ZStack {
             // Dimmed background
-            Color(hex: "F5F5FC")
+            Color.white
                 .ignoresSafeArea()
                 .onTapGesture {
                     isPresented = false
                 }
 
             VStack(spacing: 24) {
+                
+                HStack {
+                    Button(action: {
+                        isPresented = false
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(Color(hex: "FF6605"))
+                            .font(.system(size: 20, weight: .medium))
+                    }
+
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.top, 40) // Adjust for status bar
 
                 
                 Spacer()
-
-                // Date Picker
+                
+                Text("Select a Date")
+                    .font(.custom("Montserrat-SemiBold", size: 24))
+                    .foregroundColor(Color.black)
+                
                 DatePicker(
                     "",
                     selection: $selectedDate,
@@ -84,8 +101,6 @@ struct DatePickerModalView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal)
                 .background(Color.white)
-                .cornerRadius(20)
-                .shadow(radius: 6)
                 .accentColor(Color(hex: "FF6605"))
 
                 Spacer()
