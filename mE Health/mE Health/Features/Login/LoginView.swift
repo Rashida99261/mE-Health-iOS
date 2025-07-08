@@ -186,7 +186,7 @@ struct LoginView: View {
                         .padding(.top, 20)
                         
                         // Navigation Buttons
-                        alreadyAUserButton(viewStore: viewStore)
+                       // alreadyAUserButton(viewStore: viewStore)
                         signUpPrompt(viewStore: viewStore)
                     }
                     
