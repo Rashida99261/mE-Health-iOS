@@ -38,6 +38,8 @@ struct AssistDetailView: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject private var viewModel = ChronicConditionDetectorViewModel()
     
+    @StateObject private var allergyVM = ReadDataallergyIntolerances()
+    
     let assisData : [AssistListData] = [
         
         AssistListData(dateRange: "2000-2020", category: "Chronic Conditions", time: "23-06-2025 12:19PM"),
@@ -116,7 +118,7 @@ struct AssistDetailView: View {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         isLoading = false
                         showListView = true
-                        viewModel.fetchConditions()
+                       // viewModel.fetchConditions()
                         
                     }
                 }) {
@@ -134,9 +136,21 @@ struct AssistDetailView: View {
             }
 
             // MARK: - List View
+//            if showListView {
+//                List {
+//                    ForEach(viewModel.conditions) { assist in
+//                        AssistListCardView(assistData: assist) {
+//                                
+//                        }
+//                    }
+//                    
+//                }
+//                .listStyle(.plain)
+//            }
+            
             if showListView {
                 List {
-                    ForEach(viewModel.conditions) { assist in
+                    ForEach(assisData) { assist in
                         AssistListCardView(assistData: assist) {
                                 
                         }
