@@ -106,8 +106,8 @@ struct MyHealthView: View {
     
     let imagData : [ImagingDummyData] = [
         ImagingDummyData(title: "X-Ray (DX)", hospitalNAme: "Hospital name", dateValue: "11 Jun 2025", diagnosisValue: "Chest X-ray for bronchitis"),
-        ImagingDummyData(title: "MRI (MR)", hospitalNAme: "Hospital name", dateValue: "11 Jun 2025", diagnosisValue: "Knee MRI for meniscal tear")
-        
+        ImagingDummyData(title: "Magnetic Resonance Imaging (MR)", hospitalNAme: "Hospital name", dateValue: "11 Jun 2025", diagnosisValue: "Knee MRI for meniscal tear"),
+        ImagingDummyData(title: "Magnetic Resonance Imaging (MR)", hospitalNAme: "Hospital name", dateValue: "11 Jun 2025", diagnosisValue: "Follow-up knee MRI for meniscal tear")
     ]
 
 

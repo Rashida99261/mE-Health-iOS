@@ -16,13 +16,14 @@ struct ConditionDetailView: View {
         Organization(name: "HealthCare", type: "Start Time: Jan 1, 2022", imageName: "organis_placeholder")
     ]
 
+    @State private var showPractitionerList = false
 
     var body: some View {
         
         ZStack {
             
             ScrollView(.vertical, showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: 16) {
                     Text("Current Details")
                         .font(.custom("Montserrat-Bold", size: 32))
                         .padding(.horizontal)
@@ -30,7 +31,7 @@ struct ConditionDetailView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         
                         HStack(spacing: 8) {
-                            Text("Seasonal allergic rhinitis")
+                            Text("Hypertension")
                                 .font(.custom("Montserrat-Bold", size: 17))
                                 .foregroundColor(.black)
                             
@@ -110,7 +111,7 @@ struct ConditionDetailView: View {
                             Spacer()
                             
                             Button(action: {
-                                // Handle tap on "View All"
+                                showPractitionerList = true
                             }) {
                                 Text("View All")
                                     .font(.custom("Montserrat-SemiBold", size: 12))
@@ -140,8 +141,6 @@ struct ConditionDetailView: View {
                             
                             Spacer()
                             
-                            Image(systemName: "arrow.right")
-                                .foregroundColor(Color(hex: "FF6605"))
                         }
                         .padding()
                         .background(.clear)
@@ -402,6 +401,14 @@ struct ConditionDetailView: View {
                     Spacer()
                 }
                 
+                NavigationLink(
+                    destination: PractionerListView(),
+                    isActive: $showPractitionerList,
+                    label: {
+                        EmptyView()
+                    })
+
+                
             }
             .background(Color(UIColor.systemGray6).ignoresSafeArea())
             .navigationBarBackButtonHidden(true)
@@ -415,3 +422,4 @@ struct ConditionDetailView: View {
         }
     }
 }
+

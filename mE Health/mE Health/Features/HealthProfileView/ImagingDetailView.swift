@@ -17,7 +17,9 @@ struct ImagingDetailView: View {
         SeriesItem(title: "Series 3", imageName: "series_placeholder", reportType: "pdf", iconType: "doc"),
         SeriesItem(title: "Series 4", imageName: "series_placeholder", reportType: "jpg", iconType: "Image")
     ]
-
+    @State private var showModal = false
+    @State private var selectedSeries: SeriesItem? = nil
+    @Environment(\.viewController) private var viewControllerHolder: UIViewController?
 
 
     var body: some View {
@@ -236,7 +238,11 @@ struct ImagingDetailView: View {
                     .padding(.horizontal)
 
 
-                    SeriesGridView(items: sampleSeries)
+                    SeriesGridView(items: sampleSeries) { series in
+                        self.viewControllerHolder?.present(style: .overCurrentContext, transitionStyle: .crossDissolve) {
+                            ImageViewerCard(item: series)
+                        }
+                    }
 
                     // Bottom Buttons
                     ActionButtonsView(title: "Sync Data")
