@@ -25,8 +25,8 @@ import Foundation
 
 struct LoginFeature: Reducer {
     struct State: Equatable {
-        var email = "prashant@innovquant.com"
-        var password = "Pass@1234"
+        var email = ""
+        var password = ""
         var isPasswordVisible = false
         var showValidationErrors = false
         var showErrorAlert = false

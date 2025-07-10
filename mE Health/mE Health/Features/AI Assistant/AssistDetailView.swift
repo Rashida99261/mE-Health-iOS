@@ -8,6 +8,24 @@
 import SwiftUI
 import ComposableArchitecture
 
+struct Condition: Identifiable {
+    let id: UUID
+    let name: String
+    let code: String
+    let date: Date
+}
+
+// Insight.swift
+import Foundation
+
+struct Insight: Identifiable {
+    let id: UUID
+    let text: String
+    let confidence: Double
+    let source: String
+    let createdAt: Date
+}
+
 struct AssistDetailView: View {
     @State private var startDate: Date? = nil
     @State private var endDate: Date? = nil
@@ -18,6 +36,9 @@ struct AssistDetailView: View {
     
     @State private var selectedDate = Date()
     @Environment(\.presentationMode) var presentationMode
+    @StateObject private var viewModel = ChronicConditionDetectorViewModel()
+    
+    @StateObject private var allergyVM = ReadDataallergyIntolerances()
     
     let assisData : [AssistListData] = [
         
@@ -97,6 +118,8 @@ struct AssistDetailView: View {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         isLoading = false
                         showListView = true
+                       // viewModel.fetchConditions()
+                        
                     }
                 }) {
                     Text(isLoading ? "Loading..." : "Apply")
@@ -113,6 +136,18 @@ struct AssistDetailView: View {
             }
 
             // MARK: - List View
+//            if showListView {
+//                List {
+//                    ForEach(viewModel.conditions) { assist in
+//                        AssistListCardView(assistData: assist) {
+//                                
+//                        }
+//                    }
+//                    
+//                }
+//                .listStyle(.plain)
+//            }
+            
             if showListView {
                 List {
                     ForEach(assisData) { assist in
@@ -159,4 +194,96 @@ struct AssistDetailView_Previews: PreviewProvider {
     static var previews: some View {
         AssistDetailView()
     }
+}
+// PromptBuilder.swift
+import Foundation
+
+struct PromptBuilder {
+    static func buildPrompt(from conditions: [Condition]) -> String {
+        var prompt = "Patient history:\n"
+        for condition in conditions {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            let dateStr = formatter.string(from: condition.date)
+            prompt += "- \(condition.name) (\(condition.code)) on \(dateStr)\n"
+        }
+        prompt += "\nSuggest any chronic condition patterns based on the above."
+        return prompt
+    }
+}
+
+// LLMManager.swift
+import Foundation
+
+class LLMManager {
+    func getAdvice(prompt: String, completion: @escaping (Result<Insight, Error>) -> Void) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
+            let confidence = Double.random(in: 0.6...0.95)
+            let source = confidence < 0.8 ? "Claude" : "Llama"
+            let advice = Insight(
+                id: UUID(),
+                text: "Possible hypertension pattern identified.",
+                confidence: confidence,
+                source: source,
+                createdAt: Date()
+            )
+            completion(.success(advice))
+        }
+    }
+}
+
+// ViewModel.swift
+import Foundation
+import Combine
+
+class ChronicConditionDetectorViewModel: ObservableObject {
+    @Published var conditions: [Condition] = []
+    @Published var insights: [Insight] = []
+    @Published var startDate = Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date()
+    @Published var endDate = Date()
+
+    private let llmManager = LLMManager()
+    private var cancellables = Set<AnyCancellable>()
+
+    func fetchConditions() {
+      self.conditions = MockData.conditions.filter {
+            print("Checking \($0.name) — \($0.date)")
+            return $0.date >= startDate && $0.date <= endDate
+        }
+
+    }
+    
+
+
+    func generateInsights() {
+        let prompt = PromptBuilder.buildPrompt(from: conditions)
+        llmManager.getAdvice(prompt: prompt) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let insight):
+                    self.insights.append(insight)
+                case .failure(let error):
+                    print("LLM error: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+}
+
+
+// MockData.swift
+import Foundation
+
+struct MockData {
+    static let conditions: [Condition] = [
+        Condition(id: UUID(), name: "Elevated Blood Pressure", code: "I10", date: Date().addingTimeInterval(-86400 * 300)),
+        Condition(id: UUID(), name: "Meniscal Tear", code: "S83.241A", date: Date().addingTimeInterval(-86400 * 200)),
+        Condition(id: UUID(), name: "Chest Pain", code: "R07.9", date: Date().addingTimeInterval(-86400 * 1)),
+        Condition(id: UUID(), name: "Chest Pain", code: "R07.9", date: Date().addingTimeInterval(-86400 * 400)),
+        Condition(id: UUID(), name: "Chest Pain", code: "R07.9", date: Date().addingTimeInterval(-86400 * 500)),
+        Condition(id: UUID(), name: "Chest Pain", code: "R07.9", date: Date().addingTimeInterval(-86400 * 600)),
+        Condition(id: UUID(), name: "Chest Pain", code: "R07.9", date: Date().addingTimeInterval(-86400 * 700)),
+        Condition(id: UUID(), name: "Chest Pain", code: "R07.9", date: Date().addingTimeInterval(-86400 * 800))
+        
+    ]
 }
