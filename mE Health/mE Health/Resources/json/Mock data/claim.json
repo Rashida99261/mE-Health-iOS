@@ -25,7 +25,7 @@
       "updatedAt": "2021-07-01T14:15:00Z"
     },
     {
-      "id": "claim3",
+      "claimId": "claim3",
       "totalAmount": 1000.00,
       "totalCurrency": "USD",
       "status": "active",

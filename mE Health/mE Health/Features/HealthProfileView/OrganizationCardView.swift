@@ -48,7 +48,7 @@ struct OrganizationCardView: View {
 struct AppoitmentCardView: View {
     let organization: Organization
     var showStatus : Bool
-    let status : AppoitmentStatus
+    let status : String
     
     var body: some View {
         HStack(spacing: 12) {
@@ -70,7 +70,7 @@ struct AppoitmentCardView: View {
                     
                     if showStatus {
                         
-                        if status ==  .booked {
+                        if status ==  "booked" {
                             
                             Text("Booked")
                                 .font(.custom("Montserrat-SemiBold", size: 9))
@@ -81,7 +81,7 @@ struct AppoitmentCardView: View {
                                 .clipShape(Capsule())
 
                         }
-                        else if status ==  .cancel {
+                        else if status ==  "cancel" {
                             Text("Canceled")
                                 .font(.custom("Montserrat-SemiBold", size: 9))
                                 .padding(.horizontal, 12)
@@ -90,7 +90,7 @@ struct AppoitmentCardView: View {
                                 .foregroundColor(Color.red)
                                 .clipShape(Capsule())
                         }
-                        else if status ==  .completed {
+                        else if status ==  "fulfilled" {
                             Text("Completed")
                                 .font(.custom("Montserrat-SemiBold", size: 9))
                                 .padding(.horizontal, 12)

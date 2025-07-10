@@ -24,7 +24,7 @@ struct MedicationDetailView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
                         
-                        TopCardView(title: "Cetirizine 10 mg", subtitle: "Take 1 tablet daily as needed for allergy symptoms", desc: "01/07/2021")
+                        TopCardView(title: "Cetirizine 10 mg", subtitle: "Take 1 tablet daily as needed for allergy symptoms", desc: "01/07/2021", status: "Active")
                             .padding(.horizontal)
                         
                         // Patient Card

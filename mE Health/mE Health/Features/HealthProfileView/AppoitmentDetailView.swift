@@ -40,9 +40,10 @@ struct AppoitmentDetailView: View {
 
 
                         VStack(spacing: 16) {
-                            idHeaderView()
+                            idHeaderView(appoitment: appoitment)
                         }
                         .padding(.horizontal)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         
                         
                         // Patient Card
@@ -53,10 +54,10 @@ struct AppoitmentDetailView: View {
                                 .clipShape(Circle())
 
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(appoitment.drName)
+                                Text(appoitment.practitionerId)
                                     .font(.custom("Montserrat-Medium", size: 18))
                                     .foregroundColor(Color(hex: "FF6605"))
-                                Text(appoitment.hospitalName)
+                                Text(appoitment.description)
                                     .font(.custom("Montserrat-Regular", size: 14))
                                     .foregroundColor(.gray)
                             }
@@ -77,7 +78,7 @@ struct AppoitmentDetailView: View {
                             Text("Reason")
                                 .font(.custom("Montserrat-Bold", size: 17))
                             
-                            Text("To go for regular checkups for diabetes")
+                            Text(appoitment.reasonCode?.display ?? "")
                                 .font(.custom("Montserrat-SemiBold", size: 13))
 
                         }
@@ -99,7 +100,7 @@ struct AppoitmentDetailView: View {
                                 
                                 Spacer()
                                 
-                                if appoitment.status ==  .booked {
+                                if appoitment.status ==  "booked" {
                                     
                                     Text("Booked")
                                         .font(.custom("Montserrat-SemiBold", size: 9))
@@ -110,7 +111,7 @@ struct AppoitmentDetailView: View {
                                         .clipShape(Capsule())
 
                                 }
-                                else if appoitment.status ==  .cancel {
+                                else if appoitment.status ==  "cancel" {
                                     Text("Canceled")
                                         .font(.custom("Montserrat-SemiBold", size: 9))
                                         .padding(.horizontal, 12)
@@ -119,7 +120,7 @@ struct AppoitmentDetailView: View {
                                         .foregroundColor(Color.red)
                                         .clipShape(Capsule())
                                 }
-                                else if appoitment.status ==  .completed {
+                                else if appoitment.status ==  "fulfilled" {
                                     Text("Completed")
                                         .font(.custom("Montserrat-SemiBold", size: 9))
                                         .padding(.horizontal, 12)
@@ -132,7 +133,7 @@ struct AppoitmentDetailView: View {
                             }
 
                            
-                            Text("Start Date: \(appoitment.dateTime)")
+                            Text("Start Date: \(appoitment.formattedStartDate)")
                                 .font(.custom("Montserrat-SemiBold", size: 13))
                            // Text("Start Date: 11/06/2025")
                                 //.font(.custom("Montserrat-SemiBold", size: 13))
@@ -150,7 +151,7 @@ struct AppoitmentDetailView: View {
                         ActionButtonsView(title: "Sync Data")
 
 
-                        if appoitment.status ==  .booked {
+                        if appoitment.status ==  "booked" {
                             
                             VStack(alignment: .leading, spacing: 16) {
                                 
@@ -215,11 +216,12 @@ struct AppoitmentDetailView: View {
 
 struct idHeaderView: View {
 
+    let appoitment: AppointmentData
         var body: some View {
             
             VStack(alignment: .leading, spacing: 4) {
                 
-                Text("Id: APT-2023051501")
+                Text("Id: \(appoitment.id)")
                 .font(.custom("Montserrat-Bold", size: 18))
                 .foregroundColor(.black)
                 .padding(.top,16)
@@ -234,7 +236,7 @@ struct idHeaderView: View {
 
                     VStack(alignment: .leading, spacing: 8) {
 
-                        Text("11 Jun 2025,")
+                        Text(appoitment.formattedStartDate)
                             .font(.custom("Montserrat-Regular", size: 14))
                             .foregroundColor(.black)
 
@@ -242,7 +244,7 @@ struct idHeaderView: View {
                             .font(.custom("Montserrat-Regular", size: 12))
                             .foregroundColor(.black)
 
-                        Text("Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.")
+                        Text(appoitment.description)
                             .font(.custom("Montserrat-Regular", size: 10))
                             .foregroundColor(.black)
                             .fixedSize(horizontal: false, vertical: true)
@@ -254,7 +256,8 @@ struct idHeaderView: View {
                     .padding(.vertical, 12)
                 }
             }
-            .padding(.horizontal, 12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal)
             .background(Color.white)
             .cornerRadius(12)
             .shadow(radius: 4)

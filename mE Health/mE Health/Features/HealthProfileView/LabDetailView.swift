@@ -11,6 +11,7 @@ import ComposableArchitecture
 struct LabDetailView: View {
     @Environment(\.presentationMode) var presentationMode
     
+    let lab: LabDummyData
   
     
     var body: some View {
@@ -26,7 +27,7 @@ struct LabDetailView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
                         
-                        TopCardView(title: "", subtitle: "Lab ID: 12345", desc: "")
+                        TopCardView(title: lab.codeDisplay, subtitle: "Lab ID: \(lab.id)", desc: "", status: lab.status)
                             .padding(.horizontal)
                         
                         // Allergy Detail Card
@@ -100,8 +101,7 @@ struct LabDetailView: View {
                                 
                             }
 
-                            
-                            Text("Start Date: 11/06/2025")
+                            Text("Start Date: \(lab.formattedDate)")
                                 .font(.custom("Montserrat-SemiBold", size: 13))
 
                         }
@@ -148,6 +148,7 @@ struct TopCardView: View {
     let title : String
     let subtitle : String
     let desc : String
+    let status : String
     
     var body: some View {
         
@@ -175,7 +176,7 @@ struct TopCardView: View {
                         
                         Spacer()
                         
-                        Text("Active")
+                        Text(status)
                             .font(.caption)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 4)

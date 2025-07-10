@@ -38,12 +38,12 @@ struct ImagingDetailView: View {
                     
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
-                            Text(imaging.title)
+                            Text("\(imaging.modalityDisplay) (\(imaging.modalityCode))")
                                 .font(.custom("Montserrat-Medium", size: 16))
                                 .foregroundColor(.black)
                             Spacer()
                             
-                            Text("Final")
+                            Text(imaging.status)
                                 .font(.caption)
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 4)
@@ -56,22 +56,22 @@ struct ImagingDetailView: View {
                         .padding(.top,12)
                         .padding(.horizontal,12)
 
-                        Text(imaging.hospitalNAme)
+                        Text("Hospital Name")
                             .font(.custom("Montserrat-Regular", size: 13))
                             .foregroundColor(.black)
                             .padding(.horizontal,12)
                         
-                        Text(imaging.dateValue)
+                        Text(imaging.formattedStartDate)
                             .font(.custom("Montserrat-Regular", size: 13))
                             .foregroundColor(.black)
                             .padding(.horizontal,12)
 
-                        Text(imaging.diagnosisValue)
+                        Text(imaging.description)
                             .font(.custom("Montserrat-Medium", size: 16))
                             .foregroundColor(.black)
                             .padding(.horizontal,12)
                         
-                        Text("ID: #HYP2022105")
+                        Text("ID: #\(imaging.id)")
                             .font(.custom("Montserrat-SemiBold", size: 16))
                             .foregroundColor(Color(hex: "FF6605"))
                             .padding(.horizontal,12)
@@ -172,7 +172,7 @@ struct ImagingDetailView: View {
                                     .font(.custom("Montserrat-Bold", size: 19))
                                 
                                 HStack {
-                                    Text("Appendectomy")
+                                    Text(imaging.procedureCodeDisplay)
                                         .font(.custom("Montserrat-Regular", size: 12))
                                     Spacer()
                                     Text("Status: Completed")
@@ -196,7 +196,7 @@ struct ImagingDetailView: View {
                         Text("Performer")
                             .font(.custom("Montserrat-Bold", size: 17))
                             .foregroundColor(.black)
-                        Text("Dr. David")
+                        Text(imaging.performer?.first?.display ?? "")
                             .font(.custom("Montserrat-SemiBold", size: 13))
 
                     }
@@ -226,7 +226,7 @@ struct ImagingDetailView: View {
                                 .clipShape(Capsule())
                             
                         }
-                        Text("Start Date: 11/06/2025")
+                        Text("Start Date: \(imaging.formattedStartDate)")
                             .font(.custom("Montserrat-SemiBold", size: 13))
 
                     }
@@ -247,7 +247,6 @@ struct ImagingDetailView: View {
                     // Bottom Buttons
                     ActionButtonsView(title: "Sync Data")
 
-                    
                     Spacer()
 
                 }
@@ -265,8 +264,4 @@ struct ImagingDetailView: View {
             }
         }
     }
-}
-
-#Preview {
-    ImagingDetailView(imaging: ImagingDummyData(title: "X-Ray (DX)", hospitalNAme: "Hospital name", dateValue: "11 Jun 2025", diagnosisValue: "Chest X-ray for bronchitis"))
 }

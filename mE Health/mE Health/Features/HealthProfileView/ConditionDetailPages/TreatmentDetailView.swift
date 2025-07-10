@@ -9,10 +9,9 @@ import SwiftUI
 struct TreatmentDetailView: View {
     
     @Environment(\.presentationMode) var presentationMode
-
-    @State private var showPractitionerList = false
+    @StateObject private var appoitmentVM = ReadDataappointment()
     
-    let appoitment = AppointmentData(drName: "Dr. David Joe", hospitalName: "Hospital name", dateTime: "11 Jun 2025,03:30 PM - 4:00 PM", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.",status: .booked)
+    let condition: ConditionDummyData
     
     let org = Organization(name: "11 Jun 2025", type: " 10:00 AM - 11:00 AM", imageName: "organis_placeholder")
 
@@ -31,20 +30,31 @@ struct TreatmentDetailView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         
                         HStack(spacing: 8) {
-                            Text("Hypertension")
+                            Text(condition.codeDisplay)
                                 .font(.custom("Montserrat-Bold", size: 17))
                                 .foregroundColor(.black)
                             
                             Spacer()
                             
-                            Text("Active")
-                                .font(.caption)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 4)
-                                .background(Color(hex: "DBFCE6"))
-                                .foregroundColor(.green)
-                                .clipShape(Capsule())
-                        }
+                            if condition.clinicalStatus ==  "active" {
+                                Text("Active")
+                                    .font(.custom("Montserrat-SemiBold", size: 9))
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 4)
+                                    .background(Color(hex: "06C270").opacity(0.2))
+                                    .foregroundColor(Color(hex: "06C270"))
+                                    .clipShape(Capsule())
+
+                            }
+                            else  {
+                                Text("Resolved")
+                                    .font(.custom("Montserrat-SemiBold", size: 9))
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 4)
+                                    .background(Color(hex: "A811C7").opacity(0.2))
+                                    .foregroundColor(Color(hex: "A811C7"))
+                                    .clipShape(Capsule())
+                            }                        }
                         
                         HStack {
                             
@@ -52,7 +62,7 @@ struct TreatmentDetailView: View {
                                 Text("Onset")
                                     .font(.custom("Montserrat-Regular", size: 12))
                                 
-                                Text("01/07/2021")
+                                Text(condition.formattedOnSetDate)
                                     .font(.custom("Montserrat-Regular", size: 14))
                                 
                             }
@@ -63,7 +73,7 @@ struct TreatmentDetailView: View {
                                 Text("Recorded")
                                     .font(.custom("Montserrat-Regular", size: 12))
                                 
-                                Text("01/07/2021")
+                                Text(condition.formattedOnRecordDate)
                                     .font(.custom("Montserrat-Regular", size: 14))
                                 
                             }
@@ -87,7 +97,7 @@ struct TreatmentDetailView: View {
                                 Text("Condition ID")
                                     .font(.custom("Montserrat-Regular", size: 12))
                                 
-                                Text("#J30.1")
+                                Text("#\(condition.id)")
                                     .font(.custom("Montserrat-Regular", size: 14))
                                 
                             }
@@ -101,7 +111,7 @@ struct TreatmentDetailView: View {
                     .shadow(radius: 4)
                     .padding(.horizontal)
                     
-                    AppoitmentMainView(appoinmnt: appoitment,
+                    AppoitmentMainView(appoinmnt: appoitmentVM.appoitments[0],
                                        onTap: {},
                                        onReadMoreTap: {})
                     .padding(.horizontal)
@@ -406,12 +416,6 @@ struct TreatmentDetailView: View {
                     Spacer()
                 }
                 
-                NavigationLink(
-                    destination: PractionerListView(),
-                    isActive: $showPractitionerList,
-                    label: {
-                        EmptyView()
-                    })
 
                 
             }
@@ -426,10 +430,4 @@ struct TreatmentDetailView: View {
             }
         }
     }
-}
-
-
-
-#Preview {
-    TreatmentDetailView()
 }

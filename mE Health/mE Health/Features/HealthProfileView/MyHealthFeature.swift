@@ -24,17 +24,17 @@ struct MyHealthFeature: Reducer {
         var tiles: [Tile] = [
             Tile(title: "Practitioners", icon: "practioner", countItem: "10"),
             Tile(title: "Appointments", icon: "appoinment", countItem: "10"),
+            Tile(title: "Visits", icon: "Visits", countItem: "10"),
             Tile(title: "Conditions", icon: "conditions", countItem: "10"),
             Tile(title: "Labs", icon: "Labs", countItem: "10"),
             Tile(title: "Vitals", icon: "vitals", countItem: "10"),
             Tile(title: "Medications", icon: "Savings", countItem: "10"),
-            Tile(title: "Visits", icon: "Visits", countItem: "10"),
+            Tile(title: "Imaging", icon: "Imaging", countItem: "10"),
             Tile(title: "Procedures", icon: "Procedures", countItem: "10"),
             Tile(title: "Allergies", icon: "Allergy", countItem: "10"),
             Tile(title: "Immunizations", icon: "Immunization", countItem: "10"),
             Tile(title: "Billing", icon: "Billing", countItem: "6"),
             Tile(title: "Records Vault", icon: "Upload", countItem: "10"),
-            Tile(title: "Imaging", icon: "Imaging", countItem: "10")
         ]
         var selectedIndex: Int = 0
         var selectedPractitioner: PractitionerData? = nil

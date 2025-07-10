@@ -10,6 +10,7 @@ import ComposableArchitecture
 
 struct VitalDetailView: View {
     @Environment(\.presentationMode) var presentationMode
+    let vital : VitalDummyData
     
     var body: some View {
             ZStack {
@@ -24,11 +25,11 @@ struct VitalDetailView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
                         
-                        TopCardView(title: "Blood pressure panel", subtitle: "140/90 mmHg", desc: "July 1, 2021 at 02:00 pm")
+                        TopCardView(title: vital.codeDisplay, subtitle: "\(vital.valueQuantityValue ?? 0)" + " " + (vital.valueQuantityUnit ?? ""), desc: formatEffectiveDate(vital.effectiveDate),status: vital.status)
                             .padding(.horizontal)
                         
                         
-                        BottomDetailCardView()
+                        BottomDetailCardView(vital: vital)
                             .padding(.horizontal)
                         
 
@@ -53,7 +54,7 @@ struct VitalDetailView: View {
                             }
 
                             
-                            Text("Start Date: 1/07/2021")
+                            Text("Start Date: \(vital.formattedDate)")
                                 .font(.custom("Montserrat-SemiBold", size: 13))
 
                         }
@@ -104,12 +105,38 @@ struct VitalDetailView: View {
                 }
             }
     }
+    
+    func formatEffectiveDate(_ isoString: String) -> String {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+        // Handle cases where no fractional seconds exist
+        var date: Date? = isoFormatter.date(from: isoString)
+        if date == nil {
+            isoFormatter.formatOptions = [.withInternetDateTime]
+            date = isoFormatter.date(from: isoString)
+        }
+
+        guard let parsedDate = date else {
+            return isoString // fallback if parsing fails
+        }
+
+        let displayFormatter = DateFormatter()
+        displayFormatter.dateFormat = "MMMM d, yyyy 'at' hh:mm a"
+        displayFormatter.amSymbol = "AM"
+        displayFormatter.pmSymbol = "PM"
+        displayFormatter.timeZone = .current // or set to specific time zone if needed
+
+        return displayFormatter.string(from: parsedDate)
+    }
+
 }
 
 
 
 struct BottomDetailCardView: View {
     
+    let vital : VitalDummyData
     
     var body: some View {
         
@@ -138,7 +165,7 @@ struct BottomDetailCardView: View {
                         
                         Spacer()
                         
-                        Text("Prithwi Thakuria")
+                        Text("\(userProfileData?.first_name ?? "") \(userProfileData?.last_name ?? "")")
                             .font(.custom("Montserrat-SemiBold", size: 13))
                             .foregroundColor(.black)
 
@@ -151,7 +178,7 @@ struct BottomDetailCardView: View {
                         
                         Spacer()
                         
-                        Text("obs-85354-9")
+                        Text("obs-\(vital.id)")
                             .font(.custom("Montserrat-SemiBold", size: 13))
                             .foregroundColor(.black)
 

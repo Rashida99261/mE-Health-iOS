@@ -7,19 +7,59 @@
 
 import SwiftUI
 
-struct AppointmentData: Identifiable, Equatable {
-    let id: UUID = UUID()
-    let drName: String
-    let hospitalName: String
-    let dateTime: String
-    let description: String
-    let status : AppoitmentStatus
+struct AppointmentResponse: Codable {
+    let appointments: [AppointmentData]
 }
 
-enum AppoitmentStatus : String {
-    case booked = "Booked"
-    case completed = "Completed"
-    case cancel = "Cancelled"
+
+struct AppointmentData: Identifiable, Equatable, Codable {
+    let id: String
+    let startTime: String
+    let endTime: String
+    let status: String
+    let patientId: String
+    let practitionerId: String
+    let encounterId: String
+    let description: String
+    let reasonCodeRaw: String
+    let createdAt: String
+    let updatedAt: String
+    
+    var formattedStartDate: String {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime]
+
+        if let date = isoFormatter.date(from: startTime) {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd/MM/yyyy"
+            return formatter.string(from: date)
+        }
+        return startTime
+    }
+    
+    var formattedEndDate: String {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime]
+
+        if let date = isoFormatter.date(from: endTime) {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd/MM/yyyy"
+            return formatter.string(from: date)
+        }
+        return endTime
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id, startTime, endTime, status, patientId, practitionerId, encounterId, description
+        case reasonCodeRaw = "reasonCode"
+        case createdAt, updatedAt
+    }
+
+    // Computed property to decode reasonCode JSON string
+    var reasonCode: CodeInfo? {
+        guard let data = reasonCodeRaw.data(using: .utf8) else { return nil }
+        return try? JSONDecoder().decode(CodeInfo.self, from: data)
+    }
 }
 
 struct TabSelectorView: View {
@@ -60,53 +100,6 @@ struct TabSelectorView: View {
     }
 }
 
-
-//struct AppointmentTabsView: View {
-//    @State private var selectedTab: String = "Today"
-//
-//    let tabs = ["Today", "All", "Booked", "Canceled"]
-//
-//    var body: some View {
-//        VStack(alignment: .leading, spacing: 24) {
-//            // Tabs Scroll View
-//            ScrollView(.horizontal, showsIndicators: false) {
-//                HStack(spacing: 24) {
-//                    ForEach(tabs, id: \.self) { tab in
-//                        Button(action: {
-//                            selectedTab = tab
-//                        }) {
-//                            ZStack {
-//                                // Outer white background to give the gap/border feel
-//                                Capsule()
-//                                    .fill(Color.white)
-//
-//                                // Stroke + Fill Layer
-//                                Capsule()
-//                                    .stroke(Color(hex: "FF6605"), lineWidth: 2)
-//                                    .background(
-//                                        Capsule()
-//                                            .fill(selectedTab == tab ? Color(hex: "FF6605") : Color.white)
-//                                    )
-//
-//                                // Text
-//                                Text(tab)
-//                                    .font(.custom("Montserrat-Bold", size: 16))
-//                                    .foregroundColor(selectedTab == tab ? .white : .black)
-//                                    .padding(.vertical, 8)
-//                                    .padding(.horizontal, 20)
-//                            }
-//                        }
-//                    }
-//                }
-//                .padding(.horizontal)
-//            }
-//        }
-//    }
-//}
-
-
-
-
 struct AppoitmentMainView: View {
     
     let appoinmnt: AppointmentData
@@ -120,12 +113,12 @@ struct AppoitmentMainView: View {
         VStack(alignment: .leading, spacing: 0) {
             
             HStack(alignment: .top, spacing: 12) {
-                Text(appoinmnt.drName)
+                Text(appoinmnt.practitionerId)
                     .font(.custom("Montserrat-Bold", size: 18))
                     .foregroundColor(.black)
                 Spacer()
                 
-                if appoinmnt.status ==  .booked {
+                if appoinmnt.status ==  "booked" {
                     
                     Text("Booked")
                         .font(.custom("Montserrat-SemiBold", size: 9))
@@ -136,7 +129,7 @@ struct AppoitmentMainView: View {
                         .clipShape(Capsule())
 
                 }
-                else if appoinmnt.status ==  .cancel {
+                else if appoinmnt.status ==  "cancel" {
                     Text("Canceled")
                         .font(.custom("Montserrat-SemiBold", size: 9))
                         .padding(.horizontal, 12)
@@ -145,7 +138,7 @@ struct AppoitmentMainView: View {
                         .foregroundColor(Color.red)
                         .clipShape(Capsule())
                 }
-                else if appoinmnt.status ==  .completed {
+                else if appoinmnt.status ==  "fulfilled" {
                     Text("Completed")
                         .font(.custom("Montserrat-SemiBold", size: 9))
                         .padding(.horizontal, 12)
@@ -167,12 +160,11 @@ struct AppoitmentMainView: View {
                 
                 VStack(alignment: .leading, spacing: 8) {
                     
-                    
-                    Text(appoinmnt.hospitalName)
+                    Text(appoinmnt.reasonCode?.display ?? "")
                         .font(.custom("Montserrat-Regular", size: 14))
                         .foregroundColor(.black)
                     
-                    Text(appoinmnt.dateTime)
+                    Text(appoinmnt.formattedStartDate)
                         .font(.custom("Montserrat-Regular", size: 12))
                         .foregroundColor(.black)
                     
@@ -209,7 +201,7 @@ struct AppoitmentMainView: View {
 
 
 struct AppoitmentSectionView: View {
-    let practitioners: [AppointmentData]
+    let appoitmentarray: [AppointmentData]
     var onCardTap: (AppointmentData) -> Void
     var onReadMoreTap: (AppointmentData) -> Void
     
@@ -217,10 +209,10 @@ struct AppoitmentSectionView: View {
         
         VStack(spacing: 20) {
             
-            if practitioners.isEmpty {
+            if appoitmentarray.isEmpty {
                         NoDataView()
             } else {
-                ForEach(practitioners) { appoitment in
+                ForEach(appoitmentarray) { appoitment in
                     AppoitmentMainView(appoinmnt: appoitment,
                                        onTap: {
                         onCardTap(appoitment)

@@ -8,19 +8,63 @@
 import SwiftUI
 import Foundation
 
-struct BillingItem: Identifiable, Equatable {
-    let id = UUID()
-    let title: String
-    let date: String
-    let amount: String
-    let status: BillingStatus?
-}
-enum BillingStatus: String {
-    case planned = "Planned"
+struct ClaimResponse: Codable {
+    let claims: [BillingItem]
 }
 
+
+struct BillingItem: Identifiable, Equatable, Codable {
+    var id: String { claimId }
+    let claimId: String
+    let totalAmount: Double
+    let totalCurrency: String
+    let status: String
+    let createdDate: String
+    let insuranceRaw: String
+    let patientId: String
+    let organizationId: String
+    let createdAt: String
+    let updatedAt: String
+    
+    var formattedCreatedDate: String {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime]
+
+        if let date = isoFormatter.date(from: createdDate) {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd/MM/yyyy"
+            return formatter.string(from: date)
+        }
+        return createdDate
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case claimId, totalAmount, totalCurrency, status, createdDate
+        case insuranceRaw = "insurance"
+        case patientId, organizationId, createdAt, updatedAt
+    }
+
+    // Computed property to decode `insurance` JSON string
+    var insurance: InsuranceInfo? {
+        guard let data = insuranceRaw.data(using: .utf8) else { return nil }
+        return try? JSONDecoder().decode(InsuranceInfo.self, from: data)
+    }
+}
+
+struct InsuranceInfo: Codable {
+    let sequence: Int
+    let focal: Bool
+    let coverage: CoverageReference
+}
+
+struct CoverageReference: Codable {
+    let reference: String
+    let display: String
+}
+
+
 struct BillingCardView: View {
-    let item: BillingItem
+    let claim: BillingItem
     let onTap: () -> Void
 
     var body: some View {
@@ -38,11 +82,11 @@ struct BillingCardView: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(item.title)
+                        Text(claim.insurance?.coverage.display ?? "Unknown")
                             .font(.custom("Montserrat-Bold", size: 18))
                             .foregroundColor(.black)
 
-                        Text(item.date)
+                        Text(claim.formattedCreatedDate)
                             .font(.custom("Montserrat-Regular", size: 16))
                             .foregroundColor(.gray)
                     }
@@ -52,7 +96,7 @@ struct BillingCardView: View {
                     VStack(alignment: .trailing, spacing: 4) {
                         // This VStack has trailing alignment for the pill
                         VStack(spacing: 4) {
-                            Text("Planned")
+                            Text(claim.status.uppercased())
                                 .font(.custom("Montserrat-Semibold", size: 12))
                                 .foregroundColor(Color(hex: "F09C00"))
                                 .padding(.horizontal, 12)
@@ -61,7 +105,7 @@ struct BillingCardView: View {
                                 .cornerRadius(12)
 
                             // Center the amount inside the width of the pill above
-                            Text(item.amount)
+                            Text("$\(formatAmount(claim.totalAmount))")
                                 .font(.custom("Montserrat-Bold", size: 16))
                                 .foregroundColor(.black)
                                 .frame(maxWidth: .infinity, alignment: .center)
@@ -81,6 +125,12 @@ struct BillingCardView: View {
         }
 
     }
+    
+    func formatAmount(_ amount: Double) -> String {
+        String(format: "%.2f", amount)
+    }
+
+
 }
 
 struct BillingSectionView: View {
@@ -94,7 +144,7 @@ struct BillingSectionView: View {
                         NoDataView()
             } else {
                 ForEach(items) { item in
-                    BillingCardView(item: item) {
+                    BillingCardView(claim: item) {
                         onCardTap(item)
                     }
                 }

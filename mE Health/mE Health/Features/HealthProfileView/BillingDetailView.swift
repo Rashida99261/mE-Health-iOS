@@ -25,7 +25,7 @@ struct BillingDetailView: View {
                         .padding(.horizontal)
                     
                     
-                    BillingCardView(item: billing){
+                    BillingCardView(claim: billing){
                     }
                     .padding(.horizontal)
                     

@@ -12,10 +12,17 @@ struct PractionerListView: View {
 
     @Environment(\.presentationMode) var presentationMode
     let arrayItem : [condPracItem] = [
-        condPracItem(name: "Dr. Davide Joe", hospitalName: "Apollo Hospital"),
-        condPracItem(name: "Dr. Davide Joe", hospitalName: "Apollo Hospital")
+        condPracItem(name: "Dr. Emily Carter, MD", hospitalName: "Family Medicine"),
+        condPracItem(name: "Dr. Rajesh Patel, MD", hospitalName: "Allergy and Immunology"),
+        condPracItem(name: "Dr. Susan Lee, MD", hospitalName: "Pulmonary Medicine"),
+        condPracItem(name: "Dr. Michael Nguyen, MD", hospitalName: "Cardiology"),
+        condPracItem(name: "Dr. Laura Kim, MD", hospitalName: "Diagnostic Radiology"),
+        condPracItem(name: "Dr. James O’Connor, MD", hospitalName: "Orthopedic Surgery"),
+        condPracItem(name: "Dr. Richard Allara, MD", hospitalName: "Family Medicine")
     ]
     @State private var showDetail = false
+    let condition: ConditionDummyData
+    
     var body: some View {
         
         VStack(alignment: .leading, spacing: 12) {
@@ -44,7 +51,7 @@ struct PractionerListView: View {
             }
             
             NavigationLink(
-                destination: TreatmentDetailView(),
+                destination: TreatmentDetailView(condition: condition),
                 isActive: $showDetail,
                 label: {
                     EmptyView()

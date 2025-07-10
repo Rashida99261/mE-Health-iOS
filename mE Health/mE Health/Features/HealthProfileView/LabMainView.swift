@@ -8,11 +8,70 @@
 
 import SwiftUI
 
-struct LabDummyData: Identifiable, Equatable {
-    let id: UUID = UUID()
-    let name: String
-    let recordDate: String
-    var isActive: Bool = true
+
+struct DiagnosticReportResponse: Codable {
+    let diagnosticReports: [LabDummyData]
+}
+
+
+
+struct LabDummyData: Codable,Identifiable, Equatable {
+    let id: String
+    let codeSystem: String
+    let codeValue: String
+    let codeDisplay: String
+    let codeRaw: String
+    let status: String
+    let effectiveDate: String
+    let issued: String
+    let patientId: String
+    let encounterId: String
+    let performerId: String
+    let organizationId: String
+    let result: [ResultReference]
+    let createdAt: String
+    let updatedAt: String
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case codeSystem = "code_system"
+        case codeValue = "code"
+        case codeDisplay = "code_display"
+        case codeRaw = "code_detail"
+        case status
+        case effectiveDate
+        case issued
+        case patientId
+        case encounterId
+        case performerId
+        case organizationId
+        case result
+        case createdAt
+        case updatedAt
+    }
+
+    var formattedDate: String {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime]
+
+        if let date = isoFormatter.date(from: effectiveDate) {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd/MM/yyyy"
+            return formatter.string(from: date)
+        }
+        return effectiveDate
+    }
+    // Computed property to decode embedded code JSON string
+    var code: CodeInfo? {
+        guard let data = codeRaw.data(using: .utf8) else { return nil }
+        return try? JSONDecoder().decode(CodeInfo.self, from: data)
+    }
+
+}
+
+struct ResultReference: Codable , Equatable{
+    let reference: String
+    let display: String
 }
 
 
@@ -21,18 +80,16 @@ struct LabMainView: View {
     let lab: LabDummyData
     let onTap: () -> Void
         
-        
         var body: some View {
 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text(lab.name)
+                        Text(lab.codeDisplay)
                             .font(.custom("Montserrat-Bold", size: 18))
                             .foregroundColor(.black)
                         Spacer()
                         
-                        if lab.isActive {
-                            
+                        if lab.status == "final" {
                             Text("Active")
                                 .font(.caption)
                                 .padding(.horizontal, 12)
@@ -42,7 +99,7 @@ struct LabMainView: View {
                                 .clipShape(Capsule())
 
                         }
-                        else {
+                        else if lab.status == "preliminary"{
                             Text("Preliminary")
                                 .font(.caption)
                                 .padding(.horizontal, 12)
@@ -56,7 +113,7 @@ struct LabMainView: View {
                     .padding(.top,12)
                     .padding(.horizontal,12)
 
-                    Text(lab.recordDate)
+                    Text("Recorded Date: \(lab.formattedDate)")
                         .font(.custom("Montserrat-Regular", size: 16))
                         .foregroundColor(.black)
                         .padding(.horizontal,12)

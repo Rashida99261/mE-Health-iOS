@@ -101,6 +101,14 @@ struct TopStates : Codable , Equatable{
         case count = "count"
         case logo = "logo"
     }
+    
+    init(state: String?, count: Int?, logo: String?) {
+        self.state = state
+        self.count = count
+        self.logo = logo
+    }
+
+
 
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)

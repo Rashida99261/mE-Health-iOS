@@ -85,8 +85,6 @@ struct PractitionerCardView: View {
 
 struct PractitionerSectionView: View {
     let practitioners: [PractitionerData]
-    let startDate: String
-    let endDate: String
     var onCardTap: (PractitionerData) -> Void
     
     var body: some View {

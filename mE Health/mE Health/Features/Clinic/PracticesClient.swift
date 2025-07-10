@@ -5,8 +5,7 @@
 
 import Foundation
 import ComposableArchitecture
-
-
+import CoreData
 
 protocol PracticesClient {
     func getStateList() async throws -> StateModel
@@ -70,3 +69,54 @@ extension DependencyValues {
         set { self[PracticesClientKey.self] = newValue }
     }
 }
+
+struct LocalClinicStorage {
+    var saveStates: ([TopStates]) async throws -> Void
+    var loadStates: () async throws -> [TopStates]?
+}
+
+extension DependencyValues {
+    var localClinicStorage: LocalClinicStorage {
+        get { self[LocalClinicStorageKey.self] }
+        set { self[LocalClinicStorageKey.self] = newValue }
+    }
+}
+
+private enum LocalClinicStorageKey: DependencyKey {
+    static let liveValue = LocalClinicStorage(
+        saveStates: { topStates in
+            let context = CoreDataManager.shared.context
+            // Clear existing records
+            let fetchRequest: NSFetchRequest<NSFetchRequestResult> = ClinicState.fetchRequest()
+            let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+            try? context.execute(deleteRequest)
+
+            // Save new states
+            for item in topStates {
+                let entity = ClinicState(context: context)
+                entity.state = item.state
+                entity.count = Int64(item.count ?? 0)
+                entity.logo = item.logo
+            }
+
+            try context.save()
+        },
+
+        loadStates: {
+            let context = CoreDataManager.shared.context
+            let request: NSFetchRequest<ClinicState> = ClinicState.fetchRequest()
+            let results = try context.fetch(request)
+
+            let topStates: [TopStates] = results.map {
+                TopStates(
+                    state: $0.state,
+                    count: Int($0.count),
+                    logo: $0.logo
+                )
+            }
+
+            return topStates.isEmpty ? nil : topStates
+        }
+    )
+}
+

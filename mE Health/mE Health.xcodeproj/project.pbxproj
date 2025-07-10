@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		5CA33D1F2DCA47CA00064A7B /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 5CA33D1E2DCA47CA00064A7B /* ComposableArchitecture */; };
+		5CD0E0B92E1FD6E80045586C /* ClinicState+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD0E0B72E1FD6E80045586C /* ClinicState+CoreDataClass.swift */; };
+		5CD0E0BA2E1FD6E80045586C /* ClinicState+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD0E0B82E1FD6E80045586C /* ClinicState+CoreDataProperties.swift */; };
 		5CD69A472DD4645300310DF1 /* AppAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 5CD69A462DD4645300310DF1 /* AppAuth */; };
 		5CD69A492DD4645300310DF1 /* AppAuthCore in Frameworks */ = {isa = PBXBuildFile; productRef = 5CD69A482DD4645300310DF1 /* AppAuthCore */; };
 /* End PBXBuildFile section */
@@ -33,6 +35,8 @@
 		5CA33CF02DCA46FB00064A7B /* mE Health.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "mE Health.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CA33D002DCA46FC00064A7B /* mE HealthTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "mE HealthTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CA33D0A2DCA46FC00064A7B /* mE HealthUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "mE HealthUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5CD0E0B72E1FD6E80045586C /* ClinicState+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "ClinicState+CoreDataClass.swift"; path = "mE Health/Models/ClinicState+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5CD0E0B82E1FD6E80045586C /* ClinicState+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "ClinicState+CoreDataProperties.swift"; path = "mE Health/Models/ClinicState+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -84,6 +88,8 @@
 		5CA33CE72DCA46FB00064A7B = {
 			isa = PBXGroup;
 			children = (
+				5CD0E0B72E1FD6E80045586C /* ClinicState+CoreDataClass.swift */,
+				5CD0E0B82E1FD6E80045586C /* ClinicState+CoreDataProperties.swift */,
 				5CA33CF22DCA46FB00064A7B /* mE Health */,
 				5CA33D032DCA46FC00064A7B /* mE HealthTests */,
 				5CA33D0D2DCA46FC00064A7B /* mE HealthUITests */,
@@ -252,6 +258,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5CD0E0B92E1FD6E80045586C /* ClinicState+CoreDataClass.swift in Sources */,
+				5CD0E0BA2E1FD6E80045586C /* ClinicState+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
