@@ -82,7 +82,7 @@ extension DependencyValues {
     }
 }
 
-private enum LocalClinicStorageKey: DependencyKey {
+enum LocalClinicStorageKey: DependencyKey {
     static let liveValue = LocalClinicStorage(
         saveStates: { topStates in
             let context = CoreDataManager.shared.context

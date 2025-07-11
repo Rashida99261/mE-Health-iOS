@@ -30,14 +30,31 @@ struct AIAssistantView: View {
                             Spacer()
                             
                             VStack(spacing: 24) {
-                                CardButton(title: "Assist", iconName: "AI", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {
-                                    isAssistViewActive = true
-                                }
                                 
+                                CardButton(
+                                    title: "Assist",
+                                    iconName: "AI",
+                                    gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")],
+                                    onCardTap: {
+                                        isAssistViewActive = true
+                                    },
+                                    onReadMoreTap: {
+                                        
+                                    }
+                                )
                                 
-                                CardButton(title: "Advice", iconName: "shopping_cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {
-                                    isAdviceViewActive = true
-                                }
+                                CardButton(
+                                    title: "Advice",
+                                    iconName: "shopping_cart",
+                                    gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")],
+                                    onCardTap: {
+                                        isAdviceViewActive = true
+                                    },
+                                    onReadMoreTap: {
+                                        
+                                    }
+                                )
+                                
 
                                 NavigationLink(
                                     destination: AdviceView()

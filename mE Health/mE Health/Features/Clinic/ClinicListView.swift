@@ -115,6 +115,9 @@ struct ClinicListView: View {
                 .onAppear {
                     viewStore.send(.onAppear)
                 }
+                .onDisappear {
+                    viewStore.send(.cancelFetch)  // cancel any in-flight fetches
+                }
                 .alert("Error", isPresented: .constant(viewStore.showErrorAlert)) {
                     Button("OK", role: .cancel) {}
                 } message: {

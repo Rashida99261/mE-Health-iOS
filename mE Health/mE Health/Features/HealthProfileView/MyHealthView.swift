@@ -69,7 +69,6 @@ struct MyHealthView: View {
     ]
     
 
-
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             VStack(alignment: .leading, spacing: 12) {
@@ -84,7 +83,7 @@ struct MyHealthView: View {
                             MyHealthTileView(
                                 icon: tile.icon,
                                 title: tile.title,
-                                countItem : tile.countItem,
+                                countItem : getCount(for: tile.title),
                                 isSelected: viewStore.selectedIndex == index
                             )
                             .onTapGesture {
@@ -100,7 +99,6 @@ struct MyHealthView: View {
                     store: store.scope(state: \.header, action: MyHealthFeature.Action.header)
                 )
 
-                
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
                         
@@ -420,10 +418,6 @@ struct MyHealthView: View {
                     }
                 }
             )
-
-
-
-
         }
     }
     
@@ -441,6 +435,38 @@ struct MyHealthView: View {
         }
     }
     
+    func getCount(for title: String) -> String {
+        switch title {
+        case "Practitioners":
+            return "\(viewModel.practitioners.count)"
+        case "Appointments":
+            return "\(appoitmentVM.appoitments.count)"
+        case "Visits":
+            return "\(visitData.count)" // Replace with actual count
+        case "Conditions":
+            return "\(conditionVM.conditionArray.count)"
+        case "Labs":
+            return "\(labVM.labs.count)"
+        case "Vitals":
+            return "\(vitalVM.vitalArray.count)"
+        case "Medications":
+            return "\(medicationData.count)" // Replace with actual count
+        case "Imaging":
+            return "\(imagingVM.imagingarray.count)"
+        case "Procedures":
+            return "\(procedureVM.procedures.count)"
+        case "Allergies":
+            return "\(allergyVM.allergy.count)"
+        case "Immunizations":
+            return "\(immuneVM.immune.count)"
+        case "Billing":
+            return "\(billingVM.claim.count)"
+        case "Records Vault":
+            return "\(filedata.count)"
+        default:
+            return "-"
+        }
+    }
 
 
 

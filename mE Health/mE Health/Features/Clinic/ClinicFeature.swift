@@ -21,13 +21,13 @@ struct ClinicFeature: Reducer {
         case getStateFailureResponse(String)
         case fetchDataOnList
         case fetchDataFromLocal([TopStates])
-       
-
+        case cancelFetch
     }
     
     @Dependency(\.practicesClient) var practiceClient
     @Dependency(\.localClinicStorage) var localStorage
 
+    enum CancelID { static let fetchStates = "fetchStates" }
     
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -37,6 +37,7 @@ struct ClinicFeature: Reducer {
                 state.isLoading = true
 
                 return .run { send in
+                    
                     if let cached = try await localStorage.loadStates(), !cached.isEmpty {
                         await send(.fetchDataFromLocal(cached))
                     } else {
@@ -48,6 +49,12 @@ struct ClinicFeature: Reducer {
                         }
                     }
                 }
+                .cancellable(id: CancelID.fetchStates, cancelInFlight: true)
+                
+            case .cancelFetch:
+                return .cancel(id: CancelID.fetchStates)
+
+
 
             case let .fetchDataFromLocal(cachedStates):
                 state.stateData = cachedStates

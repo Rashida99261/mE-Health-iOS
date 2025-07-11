@@ -7,7 +7,6 @@ struct DashboardView: View {
     let sideMenuWidth: CGFloat = 100.0
     @State private var showOverlay = false
     @State private var isAIAssistantActive = false
-    @State private var isClinicListActive = false
     @State private var isMenuOpen: Bool = false
     @State private var showDMOverlay = false
     
@@ -64,31 +63,35 @@ struct DashboardView: View {
                             Spacer()
                             
                             VStack(spacing: 24) {
-                                CardButton(title: "AI Assistant", iconName: "AI", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {
-                                    showOverlay = true
-                                }
                                 
-                                CardButton(title: "Data Marketplace", iconName: "shopping_cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {
-                                    showDMOverlay = true
-                                }
+                                CardButton(
+                                    title: "AI Assistant",
+                                    iconName: "AI",
+                                    gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")],
+                                    onCardTap: {
+                                        isAIAssistantActive = true
+                                    },
+                                    onReadMoreTap: {
+                                        showOverlay = true
+                                    }
+                                )
                                 
-                                CardButton(title: "Clinic List", iconName: "shopping_cart", gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")]) {
-                                    isClinicListActive = true
-                                }
+                                CardButton(
+                                    title: "Data Marketplace",
+                                    iconName: "shopping_cart",
+                                    gradientColors: [Color(hex: "FB531C"), Color(hex: "F79E2D")],
+                                    onCardTap: {
+                                        
+                                    },
+                                    onReadMoreTap: {
+                                        showDMOverlay = true
+                                    }
+                                )
                                 
                                 
                                 
-                                NavigationLink(
-                                    destination: ClinicListView(
-                                        store: Store(
-                                            initialState: ClinicFeature.State(),
-                                            reducer: { ClinicFeature() }
-                                        )
-                                    ),
-                                    isActive: $isClinicListActive
-                                ) {
-                                    EmptyView()
-                                }
+                                
+
                             }
                             .padding(.horizontal, 0)
                             
@@ -132,12 +135,8 @@ struct DashboardView: View {
 
                                     Button(action: {
                                         withAnimation {
-                                            
                                             showOverlay = false
                                         }
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                                isAIAssistantActive = true
-                                            }
                                     }) {
                                         Text("OK")
                                             .font(.custom("Montserrat-Bold", size: 20))
@@ -192,11 +191,8 @@ struct DashboardView: View {
 
                                     Button(action: {
                                         withAnimation {
-                                            
                                             showDMOverlay = false
                                         }
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                            }
                                     }) {
                                         Text("OK")
                                             .font(.custom("Montserrat-Bold", size: 20))
@@ -322,42 +318,96 @@ struct CardButton: View {
     let title: String
     let iconName: String
     let gradientColors: [Color]
-    let action: () -> Void // Add this
+    let onCardTap: () -> Void
+    let onReadMoreTap: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        ZStack {
+            // Card background with full tap gesture
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.black)
+                .shadow(radius: 5)
+                .onTapGesture {
+                    onCardTap()
+                }
+
             HStack(spacing: 16) {
-                // Leading gradient bar
+                // Leading gradient bar (flush to edge)
                 LinearGradient(
                     gradient: Gradient(colors: gradientColors),
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
                 .frame(width: 32)
-                .cornerRadius(5)
-                
-                // Left-aligned text and icon
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(title)
-                        .foregroundColor(.white)
-                        .font(.custom("Montserrat-Bold", size: 18))
-                    Text("Read more")
-                        .foregroundColor(Color(hex: Constants.API.PrimaryColorHex))
-                        .font(.custom("Montserrat-SemiBold", size: 12))
+                .clipShape(RoundedCornersShape(tl: 12, bl: 12))
+
+                // Content with custom padding (not full HStack)
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(title)
+                            .foregroundColor(.white)
+                            .font(.custom("Montserrat-Bold", size: 18))
+
+                        Button(action: onReadMoreTap) {
+                            Text("Read more")
+                                .foregroundColor(Color(hex: Constants.API.PrimaryColorHex))
+                                .font(.custom("Montserrat-SemiBold", size: 12))
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+
+                    Spacer()
+
+                    Image(iconName)
+                        .padding(.trailing, 12)
                 }
-                
-                Spacer()
-                
-                // Trailing icon
-                Image(iconName)
-                    .padding(.trailing, 12)
+                .padding(.horizontal) // Only content is padded
             }
-            .frame(height: 80)
-            .background(Color.black)
-            .cornerRadius(12)
-            .shadow(radius: 5)
-            .padding(.horizontal)
         }
+        .frame(height: 80)
+        .padding(.horizontal) // Outer horizontal padding for the card itself
     }
 }
 
+
+
+struct RoundedCornersShape: Shape {
+    var tl: CGFloat = 0.0
+    var tr: CGFloat = 0.0
+    var bl: CGFloat = 0.0
+    var br: CGFloat = 0.0
+
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+
+        let w = rect.size.width
+        let h = rect.size.height
+
+        // Ensure corner radii don't exceed bounds
+        let tr = min(min(self.tr, h/2), w/2)
+        let tl = min(min(self.tl, h/2), w/2)
+        let bl = min(min(self.bl, h/2), w/2)
+        let br = min(min(self.br, h/2), w/2)
+
+        path.move(to: CGPoint(x: w / 2.0, y: 0))
+        path.addLine(to: CGPoint(x: w - tr, y: 0))
+        path.addArc(center: CGPoint(x: w - tr, y: tr), radius: tr,
+                    startAngle: Angle(degrees: -90), endAngle: Angle(degrees: 0), clockwise: false)
+
+        path.addLine(to: CGPoint(x: w, y: h - br))
+        path.addArc(center: CGPoint(x: w - br, y: h - br), radius: br,
+                    startAngle: Angle(degrees: 0), endAngle: Angle(degrees: 90), clockwise: false)
+
+        path.addLine(to: CGPoint(x: bl, y: h))
+        path.addArc(center: CGPoint(x: bl, y: h - bl), radius: bl,
+                    startAngle: Angle(degrees: 90), endAngle: Angle(degrees: 180), clockwise: false)
+
+        path.addLine(to: CGPoint(x: 0, y: tl))
+        path.addArc(center: CGPoint(x: tl, y: tl), radius: tl,
+                    startAngle: Angle(degrees: 180), endAngle: Angle(degrees: 270), clockwise: false)
+
+        path.closeSubpath()
+
+        return path
+    }
+}

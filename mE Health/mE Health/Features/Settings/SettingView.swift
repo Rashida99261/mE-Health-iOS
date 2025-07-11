@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 struct SettingView: View {
     
@@ -17,6 +18,20 @@ struct SettingView: View {
     @State private var allowNever: Bool = true
     @State private var allowAlways: Bool = true
     @State private var allowMeAlways: Bool = true
+    
+    @State private var isClinicListActive = false
+    
+    private let clinicStore: Store<ClinicFeature.State, ClinicFeature.Action> = {
+            withDependencies {
+                $0.practicesClient = PracticesClientKey.liveValue
+                $0.localClinicStorage = LocalClinicStorageKey.liveValue
+            } operation: {
+                Store(
+                    initialState: ClinicFeature.State(),
+                    reducer: { ClinicFeature() }
+                )
+            }
+        }()
 
     var body: some View {
         VStack(spacing: 0) {
@@ -29,14 +44,56 @@ struct SettingView: View {
                     Group {
                         Text("Preferences")
                             .font(.custom("Montserrat-SemiBold", size: 16))
-                           
 
-                        SettingRow(icon: "setting", title: "Connected Health Accounts")
-                        SettingRow(icon: "lockOrange", title: "Change Password")
-                        SettingRow(icon: "Odometer", title: "Update Preferences")
+                        SettingRow(icon: "setting", title: "Connected Health Accounts") {
+                            isClinicListActive = true
+                        }
+                        SettingRow(icon: "lockOrange", title: "Change Password") {
+                            
+                        }
+                        SettingRow(icon: "Odometer", title: "Update Preferences") {
+                            
+                        }
                     }
                     .padding(.horizontal)
                     
+//                    NavigationLink(
+//                        destination: ClinicListView(
+//                            store: Store(
+//                                initialState: ClinicFeature.State(),
+//                                reducer: { ClinicFeature() }
+//                            )
+//                        ),
+//                        isActive: $isClinicListActive
+//                    ) {
+//                        EmptyView()
+//                    }
+                    
+                    NavigationLink(
+                                    destination: ClinicListView(store: clinicStore),
+                                    isActive: $isClinicListActive
+                                ) {
+                                    EmptyView()
+                                }
+                    
+//                    NavigationLink(
+//                        destination: {
+//                            let store = withDependencies {
+//                                $0.practicesClient = PracticesClientKey.liveValue
+//                                $0.localClinicStorage = LocalClinicStorageKey.liveValue// Replace with your concrete local storage instance
+//                            } operation: {
+//                                Store(
+//                                    initialState: ClinicFeature.State(),
+//                                    reducer: { ClinicFeature() }
+//                                )
+//                            }
+//                            return ClinicListView(store: store)
+//                        }(),
+//                        isActive: $isClinicListActive
+//                    ) {
+//                        EmptyView()
+//                    }
+
                     Spacer(minLength: 8)
 
                     Group {
@@ -91,22 +148,29 @@ struct SettingView: View {
 struct SettingRow: View {
     var icon: String
     var title: String
+    var onTap: () -> Void = {}
 
     var body: some View {
-        HStack {
-            Image(icon)
-                .foregroundColor(Color(hex: Constants.API.PrimaryColorHex))
-            Text(title)
-                .font(.custom("Montserrat-Medium", size: 16))
-            Spacer()
-            Image(systemName: "chevron.right")
-                .foregroundColor(.gray)
+        Button(action: {
+            onTap()
+        }) {
+            HStack {
+                Image(icon)
+                    .foregroundColor(Color(hex: Constants.API.PrimaryColorHex))
+                Text(title)
+                    .font(.custom("Montserrat-Medium", size: 16))
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundColor(.gray)
+            }
+            .padding()
+            .background(Color.white)
+            .cornerRadius(12)
+            .shadow(radius: 5)
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(radius:5)
+        .buttonStyle(PlainButtonStyle()) // So it looks like your custom row, not a blue button
     }
+
 }
 
 
