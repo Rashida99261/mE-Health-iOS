@@ -8,6 +8,8 @@
 import SwiftUI
 import ComposableArchitecture
 
+var txtCondition = ""
+
 struct AssistView: View {
     
     @Environment(\.presentationMode) var presentationMode
@@ -81,8 +83,10 @@ struct AssistView: View {
                     ScrollView(.vertical, showsIndicators: false) {
                         VStack(spacing: 24) {
                             ForEach(assistItem) { item in
+                               
                                 AssistCardView(assist: item) {
                                     withAnimation {
+                                        
                                         navigateToDetail = true
                                     }
                                 }
