@@ -83,10 +83,10 @@ struct AssistView: View {
                     ScrollView(.vertical, showsIndicators: false) {
                         VStack(spacing: 24) {
                             ForEach(assistItem) { item in
-                               
+                              
                                 AssistCardView(assist: item) {
                                     withAnimation {
-                                        
+                                        txtCondition = item.name
                                         navigateToDetail = true
                                     }
                                 }

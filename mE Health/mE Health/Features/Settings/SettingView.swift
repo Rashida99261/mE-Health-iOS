@@ -71,9 +71,7 @@ struct SettingView: View {
                             Text("Preferences")
                                 .font(.custom("Montserrat-SemiBold", size: 16))
                             
-                            SettingRow(icon: "setting", title: "Connected Health Accounts") {
-                                isClinicListActive = true
-                            }
+                           
                             SettingRow(icon: "lockOrange", title: "Change Password") {
                                 
                             }
@@ -88,6 +86,27 @@ struct SettingView: View {
                         ) {
                             EmptyView()
                         }
+                        
+                        Spacer(minLength: 8)
+                        
+                        Group {
+                            Text("Connected Accounts")
+                                .font(.custom("Montserrat-SemiBold", size: 16))
+                            
+                            SettingRow(icon: "Health", title: "Health Care ") {
+                                isClinicListActive = true
+                            }
+                            
+                            SettingRow(icon: "transaction", title: "Transactions") {
+                               
+                            }
+                            
+                            SettingRow(icon: "bank", title: "Bank Accounts") {
+                               
+                            }
+                            
+                        }
+                        .padding(.horizontal)
                         
                         
                         Spacer(minLength: 8)

@@ -8,6 +8,11 @@
 import SwiftUI
 import ComposableArchitecture
 
+var dateRange = ""
+var startyear  = ""
+var assitstartDate: Date? = nil
+ 
+
 struct Condition: Identifiable {
     let id: UUID
     let name: String
@@ -42,6 +47,8 @@ struct AssistDetailView: View {
     
     @StateObject private var allergyVM = ReadDataallergyIntolerances()
     
+    
+    
     let assisData : [AssistListData] = [
         
         AssistListData(dateRange: "2000-2020", category: "Chronic Conditions", time: "23-06-2025 12:19PM"),
@@ -72,6 +79,7 @@ struct AssistDetailView: View {
                         title: "Start Date",
                         isPresented: $isStartDatePickerPresented,
                         selectedDate: Binding(
+                           
                             get: { startDate ?? Date() },
                             set: { startDate = $0 }
                         ),
@@ -115,7 +123,22 @@ struct AssistDetailView: View {
             if !showListView {
                 Button(action: {
                     isLoading = true
-
+         print(formattedDate(startDate))
+                    print(formattedDate(endDate))
+                    
+                    assitstartDate = startDate
+                    
+                    let startdate: String = formattedDate(startDate)
+                    let startdateArr = startdate.components(separatedBy: " ")
+                   print(startdateArr)
+                   startyear = startdateArr[2]
+                    print(startyear)
+                    //var startdate: String = formattedDate(startDate)
+                    let enddateArr =  formattedDate(endDate).components(separatedBy: " ")
+                   print(enddateArr)
+                    let endyear: String = enddateArr[2]
+                    dateRange = startyear + " - " + endyear
+                    
                     // Simulate loading
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         isLoading = false
@@ -277,15 +300,54 @@ class ChronicConditionDetectorViewModel: ObservableObject {
 import Foundation
 
 struct MockData {
+   // let customDate = startDate
     static let conditions: [Condition] = [
-        Condition(id: UUID(), name: "Seasonal allergic rhinitis", code: "I10", date: Date().addingTimeInterval(-86400 * 300),time: "07-01-2021", dateRange: "2021-2022"),
-        Condition(id: UUID(), name: "Pneumonia, unspecified", code: "S83.241A", date: Date().addingTimeInterval(-86400 * 200),time: "08-01-2021", dateRange: "2021-2022"),
-        Condition(id: UUID(), name: "Essential hypertension", code: "R07.9", date: Date().addingTimeInterval(-86400 * 1),time: "06-15-2021", dateRange: "2021-2022"),
-        Condition(id: UUID(), name: "X-ray", code: "R07.9", date: Date().addingTimeInterval(-86400 * 400),time: "2021-03-15 ", dateRange: "2021-2022"),
-        Condition(id: UUID(), name: "Magnetic Resonance Imaging", code: "R07.9", date: Date().addingTimeInterval(-86400 * 500),time: "02-10-2022", dateRange: "2021-2022"),
-        Condition(id: UUID(), name: "Lipid panel", code: "R07.9", date: Date().addingTimeInterval(-86400 * 600),time: "06-16-2022", dateRange: "2021-2022"),
-        Condition(id: UUID(), name: "Complete blood count", code: "R07.9", date: Date().addingTimeInterval(-86400 * 700),time: "06-15-2021", dateRange: "2021-2022"),
-        Condition(id: UUID(), name: "Lipid panel", code: "R07.9", date: Date().addingTimeInterval(-86400 * 800),time: "06-15-2021", dateRange: "2021-2022")
+        Condition(id: UUID(), name: "Seasonal allergic rhinitis", code: "I10", date: Date().addingTimeInterval(-86400 * 300),time: "07-01-" + startyear, dateRange: dateRange),
+        Condition(id: UUID(), name: "Pneumonia, unspecified", code: "S83.241A", date: Date().addingTimeInterval(-86400 * 200),time: "08-01-" + startyear, dateRange: dateRange),
+        Condition(id: UUID(), name: "Essential hypertension", code: "R07.9", date: Date().addingTimeInterval(-86400 * 1),time: "06-15-" + startyear, dateRange: dateRange),
+        Condition(id: UUID(), name: "X-ray", code: "R07.9", date: Date().addingTimeInterval(-86400 * 400),time: "03-15-" + startyear, dateRange: dateRange),
+        Condition(id: UUID(), name: "Magnetic Resonance Imaging", code: "R07.9", date: Date().addingTimeInterval(-86400 * 500),time: "02-10-" + startyear, dateRange: dateRange),
+        Condition(id: UUID(), name: "Lipid panel", code: "R07.9", date: Date().addingTimeInterval(-86400 * 600),time: "06-16-" + startyear, dateRange: dateRange),
+        Condition(id: UUID(), name: "Complete blood count", code: "R07.9", date: Date().addingTimeInterval(-86400 * 700),time: "06-15-" + startyear, dateRange: dateRange),
+        Condition(id: UUID(), name: "Lipid panel", code: "R07.9", date: Date().addingTimeInterval(-86400 * 800),time: "06-15-" + startyear, dateRange: dateRange),
+        
+        Condition(id: UUID(), name: "Hyperlipidemia, unspecified", code: "I10", date: Date().addingTimeInterval(-86400 * 900),time: "06-15-" + startyear, dateRange: dateRange),
+        Condition(id: UUID(), name: "Gallstones", code: "S83.241A", date: Date().addingTimeInterval(-86400 * 400),time: "11-01-" + startyear, dateRange: dateRange),
+        Condition(id: UUID(), name: "Medial meniscus tear, right knee", code: "R07.9", date: Date().addingTimeInterval(-86400 * 500),time: "10-10-" + startyear, dateRange: dateRange),
+        
+        Condition(id: UUID(), name: "MRI of knee", code: "R07.9", date: Date().addingTimeInterval(-86400 * 600),time: "02-10-" + startyear, dateRange: dateRange),
+        Condition(id: UUID(), name: "MRI of knee", code: "R07.9", date: Date().addingTimeInterval(-86400 * 700),time: "11-15-" + startyear, dateRange: dateRange),
+        
+        
+        Condition(id: UUID(), name: "Lipid panel", code: "R07.9", date: Date().addingTimeInterval(-86400 * 600),time: "06-16-2022", dateRange: dateRange),
+        Condition(id: UUID(), name: "Complete blood count", code: "R07.9", date: Date().addingTimeInterval(-86400 * 700),time: "06-15-2021", dateRange: dateRange),
+        Condition(id: UUID(), name: "Complete blood count", code: "R07.9", date: Date().addingTimeInterval(-86400 * 800),time: "06-15-2023", dateRange: dateRange)
         
     ]
+    
+//    struct MockData {
+//       // let customDate = startDate
+//        static let conditions: [Condition] = [
+//            Condition(id: UUID(), name: "Seasonal allergic rhinitis", code: "I10", date: assitstartDate!.addingTimeInterval(-86400 * 300),time: "07-01-" + startyear, dateRange: dateRange),
+//            Condition(id: UUID(), name: "Pneumonia, unspecified", code: "S83.241A", date: assitstartDate!.addingTimeInterval(-86400 * 200),time: "08-01-" + startyear, dateRange: dateRange),
+//            Condition(id: UUID(), name: "Essential hypertension", code: "R07.9", date: assitstartDate!.addingTimeInterval(-86400 * 1),time: "06-15-" + startyear, dateRange: dateRange),
+//            Condition(id: UUID(), name: "X-ray", code: "R07.9", date: assitstartDate!.addingTimeInterval(-86400 * 400),time: "03-15-" + startyear, dateRange: dateRange),
+//            Condition(id: UUID(), name: "Magnetic Resonance Imaging", code: "R07.9", date: assitstartDate!.addingTimeInterval(-86400 * 500),time: "02-10-" + startyear, dateRange: dateRange),
+//            Condition(id: UUID(), name: "Lipid panel", code: "R07.9", date: assitstartDate!.addingTimeInterval(-86400 * 600),time: "06-16-" + startyear, dateRange: dateRange),
+//            Condition(id: UUID(), name: "Complete blood count", code: "R07.9", date: assitstartDate!.addingTimeInterval(-86400 * 700),time: "06-15-" + startyear, dateRange: dateRange),
+//            Condition(id: UUID(), name: "Lipid panel", code: "R07.9", date: assitstartDate!.addingTimeInterval(-86400 * 800),time: "06-15-" + startyear, dateRange: dateRange),
+//            
+//            Condition(id: UUID(), name: "Hyperlipidemia, unspecified", code: "I10", date: assitstartDate!.addingTimeInterval(-86400 * 900),time: "06-15-" + startyear, dateRange: dateRange),
+//            Condition(id: UUID(), name: "Gallstones", code: "S83.241A", date: Date().addingTimeInterval(-86400 * 400),time: "11-01-" + startyear, dateRange: dateRange),
+//            Condition(id: UUID(), name: "Medial meniscus tear, right knee", code: "R07.9", date: Date().addingTimeInterval(-86400 * 500),time: "10-10-" + startyear, dateRange: dateRange),
+//            
+//            Condition(id: UUID(), name: "MRI of knee", code: "R07.9", date: Date().addingTimeInterval(-86400 * 600),time: "02-10-" + startyear, dateRange: dateRange),
+//            Condition(id: UUID(), name: "MRI of knee", code: "R07.9", date: Date().addingTimeInterval(-86400 * 700),time: "11-15-" + startyear, dateRange: dateRange),
+//            
+//            
+//            Condition(id: UUID(), name: "Lipid panel", code: "R07.9", date: Date().addingTimeInterval(-86400 * 600),time: "06-16-2022", dateRange: dateRange),
+//            Condition(id: UUID(), name: "Complete blood count", code: "R07.9", date: Date().addingTimeInterval(-86400 * 700),time: "06-15-2021", dateRange: dateRange),
+//            Condition(id: UUID(), name: "Complete blood count", code: "R07.9", date: Date().addingTimeInterval(-86400 * 800),time: "06-15-2023", dateRange: dateRange)
+//            
+//        ]
 }

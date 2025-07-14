@@ -18,6 +18,50 @@
             endingLineNumber = "17"
             landmarkName = "getStateList()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "22227F93-E8D6-4601-96FA-1C8F0B0A8C63 - f189b75fa80ea469"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for mE_Health.ApiPracticeClient.getStateList() async throws -&gt; mE_Health.StateModel"
+                  moduleName = "mE Health.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ishanttiwari/Documents/mE-Health-iOS_new/mE%20Health/mE%20Health/Features/Clinic/PracticesClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "17"
+                  endingLineNumber = "17">
+               </Location>
+               <Location
+                  uuid = "22227F93-E8D6-4601-96FA-1C8F0B0A8C63 - abf7c7dc4de57867"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for mE_Health.ApiPracticeClient.getStateList() async throws -&gt; mE_Health.StateModel"
+                  moduleName = "mE Health.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ishanttiwari/Documents/mE-Health-iOS_new/mE%20Health/mE%20Health/Features/Clinic/PracticesClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "17"
+                  endingLineNumber = "17">
+               </Location>
+               <Location
+                  uuid = "22227F93-E8D6-4601-96FA-1C8F0B0A8C63 - 48f8dc1dbf48de64"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for mE_Health.ApiPracticeClient.getStateList() async throws -&gt; mE_Health.StateModel"
+                  moduleName = "mE Health.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ishanttiwari/Documents/mE-Health-iOS_new/mE%20Health/mE%20Health/Features/Clinic/PracticesClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "17"
+                  endingLineNumber = "17">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -190,8 +234,8 @@
             filePath = "mE Health/Features/AI Assistant/AssistDetailView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "59"
-            endingLineNumber = "59"
+            startingLineNumber = "66"
+            endingLineNumber = "66"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -226,6 +270,38 @@
             endingLineNumber = "174"
             landmarkName = "unknown"
             landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "7B92F1C4-3147-4DC2-9F89-4A78BD0E3DF9"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "mE Health/Features/AI Assistant/AssistDetailView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "126"
+            endingLineNumber = "126"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2E0AA70E-B1E1-4B77-9309-7B1F8C5DB2D5"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "mE Health/Features/Clinic/ClinicListView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "13"
+            endingLineNumber = "13"
+            landmarkName = "ClinicCard"
+            landmarkType = "14">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
