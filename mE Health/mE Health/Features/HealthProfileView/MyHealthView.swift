@@ -68,14 +68,43 @@ struct MyHealthView: View {
         FilesDummyData(name: "Blood Test-01.pdf", specialty: "Appointment", date: "3 June 2025")
     ]
     
+    @State private var selectedTab: DashboardTab = .menu
+    @State private var showMenu: Bool = false
+    @State private var selectedMenuTab: SideMenuTab = .persona
+    @State private var navigateToSettings = false
+    @State private var navigateToDashboard = false
+    @State private var navigateToPersona = false
+    
 
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
+            
+            MainLayout(
+                selectedTab: $selectedTab,
+                showMenu: $showMenu,
+                selectedMenuTab: selectedMenuTab,
+                onMenuItemTap: { tab in
+                    selectedMenuTab = tab
+                    showMenu = false
+                    // Optional: route or update state
+                    if tab == .dashboard {
+                        navigateToDashboard = true
+                    }
+                    else if tab == .settings {
+                        navigateToSettings = true
+                    }
+                    else if tab == .persona {
+                        navigateToPersona = true
+                    }
+                }
+            )
+            {
+            
             VStack(alignment: .leading, spacing: 12) {
                 Text("My Health")
                     .font(.custom("Montserrat-Bold", size: 32))
                     .padding(.horizontal)
-
+                
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
                         ForEach(viewStore.tiles.indices, id: \.self) { index in
@@ -98,7 +127,7 @@ struct MyHealthView: View {
                 HeaderView(
                     store: store.scope(state: \.header, action: MyHealthFeature.Action.header)
                 )
-
+                
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
                         
@@ -192,6 +221,8 @@ struct MyHealthView: View {
                 }
                 .padding(.top, 8)
                 .padding(.bottom, 40)
+                
+                navigationLinks()
             }
             .padding(.top, 8)
             .navigationDestination(
@@ -226,8 +257,8 @@ struct MyHealthView: View {
                     ConditionDetailView(condition: selected)
                 }
             }
-
-
+            
+            
             .navigationDestination(
                 isPresented: viewStore.binding(
                     get: { $0.selectVisit != nil },
@@ -293,7 +324,7 @@ struct MyHealthView: View {
                     MedicationDetailView()
                 }
             }
-
+            
             .navigationDestination(
                 isPresented: viewStore.binding(
                     get: { $0.selectImune != nil },
@@ -304,7 +335,7 @@ struct MyHealthView: View {
                     ImmunizationDetailView(immune: selected)
                 }
             }
-
+            
             .navigationDestination(
                 isPresented: viewStore.binding(
                     get: { $0.selelctedAllergy != nil },
@@ -326,8 +357,8 @@ struct MyHealthView: View {
                     LabDetailView(lab: selected)
                 }
             }
-
-
+            
+            
             .background(Color(UIColor.systemGray6))
             .navigationBarBackButtonHidden(true)
             .toolbar {
@@ -338,13 +369,13 @@ struct MyHealthView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                         Button(action: {
-                             // Handle settings
-                         }) {
-                             Image(systemName: "gearshape.fill")
-                                 .foregroundColor(Color(hex: "FF6605"))
-                         }
-                     }
+                    Button(action: {
+                        // Handle settings
+                    }) {
+                        Image(systemName: "gearshape.fill")
+                            .foregroundColor(Color(hex: "FF6605"))
+                    }
+                }
             }
             .sheet(
                 isPresented: viewStore.binding(
@@ -357,6 +388,7 @@ struct MyHealthView: View {
                 )
                 .presentationDragIndicator(.visible)
             }
+        }
             .overlay(
                 Group {
                     if showAppoitmentOverlay {
@@ -419,6 +451,43 @@ struct MyHealthView: View {
                 }
             )
         }
+    }
+    
+    @ViewBuilder
+    func navigationLinks() -> some View {
+        
+        // ✅ Add this
+              NavigationLink(
+                  destination: SettingView(),
+                  isActive: $navigateToSettings
+              ) {
+                  EmptyView()
+              }
+        
+        NavigationLink(
+            destination: DashboardView(
+                store: Store(
+                    initialState: DashboardFeature.State(),
+                    reducer: { DashboardFeature() }
+                )
+            ),
+            isActive: $navigateToDashboard
+        ) {
+            EmptyView()
+        }
+
+        NavigationLink(
+            destination: PersonaView(
+                store: Store(
+                    initialState: PersonaFeature.State(),
+                    reducer: { PersonaFeature() }
+                )
+            ),
+            isActive: $navigateToPersona
+        ) {
+            EmptyView()
+        }
+
     }
     
     private var filterOverlay: some View {

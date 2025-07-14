@@ -6,68 +6,70 @@
 import SwiftUI
 import ComposableArchitecture
 
-import SwiftUI
-import ComposableArchitecture
 
 struct PersonaView: View {
     let store: StoreOf<PersonaFeature>
     @Environment(\.presentationMode) var presentationMode
+    
+    @State private var selectedTab: DashboardTab = .dashboard
+    @State private var showMenu: Bool = false
+    @State private var selectedMenuTab: SideMenuTab = .persona
+    @State private var navigateToSettings = false
+    @State private var navigateToDashboard = false
 
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
-            VStack(alignment: .leading) {
-                Text("My Persona")
-                    .font(.custom("Montserrat-Bold", size: 32))
-                    .padding(.horizontal)
-                    .padding(.top, 32)
-
-                ScrollView {
-                    VStack(spacing: 12) {
-                        ForEach(viewStore.items) { item in
-                            Button(action: {
-                                viewStore.send(.itemTapped(item.destination))
-                            }) {
-                                PersonaCardView(item: item)
+            
+            MainLayout(
+                           selectedTab: $selectedTab,
+                           showMenu: $showMenu,
+                           selectedMenuTab: selectedMenuTab,
+                           onMenuItemTap: { tab in
+                               selectedMenuTab = tab
+                               showMenu = false
+                               
+                               // Optional: route or update state
+                               if tab == .dashboard {
+                                   navigateToDashboard = true
+                                   
+                               }
+                               else if tab == .settings {
+                                   navigateToSettings = true
+                               }
+                           }
+            ){
+                
+                VStack(alignment: .leading) {
+                    Text("My Persona")
+                        .font(.custom("Montserrat-Bold", size: 32))
+                        .padding(.horizontal)
+                        .padding(.top, 32)
+                    
+                    ScrollView {
+                        VStack(spacing: 12) {
+                            ForEach(viewStore.items) { item in
+                                Button(action: {
+                                    viewStore.send(.itemTapped(item.destination))
+                                }) {
+                                    PersonaCardView(item: item)
+                                }
+                                .buttonStyle(PlainButtonStyle())
                             }
-                            .buttonStyle(PlainButtonStyle())
+                        }
+                        .padding(.top)
+                    }
+                    navigationLinks(viewStore: viewStore)
+                }
+                .background(Color.white)
+                .navigationBarBackButtonHidden(true)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        CustomBackButton {
+                            presentationMode.wrappedValue.dismiss()
                         }
                     }
-                    .padding(.top)
-                }
-                navigationLinks(viewStore: viewStore)
-            }
-            .background(Color.white)
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    CustomBackButton {
-                        presentationMode.wrappedValue.dismiss()
-                    }
                 }
             }
-//            .navigationDestination(
-//                item: viewStore.binding(
-//                    get: \.selectedDestination,
-//                    send: { _ in .dismissDestination }
-//                )
-//            ) { destination in
-//                switch destination {
-//                case .patientProfile:
-//                    PatientProfileView(
-//                        store: Store(
-//                            initialState: PatientProfileFeature.State(),
-//                            reducer: { PatientProfileFeature() }
-//                        )
-//                    )
-//                case .myHealth:
-//                    MyHealthView(
-//                        store: Store(
-//                            initialState: MyHealthFeature.State(),
-//                            reducer: { MyHealthFeature() }
-//                        )
-//                    )
-//                }
-//            }
         }
     }
     
@@ -103,12 +105,30 @@ struct PersonaView: View {
         ) {
             EmptyView()
         }
+        
+        // ✅ Add this
+              NavigationLink(
+                  destination: SettingView(),
+                  isActive: $navigateToSettings
+              ) {
+                  EmptyView()
+              }
+        
+        NavigationLink(
+            destination: DashboardView(
+                store: Store(
+                    initialState: DashboardFeature.State(),
+                    reducer: { DashboardFeature() }
+                )
+            ),
+            isActive: $navigateToDashboard
+        ) {
+            EmptyView()
+        }
 
     }
 
 }
-
-
 
 
 

@@ -13,6 +13,12 @@ struct AdviceView: View {
     @State private var showFilterScreen = false
     @State private var selectedFilters: Set<FilterOption> = [.all]
 
+    @State private var selectedTab: DashboardTab = .dashboard
+    @State private var showMenu: Bool = false
+    @State private var selectedMenuTab: SideMenuTab = .dashboard
+    @State private var navigateToSettings = false
+    @State private var navigateToDashboard = false
+    @State private var navigateToPersona = false
     
     let adviceItems = [
         AdviceData(name: "Health: Daily Water Intake", description: "Based on your recent activity and climate, here’s personalized guidance on your daily water intake to stay hydrated and healthy.", date: "03/24/2025"),
@@ -25,47 +31,70 @@ struct AdviceView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                VStack(alignment: .leading, spacing: 16) {
-                    Text("Advice")
-                        .font(.custom("Montserrat-Bold", size: 34))
-                        .padding(.horizontal)
-
-                    ScrollView(.vertical, showsIndicators: false) {
-                        VStack(spacing: 24) {
-                            ForEach(adviceItems) { item in
-                                AdviceCardView(advice: item) {
-                                    withAnimation {
-                                        showOverlay = true
+                
+                MainLayout(
+                    selectedTab: $selectedTab,
+                    showMenu: $showMenu,
+                    selectedMenuTab: selectedMenuTab,
+                    onMenuItemTap: { tab in
+                        selectedMenuTab = tab
+                        showMenu = false
+                        // Optional: route or update state
+                        if tab == .dashboard {
+                            navigateToDashboard = true
+                        }
+                        else if tab == .settings {
+                            navigateToSettings = true
+                        }
+                        else if tab == .persona {
+                            navigateToPersona = true
+                        }
+                    }
+                ) {
+                    
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Advice")
+                            .font(.custom("Montserrat-Bold", size: 34))
+                            .padding(.horizontal)
+                        
+                        ScrollView(.vertical, showsIndicators: false) {
+                            VStack(spacing: 24) {
+                                ForEach(adviceItems) { item in
+                                    AdviceCardView(advice: item) {
+                                        withAnimation {
+                                            showOverlay = true
+                                        }
                                     }
                                 }
                             }
+                            .padding(.horizontal)
                         }
-                        .padding(.horizontal)
+                        .padding(.top)
                     }
-                    .padding(.top)
-                }
-                .navigationBarBackButtonHidden(true)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        CustomBackButton {
-                            presentationMode.wrappedValue.dismiss()
+                    .navigationBarBackButtonHidden(true)
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            CustomBackButton {
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                        }
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button(action: {
+                                showFilterScreen = true
+                                
+                            }) {
+                                Image("filter")
+                                    .foregroundColor(Color(hex: "FF6605"))
+                            }
                         }
                     }
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                             Button(action: {
-                                 showFilterScreen = true
-                                 
-                             }) {
-                                 Image("filter")
-                                     .foregroundColor(Color(hex: "FF6605"))
-                             }
-                         }
+                    
+                    .fullScreenCover(isPresented: $showFilterScreen) {
+                        AdviceFilterView(selectedFilters: $selectedFilters)
+                    }
+                    
+                    navigationLinks()
                 }
-                
-                .fullScreenCover(isPresented: $showFilterScreen) {
-                    AdviceFilterView(selectedFilters: $selectedFilters)
-                }
-
                 // MARK: - Overlay
                 if showOverlay {
                     ZStack {
@@ -73,25 +102,25 @@ struct AdviceView: View {
                         Color.black.opacity(0.4)
                             .ignoresSafeArea()
                             .transition(.opacity)
-
+                        
                         // Centered Modal with padding
                         VStack(spacing: 16) {
                             Text("""
-                            Based on the data provided, here is some advice on savings ratio for your finance profile:
-
-                            1. Understand Your Financial Goals:
-                            Start by identifying your short-term and long-term financial goals. Whether it's saving for a vacation, emergency fund, retirement, or any other goal, having clarity on what you are saving for will help determine your savings ratio.
-
-                            2. *Assess Your Current Financial Situation:* Review your income, expenses, assets, liabilities, and spending habits. Understanding your cash flow will give you a clear...
-                            """)
+                        Based on the data provided, here is some advice on savings ratio for your finance profile:
+                        
+                        1. Understand Your Financial Goals:
+                        Start by identifying your short-term and long-term financial goals. Whether it's saving for a vacation, emergency fund, retirement, or any other goal, having clarity on what you are saving for will help determine your savings ratio.
+                        
+                        2. *Assess Your Current Financial Situation:* Review your income, expenses, assets, liabilities, and spending habits. Understanding your cash flow will give you a clear...
+                        """)
                             .font(.custom("Montserrat-Semibold", size: 14))
                             .foregroundColor(.black)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
                             .padding(.top, 24)
-
+                            
                             Divider()
-
+                            
                             Button(action: {
                                 withAnimation {
                                     showOverlay = false
@@ -113,14 +142,46 @@ struct AdviceView: View {
                     }
                     .zIndex(10)
                 }
-
-
-
             }
         }
     }
 
+    @ViewBuilder
+    func navigationLinks() -> some View {
+        
+        // ✅ Add this
+              NavigationLink(
+                  destination: SettingView(),
+                  isActive: $navigateToSettings
+              ) {
+                  EmptyView()
+              }
+        
+        NavigationLink(
+            destination: DashboardView(
+                store: Store(
+                    initialState: DashboardFeature.State(),
+                    reducer: { DashboardFeature() }
+                )
+            ),
+            isActive: $navigateToDashboard
+        ) {
+            EmptyView()
+        }
 
+        NavigationLink(
+            destination: PersonaView(
+                store: Store(
+                    initialState: PersonaFeature.State(),
+                    reducer: { PersonaFeature() }
+                )
+            ),
+            isActive: $navigateToPersona
+        ) {
+            EmptyView()
+        }
+
+    }
 }
 
 #Preview {

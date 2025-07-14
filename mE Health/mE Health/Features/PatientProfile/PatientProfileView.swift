@@ -14,29 +14,53 @@ struct PatientProfileView: View {
     let store: StoreOf<PatientProfileFeature>
     @Environment(\.presentationMode) var presentationMode
     
+    @State private var selectedTab: DashboardTab = .menu
+    @State private var showMenu: Bool = false
+    @State private var selectedMenuTab: SideMenuTab = .persona
+    @State private var navigateToSettings = false
+    @State private var navigateToDashboard = false
+
     var body: some View {
         WithViewStore(store, observe: \.self) { viewStore in
             
+            MainLayout(
+                selectedTab: $selectedTab,
+                showMenu: $showMenu,
+                selectedMenuTab: selectedMenuTab,
+                onMenuItemTap: { tab in
+                    selectedMenuTab = tab
+                    showMenu = false
+                    // Optional: route or update state
+                    if tab == .dashboard {
+                        navigateToDashboard = true
+                    }
+                    else if tab == .settings {
+                        navigateToSettings = true
+                    }
+                }
+            )
+            {
+                
                 VStack(alignment: .leading, spacing: 0) {
                     
                     Text("My Profile")
                         .font(.custom("Montserrat-Bold", size: 37))
                         .padding()
-
+                    
                     let firstname = userProfileData?.first_name ?? ""
                     let last_name = userProfileData?.last_name ?? ""
-                        
+                    
                     let address = userProfileData?.address ?? ""
                     let countryCode = userProfileData?.countryCode ?? ""
                     let phoneNumber = userProfileData?.phoneNumber ?? ""
                     let number = "\(countryCode) \(phoneNumber)"
-
+                    
                     let email = userProfileData?.email ?? ""
-                        let gender = userProfileData?.gender ?? ""
+                    let gender = userProfileData?.gender ?? ""
                     let dateOfBirth = userProfileData?.dateOfBirth ?? ""
+                    
+                    ScrollView(.vertical, showsIndicators: false) {
                         
-                        
-
                         // Header Card
                         VStack(alignment: .leading,spacing: 24) {
                             HStack(spacing: 8) {
@@ -50,7 +74,7 @@ struct PatientProfileView: View {
                                     ProgressView(value: 0.01)
                                         .accentColor(.green)
                                         .padding([.top,.bottom],4)
-        
+                                    
                                 }
                                 .padding(.leading,8)
                                 Spacer()
@@ -66,47 +90,50 @@ struct PatientProfileView: View {
                         .shadow(radius: 2)
                         .padding(.horizontal)
                         .frame(height:150)
-        
+                        
                         Spacer()
-        
+                        
                         VStack(alignment: .leading,spacing: 8) {
-        
+                            
                             Text("Basic Details")
                                 .font(.custom("Montserrat-Medium", size: 18))
                                 .foregroundColor(.black)
                                 .padding(.leading,16)
                                 .padding(.top,16)
-        
-                            ScrollView {
+                            
+                           
                                 VStack(spacing: 24) {
                                     ProfileCardView(icon: "Phone", title: "Phone", value: number)
                                     ProfileCardView(icon: "mail", title: "Email", value: email)
                                     ProfileCardView(icon: "address", title: "Address (1)", value: address)
                                     ProfileCardView(icon: "anniversary", title: "Anniversary", value: "")
-        
+                                    
                                     MarriedCardView(icon: "married", title: "Married", isOn: viewStore.binding(
                                         get: \.isMarried,
                                         send: PatientProfileFeature.Action.toggleMarried
                                     ))
-        
+                                    
                                     ProfileCardView(icon: "gender", title: "Gender", value: gender)
                                     ProfileCardView(icon: "dob", title: "Date Of Birth", value: dateOfBirth)
                                 }
                                 .padding()
-                            }
+                               
+                            
                         }
+                        
+                    }
                     
-
-
+                    navigationLinks()
+                    
                 }
                 .onAppear {
                     print("👀 PatientProfileView appeared")
-                   
+                    
                 }
                 .onDisappear {
                     print("👋 PatientProfileView disappeared")
                 }
-
+                
             }
             .background(Color(UIColor.systemGray6))
             .navigationBarBackButtonHidden(true)
@@ -119,6 +146,32 @@ struct PatientProfileView: View {
             }
         }
         
+    }
+    
+    @ViewBuilder
+    func navigationLinks() -> some View {
+        
+        // ✅ Add this
+              NavigationLink(
+                  destination: SettingView(),
+                  isActive: $navigateToSettings
+              ) {
+                  EmptyView()
+              }
+        
+        NavigationLink(
+            destination: DashboardView(
+                store: Store(
+                    initialState: DashboardFeature.State(),
+                    reducer: { DashboardFeature() }
+                )
+            ),
+            isActive: $navigateToDashboard
+        ) {
+            EmptyView()
+        }
+
+    }
     
 }
 
