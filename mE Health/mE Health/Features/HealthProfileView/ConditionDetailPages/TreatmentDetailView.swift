@@ -111,10 +111,13 @@ struct TreatmentDetailView: View {
                     .shadow(radius: 4)
                     .padding(.horizontal)
                     
-                    AppoitmentMainView(appoinmnt: appoitmentVM.appoitments[0],
-                                       onTap: {},
-                                       onReadMoreTap: {})
-                    .padding(.horizontal)
+                    if let firstAppointment = appoitmentVM.appoitments.first {
+                        AppoitmentMainView(appoinmnt: firstAppointment,
+                                           onTap: {},
+                                           onReadMoreTap: {})
+                            .padding(.horizontal)
+                    }
+                    
                     
                     
                     VStack(spacing: 12) {
