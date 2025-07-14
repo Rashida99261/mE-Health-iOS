@@ -56,7 +56,7 @@ struct AssistDetailView: View {
         VStack(alignment: .leading,spacing: 20) {
             // MARK: - Start Date Card
             
-            Text("Chronic Condition Detector")
+            Text(txtCondition)
                 .font(.custom("Montserrat-SemiBold", size: 16))
                 .padding(.horizontal)
                 
@@ -279,13 +279,13 @@ import Foundation
 struct MockData {
     static let conditions: [Condition] = [
         Condition(id: UUID(), name: "Seasonal allergic rhinitis", code: "I10", date: Date().addingTimeInterval(-86400 * 300),time: "07-01-2021", dateRange: "2021-2022"),
-        Condition(id: UUID(), name: "Pneumonia, unspecified", code: "S83.241A", date: Date().addingTimeInterval(-86400 * 200),time: "2021-08-01 00:00:00Z", dateRange: "2021-2022"),
-        Condition(id: UUID(), name: "Essential hypertension", code: "R07.9", date: Date().addingTimeInterval(-86400 * 1),time: "2021-06-15 00:00:00", dateRange: "2021-2022"),
-        Condition(id: UUID(), name: "X-ray", code: "R07.9", date: Date().addingTimeInterval(-86400 * 400),time: "2021-03-15 10:00:00", dateRange: "2021-2022"),
-        Condition(id: UUID(), name: "Magnetic Resonance Imaging", code: "R07.9", date: Date().addingTimeInterval(-86400 * 500),time: "2022-02-10 14:00:00", dateRange: "2021-2022"),
-        Condition(id: UUID(), name: "Lipid panel", code: "R07.9", date: Date().addingTimeInterval(-86400 * 600),time: "2022-06-16 12:00:00", dateRange: "2021-2022"),
-        Condition(id: UUID(), name: "Complete blood count", code: "R07.9", date: Date().addingTimeInterval(-86400 * 700),time: "2021-06-15 09:00:00", dateRange: "2021-2022"),
-        Condition(id: UUID(), name: "Lipid panel", code: "R07.9", date: Date().addingTimeInterval(-86400 * 800),time: "2021-06-15 09:00:00", dateRange: "2021-2022")
+        Condition(id: UUID(), name: "Pneumonia, unspecified", code: "S83.241A", date: Date().addingTimeInterval(-86400 * 200),time: "08-01-2021", dateRange: "2021-2022"),
+        Condition(id: UUID(), name: "Essential hypertension", code: "R07.9", date: Date().addingTimeInterval(-86400 * 1),time: "06-15-2021", dateRange: "2021-2022"),
+        Condition(id: UUID(), name: "X-ray", code: "R07.9", date: Date().addingTimeInterval(-86400 * 400),time: "2021-03-15 ", dateRange: "2021-2022"),
+        Condition(id: UUID(), name: "Magnetic Resonance Imaging", code: "R07.9", date: Date().addingTimeInterval(-86400 * 500),time: "02-10-2022", dateRange: "2021-2022"),
+        Condition(id: UUID(), name: "Lipid panel", code: "R07.9", date: Date().addingTimeInterval(-86400 * 600),time: "06-16-2022", dateRange: "2021-2022"),
+        Condition(id: UUID(), name: "Complete blood count", code: "R07.9", date: Date().addingTimeInterval(-86400 * 700),time: "06-15-2021", dateRange: "2021-2022"),
+        Condition(id: UUID(), name: "Lipid panel", code: "R07.9", date: Date().addingTimeInterval(-86400 * 800),time: "06-15-2021", dateRange: "2021-2022")
         
     ]
 }
