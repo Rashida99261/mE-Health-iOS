@@ -16,6 +16,8 @@ struct PractitionerDetailView: View {
         Organization(name: "HealthCare", type: "Start Time: Jan 1, 2022", imageName: "organis_placeholder")
     ]
 
+    @State private var showVistList = false
+    @State private var showApptList = false
 
     var body: some View {
         
@@ -65,7 +67,7 @@ struct PractitionerDetailView: View {
                         Spacer()
 
                         Button(action: {
-                            // Handle tap on "View All"
+                            showApptList = true
                         }) {
                             Text("View All")
                                 .font(.custom("Montserrat-SemiBold", size: 12))
@@ -94,7 +96,7 @@ struct PractitionerDetailView: View {
                         Spacer()
 
                         Button(action: {
-                            // Handle tap on "View All"
+                            showVistList = true
                         }) {
                             Text("View All")
                                 .font(.custom("Montserrat-SemiBold", size: 12))
@@ -114,6 +116,23 @@ struct PractitionerDetailView: View {
                     }
                     .padding(.horizontal)
                 }
+                
+                NavigationLink(
+                    destination: VisitAllView(),
+                    isActive: $showVistList,
+                    label: {
+                        EmptyView()
+                    })
+                
+                NavigationLink(
+                    destination: AppoitmentAllView(),
+                    isActive: $showApptList,
+                    label: {
+                        EmptyView()
+                    })
+                
+                
+
             }
             .padding()
             .background(Color.white)

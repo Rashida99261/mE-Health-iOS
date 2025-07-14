@@ -19,6 +19,12 @@ struct ConditionDetailView: View {
     @State private var showPractitionerList = false
     let condition: ConditionDummyData
     
+    @State private var showVitalList = false
+    @State private var showLabsList = false
+    @State private var showMedicationList = false
+    @State private var showVistList = false
+    
+    
     var body: some View {
         
         ZStack {
@@ -168,7 +174,7 @@ struct ConditionDetailView: View {
                             Spacer()
                             
                             Button(action: {
-                                // Handle tap on "View All"
+                                showVitalList = true
                             }) {
                                 Text("View All")
                                     .font(.custom("Montserrat-SemiBold", size: 12))
@@ -226,7 +232,8 @@ struct ConditionDetailView: View {
                             Spacer()
                             
                             Button(action: {
-                                // Handle tap on "View All"
+                                showLabsList = true
+                                
                             }) {
                                 Text("View All")
                                     .font(.custom("Montserrat-SemiBold", size: 12))
@@ -282,7 +289,7 @@ struct ConditionDetailView: View {
                             Spacer()
                             
                             Button(action: {
-                                // Handle tap on "View All"
+                                showVistList = true
                             }) {
                                 Text("View All")
                                     .font(.custom("Montserrat-SemiBold", size: 12))
@@ -338,7 +345,7 @@ struct ConditionDetailView: View {
                             Spacer()
                             
                             Button(action: {
-                                // Handle tap on "View All"
+                                showMedicationList = true
                             }) {
                                 Text("View All")
                                     .font(.custom("Montserrat-SemiBold", size: 12))
@@ -420,6 +427,35 @@ struct ConditionDetailView: View {
                         EmptyView()
                     })
                 
+                NavigationLink(
+                    destination: VitalsAllView(),
+                    isActive: $showVitalList,
+                    label: {
+                        EmptyView()
+                    })
+                
+                NavigationLink(
+                    destination: LabsAllView(),
+                    isActive: $showLabsList,
+                    label: {
+                        EmptyView()
+                    })
+                
+                NavigationLink(
+                    destination: VisitAllView(),
+                    isActive: $showVistList,
+                    label: {
+                        EmptyView()
+                    })
+
+                
+                NavigationLink(
+                    destination: MedicationAllView(),
+                    isActive: $showMedicationList,
+                    label: {
+                        EmptyView()
+                    })
+
             }
             .background(Color(UIColor.systemGray6).ignoresSafeArea())
             .navigationBarBackButtonHidden(true)
