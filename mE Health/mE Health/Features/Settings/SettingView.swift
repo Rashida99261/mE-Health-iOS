@@ -21,6 +21,13 @@ struct SettingView: View {
     
     @State private var isClinicListActive = false
     
+    @State private var selectedTab: DashboardTab = .dashboard
+    @State private var showMenu: Bool = false
+    @State private var selectedMenuTab: SideMenuTab = .dashboard
+    @State private var navigateToDashboard = false
+    @State private var navigateToPersona = false
+
+    
     private let clinicStore: Store<ClinicFeature.State, ClinicFeature.Action> = {
             withDependencies {
                 $0.practicesClient = PracticesClientKey.liveValue
@@ -34,108 +41,128 @@ struct SettingView: View {
         }()
 
     var body: some View {
-        VStack(spacing: 0) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    Text("My Settings")
-                        .font(.custom("Montserrat-Bold", size: 37))
+        
+        MainLayout(
+            selectedTab: $selectedTab,
+            showMenu: $showMenu,
+            selectedMenuTab: selectedMenuTab,
+            onMenuItemTap: { tab in
+                selectedMenuTab = tab
+                showMenu = false
+                
+                // Optional: route or update state
+                if tab == .dashboard {
+                    navigateToDashboard = true
+                    
+                }
+                else if tab == .persona {
+                    navigateToPersona = true
+                }
+            }
+        ) {
+            VStack(spacing: 0) {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        Text("My Settings")
+                            .font(.custom("Montserrat-Bold", size: 37))
+                            .padding(.horizontal)
+                        
+                        Group {
+                            Text("Preferences")
+                                .font(.custom("Montserrat-SemiBold", size: 16))
+                            
+                            SettingRow(icon: "setting", title: "Connected Health Accounts") {
+                                isClinicListActive = true
+                            }
+                            SettingRow(icon: "lockOrange", title: "Change Password") {
+                                
+                            }
+                            SettingRow(icon: "Odometer", title: "Update Preferences") {
+                                
+                            }
+                        }
                         .padding(.horizontal)
-                    
-                    Group {
-                        Text("Preferences")
-                            .font(.custom("Montserrat-SemiBold", size: 16))
-
-                        SettingRow(icon: "setting", title: "Connected Health Accounts") {
-                            isClinicListActive = true
+                        NavigationLink(
+                            destination: ClinicListView(store: clinicStore),
+                            isActive: $isClinicListActive
+                        ) {
+                            EmptyView()
                         }
-                        SettingRow(icon: "lockOrange", title: "Change Password") {
+                        
+                        
+                        Spacer(minLength: 8)
+                        
+                        Group {
+                            Text("Allow Location Access")
+                                .font(.custom("Montserrat-SemiBold", size: 16))
+                            
+                            ToggleRow(label: "Never", icon: "never", isOn: $allowNever)
+                            
+                            ToggleRow(label: "While Using The App", icon: "play", isOn: $allowAlways)
+                            
+                            ToggleRow(label: "Always", icon: "tick", isOn: $Always)
                             
                         }
-                        SettingRow(icon: "Odometer", title: "Update Preferences") {
+                        .padding(.horizontal)
+                        
+                        Spacer(minLength: 8)
+                        
+                        Group {
+                            Text("Allow mE to Access")
+                                .font(.custom("Montserrat-SemiBold", size: 16))
                             
+                            ToggleRow(label: "Siri & Search", icon: "remix", isOn: $siriAccess)
+                            
+                            ToggleRow(label: "While Using The App", icon: "married", isOn: $whileUsing)
+                            
+                            ToggleRow(label: "Always", icon: "married", isOn: $allowMeAlways)
                         }
+                        .padding(.horizontal)
                     }
                     .padding(.horizontal)
                     
-//                    NavigationLink(
-//                        destination: ClinicListView(
-//                            store: Store(
-//                                initialState: ClinicFeature.State(),
-//                                reducer: { ClinicFeature() }
-//                            )
-//                        ),
-//                        isActive: $isClinicListActive
-//                    ) {
-//                        EmptyView()
-//                    }
-                    
-                    NavigationLink(
-                                    destination: ClinicListView(store: clinicStore),
-                                    isActive: $isClinicListActive
-                                ) {
-                                    EmptyView()
-                                }
-                    
-//                    NavigationLink(
-//                        destination: {
-//                            let store = withDependencies {
-//                                $0.practicesClient = PracticesClientKey.liveValue
-//                                $0.localClinicStorage = LocalClinicStorageKey.liveValue// Replace with your concrete local storage instance
-//                            } operation: {
-//                                Store(
-//                                    initialState: ClinicFeature.State(),
-//                                    reducer: { ClinicFeature() }
-//                                )
-//                            }
-//                            return ClinicListView(store: store)
-//                        }(),
-//                        isActive: $isClinicListActive
-//                    ) {
-//                        EmptyView()
-//                    }
-
-                    Spacer(minLength: 8)
-
-                    Group {
-                        Text("Allow Location Access")
-                            .font(.custom("Montserrat-SemiBold", size: 16))
-                        
-                        ToggleRow(label: "Never", icon: "never", isOn: $allowNever)
-                        
-                        ToggleRow(label: "While Using The App", icon: "play", isOn: $allowAlways)
-                        
-                        ToggleRow(label: "Always", icon: "tick", isOn: $Always)
-
-                    }
-                    .padding(.horizontal)
-                    
-                    Spacer(minLength: 8)
-
-                    Group {
-                        Text("Allow mE to Access")
-                            .font(.custom("Montserrat-SemiBold", size: 16))
-                        
-                        ToggleRow(label: "Siri & Search", icon: "remix", isOn: $siriAccess)
-                        
-                        ToggleRow(label: "While Using The App", icon: "married", isOn: $whileUsing)
-                        
-                        ToggleRow(label: "Always", icon: "married", isOn: $allowMeAlways)
-                    }
-                    .padding(.horizontal)
+                    navigationLinks()
                 }
-                .padding(.horizontal)
             }
-
-        }
-        .background(Color(UIColor.systemGray6).ignoresSafeArea())
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                CustomBackButton {
-                    presentationMode.wrappedValue.dismiss()
+            .background(Color(UIColor.systemGray6).ignoresSafeArea())
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    CustomBackButton {
+                        presentationMode.wrappedValue.dismiss()
+                    }
                 }
             }
         }
+    }
+    
+    @ViewBuilder
+    func navigationLinks() -> some View {
+        
+        NavigationLink(
+            destination: DashboardView(
+                store: Store(
+                    initialState: DashboardFeature.State(),
+                    reducer: { DashboardFeature() }
+                )
+            ),
+            isActive: $navigateToDashboard
+        ) {
+            EmptyView()
+        }
+
+        NavigationLink(
+            destination: PersonaView(
+                store: Store(
+                    initialState: PersonaFeature.State(),
+                    reducer: { PersonaFeature() }
+                )
+            ),
+            isActive: $navigateToPersona
+        ) {
+            EmptyView()
+        }
+
     }
 
     enum LocationAccess {

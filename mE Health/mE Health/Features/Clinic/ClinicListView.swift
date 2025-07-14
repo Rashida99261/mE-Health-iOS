@@ -61,79 +61,113 @@ struct ClinicListView: View {
     @Environment(\.presentationMode) var presentationMode
     // 2-column grid layout
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
+    
+    @State private var selectedTab: DashboardTab = .dashboard
+    @State private var showMenu: Bool = false
+    @State private var selectedMenuTab: SideMenuTab = .dashboard
+    @State private var navigateToSettings = false
+    @State private var navigateToDashboard = false
+    @State private var navigateToPersona = false
+
 
     var body: some View {
         WithViewStore(store, observe: \.self) { viewStore in
-            NavigationStack {
-                VStack(alignment: .leading, spacing: 16) {
-                    Text("Connect to Your Provider")
-                        .font(.custom("Montserrat-Bold", size: 34))
-                        .padding(.horizontal)
-
-                    // Search Bar
-                    CustomSearchBar(text: $searchText)
-
-                    // Loading View
-                    if viewStore.isLoading {
-                        ProgressView()
-                            .frame(maxWidth: .infinity)
+            
+            MainLayout(
+                selectedTab: $selectedTab,
+                showMenu: $showMenu,
+                selectedMenuTab: selectedMenuTab,
+                onMenuItemTap: { tab in
+                    selectedMenuTab = tab
+                    showMenu = false
+                    
+                    // Optional: route or update state
+                    if tab == .dashboard {
+                        navigateToDashboard = true
+                        
                     }
-
-                    // Grid List
-                    ScrollView {
-                        LazyVGrid(columns: columns, spacing: 16) {
-                            ForEach(filteredClinics(from: viewStore.stateData), id: \.state) { clinic in
-                                ClinicCard(state: clinic)
-                                    .onTapGesture {
-                                        selectedClinic = clinic
-                                    }
-                            }
+                    else if tab == .settings {
+                        navigateToSettings = true
+                    }
+                    
+                    else if tab == .persona {
+                        navigateToPersona = true
+                    }
+                }
+            ) {
+                NavigationStack {
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Connect to Your Provider")
+                            .font(.custom("Montserrat-Bold", size: 34))
+                            .padding(.horizontal)
+                        
+                        // Search Bar
+                        CustomSearchBar(text: $searchText)
+                        
+                        // Loading View
+                        if viewStore.isLoading {
+                            ProgressView()
+                                .frame(maxWidth: .infinity)
                         }
-                        .padding(.horizontal)
-                    }
-
-                    NavigationLink(
-                        destination: selectedClinic.map {
-                            ClinicDetailListView(
-                                store: Store(
-                                    initialState: ClinicDetailFeature.State(),
-                                    reducer: {
-                                        ClinicDetailFeature()
-                                    }
-                                ), title: $0.state ?? ""
+                        
+                        // Grid List
+                        ScrollView {
+                            LazyVGrid(columns: columns, spacing: 16) {
+                                ForEach(filteredClinics(from: viewStore.stateData), id: \.state) { clinic in
+                                    ClinicCard(state: clinic)
+                                        .onTapGesture {
+                                            selectedClinic = clinic
+                                        }
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
+                        
+                        NavigationLink(
+                            destination: selectedClinic.map {
+                                ClinicDetailListView(
+                                    store: Store(
+                                        initialState: ClinicDetailFeature.State(),
+                                        reducer: {
+                                            ClinicDetailFeature()
+                                        }
+                                    ), title: $0.state ?? ""
+                                )
+                            },
+                            isActive: Binding(
+                                get: { selectedClinic != nil },
+                                set: { if !$0 { selectedClinic = nil } }
                             )
-                        },
-                        isActive: Binding(
-                            get: { selectedClinic != nil },
-                            set: { if !$0 { selectedClinic = nil } }
-                        )
-                    ) {
-                        EmptyView()
+                        ) {
+                            EmptyView()
+                        }
+                        
+                        navigationLinks()
                     }
+                    .padding(.top)
+                    .onAppear {
+                        viewStore.send(.onAppear)
+                    }
+                    .onDisappear {
+                        viewStore.send(.cancelFetch)  // cancel any in-flight fetches
+                    }
+                    .alert("Error", isPresented: .constant(viewStore.showErrorAlert)) {
+                        Button("OK", role: .cancel) {}
+                    } message: {
+                        Text(viewStore.errorMessage)
+                    }
+                    
                 }
-                .padding(.top)
-                .onAppear {
-                    viewStore.send(.onAppear)
-                }
-                .onDisappear {
-                    viewStore.send(.cancelFetch)  // cancel any in-flight fetches
-                }
-                .alert("Error", isPresented: .constant(viewStore.showErrorAlert)) {
-                    Button("OK", role: .cancel) {}
-                } message: {
-                    Text(viewStore.errorMessage)
+                .navigationBarBackButtonHidden(true)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        CustomBackButton {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    }
                 }
                 
             }
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    CustomBackButton {
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                }
-            }
-
         }
     }
 
@@ -149,6 +183,42 @@ struct ClinicListView: View {
         }
     }
 
+    @ViewBuilder
+    func navigationLinks() -> some View {
+        
+        // ✅ Add this
+              NavigationLink(
+                  destination: SettingView(),
+                  isActive: $navigateToSettings
+              ) {
+                  EmptyView()
+              }
+        
+        NavigationLink(
+            destination: DashboardView(
+                store: Store(
+                    initialState: DashboardFeature.State(),
+                    reducer: { DashboardFeature() }
+                )
+            ),
+            isActive: $navigateToDashboard
+        ) {
+            EmptyView()
+        }
+
+        NavigationLink(
+            destination: PersonaView(
+                store: Store(
+                    initialState: PersonaFeature.State(),
+                    reducer: { PersonaFeature() }
+                )
+            ),
+            isActive: $navigateToPersona
+        ) {
+            EmptyView()
+        }
+
+    }
 }
 
 #Preview {

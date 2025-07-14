@@ -34,15 +34,50 @@ struct AssistView: View {
         AssistData(name: "Preventive Care Advisor"),
         AssistData(name: "Social Determinants of Health (SDoH) Estimator")]
 
+ 
+    @State private var selectedTab: DashboardTab = .dashboard
+    @State private var showMenu: Bool = false
+    @State private var selectedMenuTab: SideMenuTab = .dashboard
+    @State private var navigateToSettings = false
+    @State private var navigateToDashboard = false
+    @State private var navigateToPersona = false
+
     
     var body: some View {
-            ZStack {
+        ZStack {
+            
+            Color(hex: "F5F5FC")
+                .ignoresSafeArea()
+            
+            MainLayout(
+                selectedTab: $selectedTab,
+                showMenu: $showMenu,
+                selectedMenuTab: selectedMenuTab,
+                onMenuItemTap: { tab in
+                    selectedMenuTab = tab
+                    showMenu = false
+                    
+                    // Optional: route or update state
+                    if tab == .dashboard {
+                        navigateToDashboard = true
+                        
+                    }
+                    else if tab == .settings {
+                        navigateToSettings = true
+                    }
+                    
+                    else if tab == .persona {
+                        navigateToPersona = true
+                    }
+                }
+            )
+            {
                 
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Health")
                         .font(.custom("Montserrat-Bold", size: 34))
                         .padding(.horizontal)
-
+                    
                     ScrollView(.vertical, showsIndicators: false) {
                         VStack(spacing: 24) {
                             ForEach(assistItem) { item in
@@ -58,12 +93,14 @@ struct AssistView: View {
                     .padding(.top)
                     NavigationLink(
                         destination: AssistDetailView()
-                    ,
-                    isActive: $navigateToDetail
+                        ,
+                        isActive: $navigateToDetail
                     ) {
                         EmptyView()
                     }
-
+                    
+                    navigationLinks()
+                    
                 }
                 .background(Color(hex: "F5F5FC").ignoresSafeArea())
                 .navigationBarBackButtonHidden(true)
@@ -74,8 +111,46 @@ struct AssistView: View {
                         }
                     }
                 }
-
+                
             }
+        }
+
+    }
+    
+    @ViewBuilder
+    func navigationLinks() -> some View {
+        
+        // ✅ Add this
+              NavigationLink(
+                  destination: SettingView(),
+                  isActive: $navigateToSettings
+              ) {
+                  EmptyView()
+              }
+        
+        NavigationLink(
+            destination: DashboardView(
+                store: Store(
+                    initialState: DashboardFeature.State(),
+                    reducer: { DashboardFeature() }
+                )
+            ),
+            isActive: $navigateToDashboard
+        ) {
+            EmptyView()
+        }
+
+        NavigationLink(
+            destination: PersonaView(
+                store: Store(
+                    initialState: PersonaFeature.State(),
+                    reducer: { PersonaFeature() }
+                )
+            ),
+            isActive: $navigateToPersona
+        ) {
+            EmptyView()
+        }
 
     }
 }
