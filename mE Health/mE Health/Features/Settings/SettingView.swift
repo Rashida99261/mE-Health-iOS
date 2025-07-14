@@ -45,14 +45,34 @@ struct SettingView: View {
                         Text("Preferences")
                             .font(.custom("Montserrat-SemiBold", size: 16))
 
-                        SettingRow(icon: "setting", title: "Connected Health Accounts") {
-                            isClinicListActive = true
-                        }
+//                        SettingRow(icon: "setting", title: "Connected Health Accounts") {
+//                            isClinicListActive = true
+//                        }
                         SettingRow(icon: "lockOrange", title: "Change Password") {
                             
                         }
                         SettingRow(icon: "Odometer", title: "Update Preferences") {
                             
+                        }
+                    }
+                    .padding(.horizontal)
+                    
+                    Spacer(minLength: 8)
+
+                    Group {
+                        Text("Connected Accounts")
+                            .font(.custom("Montserrat-SemiBold", size: 16))
+                        
+                        SettingRow(icon: "health", title: "Health Care") {
+                            isClinicListActive = true
+                        }
+                        
+                        SettingRow(icon: "transaction", title: "Transactions") {
+                           
+                        }
+                        
+                        SettingRow(icon: "bank", title: "Bank Accounts") {
+                          
                         }
                     }
                     .padding(.horizontal)
@@ -109,19 +129,19 @@ struct SettingView: View {
                     }
                     .padding(.horizontal)
                     
-                    Spacer(minLength: 8)
-
-                    Group {
-                        Text("Allow mE to Access")
-                            .font(.custom("Montserrat-SemiBold", size: 16))
-                        
-                        ToggleRow(label: "Siri & Search", icon: "remix", isOn: $siriAccess)
-                        
-                        ToggleRow(label: "While Using The App", icon: "married", isOn: $whileUsing)
-                        
-                        ToggleRow(label: "Always", icon: "married", isOn: $allowMeAlways)
-                    }
-                    .padding(.horizontal)
+//                    Spacer(minLength: 8)
+//
+//                    Group {
+//                        Text("Allow mE to Access")
+//                            .font(.custom("Montserrat-SemiBold", size: 16))
+//                        
+//                        ToggleRow(label: "Siri & Search", icon: "remix", isOn: $siriAccess)
+//                        
+//                        ToggleRow(label: "While Using The App", icon: "married", isOn: $whileUsing)
+//                        
+//                        ToggleRow(label: "Always", icon: "married", isOn: $allowMeAlways)
+//                    }
+//                    .padding(.horizontal)
                 }
                 .padding(.horizontal)
             }
