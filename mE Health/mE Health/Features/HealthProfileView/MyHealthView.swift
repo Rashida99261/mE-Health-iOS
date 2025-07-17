@@ -119,6 +119,7 @@ struct MyHealthView: View {
                 Text("My Health")
                     .font(.custom("Montserrat-Bold", size: 32))
                     .padding(.horizontal)
+
                 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
@@ -139,103 +140,23 @@ struct MyHealthView: View {
                     .padding(.horizontal)
                 }
                 
-                HeaderView(
-                    store: store.scope(state: \.header, action: MyHealthFeature.Action.header)
-                )
-                
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
                         
+                        HeaderView(
+                            store: store.scope(state: \.header, action: MyHealthFeature.Action.header)
+                        )
+
                         let selectedTileTitle = viewStore.tiles[viewStore.selectedIndex].title
-                        switch selectedTileTitle {
-                        case "Practitioners":
-                            PractitionerSectionView(
-                                practitioners: viewModel.practitioners,
-                                onCardTap: { practitioner in
-                                    viewStore.send(.practitionerTapped(practitioner))
-                                }
-                            )
-                            
-                        case "Appointments":
-                            AppoitmentSectionView(
-                                appoitmentarray: appoitmentVM.appoitments,
-                                onCardTap:{ appoitmnet in
-                                    viewStore.send(.openApoitmentDetial(appoitmnet))
-                                },
-                                onReadMoreTap: { appoitmnet in
-                                    showAppoitmentOverlay = true
-                                }
-                            )
-                            
-                        case "Conditions":
-                            ConditionSectionView(conditions: conditionVM.conditionArray, onCardTap: { condition in
-                                viewStore.send(.openConditionDetail(condition))
-                            })
-                            
-                        case "Labs":
-                            LabSectionView(labs: labVM.labs, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { lab in
-                                viewStore.send(.openLabDetail(lab))
-                            })
-                            
-                        case "Vitals":
-                            VitalsSectionView(vitals: vitalVM.vitalArray) { vital in
-                                viewStore.send(.openVitalDetail(vital))
-                            }
-                            
-                        case "Medications":
-                            MedicationSectionView(medications: medicationData) { medication in
-                                viewStore.send(.openMedDetail(medication))
-                            }
-                            
-                        case "Visits":
-                            VisitsSectionView(visit: visitData, onCardTap: { visit in
-                                viewStore.send(.openVisitsDetail(visit))
-                                
-                            })
-                            
-                        case "Procedures":
-                            ProcedureSectionView(procedure: procedureVM.procedures, onCardTap: { data in
-                                viewStore.send(.openProcedureDetail(data))
-                            })
-                            
-                        case "Allergies":
-                            AllergySectionView(allergies: allergyVM.allergy, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { allergy in
-                                viewStore.send(.allergyTapped(allergy))
-                            })
-                            
-                        case "Immunizations":
-                            ImmuneSectionView(immune: immuneVM.immune, startDate: "06-01-2025", endDate: "06-01-2025", onCardTap: { immune in
-                                
-                                viewStore.send(.openImmuneDetail(immune))
-                                
-                            })
-                            
-                            
-                        case "Billing":
-                            BillingSectionView(items: billingVM.claim, onCardTap:{ billing in
-                                viewStore.send(.openBillingDetail(billing))
-                            })
-                            
-                        case "Records Vault":
-                            FilesSectionView(filesArray: filedata) { files in
-                                
-                            }
-                            
-                        case "Imaging":
-                            ImagingSectionView(arrayImaging: imagingVM.imagingarray, onCardTap: { data in
-                                viewStore.send(.openImagingDetail(data))
-                            })
-                            
-                            
-                        default:
-                            EmptyView()
-                        }
+                        sectionView(for: selectedTileTitle, viewStore: viewStore)
+                        
+
                         
                     }
                     .padding([.top,.bottom], 16)
                 }
                 .padding(.top, 8)
-                .padding(.bottom, 40)
+                .padding(.bottom, 8)
                 
                 navigationLinks()
             }
@@ -465,6 +386,119 @@ struct MyHealthView: View {
                     }
                 }
             )
+        }
+    }
+    
+    @ViewBuilder
+    private func sectionView(for title: String, viewStore: ViewStoreOf<MyHealthFeature>) -> some View {
+        
+        switch title {
+        case "Practitioners":
+            PractitionerSectionView(
+                practitioners: viewModel.practitioners,
+                searchText: viewStore.header.searchText,
+                onCardTap: { practitioner in
+                    viewStore.send(.practitionerTapped(practitioner))
+                }
+            )
+            
+        case "Appointments":
+            AppoitmentSectionView(
+                appoitmentarray: appoitmentVM.appoitments,
+                searchText: viewStore.header.searchText,
+                onCardTap:{ appoitmnet in
+                    viewStore.send(.openApoitmentDetial(appoitmnet))
+                },
+                onReadMoreTap: { appoitmnet in
+                    showAppoitmentOverlay = true
+                }
+            )
+            
+        case "Visits":
+            
+            VisitsSectionView(visit: visitData,
+            searchText: viewStore.header.searchText,
+                onCardTap: { visit in
+                viewStore.send(.openVisitsDetail(visit))
+                
+            })
+
+        case "Conditions":
+           
+            ConditionSectionView(conditions: conditionVM.conditionArray,
+                                 searchText: viewStore.header.searchText,
+                                 onCardTap: { condition in
+                viewStore.send(.openConditionDetail(condition))
+            })
+
+        case "Labs":
+            LabSectionView(labs: labVM.labs,
+                           searchText: viewStore.header.searchText,
+                            onCardTap: { lab in
+                viewStore.send(.openLabDetail(lab))
+            })
+            
+        case "Vitals":
+            VitalsSectionView(vitalsArray: vitalVM.vitalArray,
+                              searchText: viewStore.header.searchText,
+                              onCardTap:  { vital in
+                viewStore.send(.openVitalDetail(vital))
+            })
+            
+        case "Medications":
+            MedicationSectionView(medications: medicationData,
+                                  searchText: viewStore.header.searchText,
+                                  onCardTap: { medication in
+                viewStore.send(.openMedDetail(medication))
+            })
+            
+            
+        case "Procedures":
+            ProcedureSectionView(procedure: procedureVM.procedures,
+                                 searchText: viewStore.header.searchText,
+                                 onCardTap: { data in
+                viewStore.send(.openProcedureDetail(data))
+            })
+            
+        case "Allergies":
+            AllergySectionView(allergies: allergyVM.allergy,
+                               searchText: viewStore.header.searchText,
+                               onCardTap: { allergy in
+                viewStore.send(.allergyTapped(allergy))
+            })
+            
+        case "Immunizations":
+            ImmuneSectionView(immune: immuneVM.immune,
+                              searchText: viewStore.header.searchText,
+                              onCardTap: { immune in
+                viewStore.send(.openImmuneDetail(immune))
+                
+            })
+            
+            
+        case "Billing":
+            BillingSectionView(items: billingVM.claim,
+                               searchText: viewStore.header.searchText,
+                               onCardTap:{ billing in
+                viewStore.send(.openBillingDetail(billing))
+            })
+            
+        case "Records Vault":
+            FilesSectionView(filesArray: filedata,
+                             searchText: viewStore.header.searchText,
+                             onCardTap:{ files in
+                
+            })
+            
+        case "Imaging":
+            ImagingSectionView(arrayImaging: imagingVM.imagingarray,
+                               searchText: viewStore.header.searchText,
+                               onCardTap: { data in
+                viewStore.send(.openImagingDetail(data))
+            })
+
+        default:
+            EmptyView()
         }
     }
     

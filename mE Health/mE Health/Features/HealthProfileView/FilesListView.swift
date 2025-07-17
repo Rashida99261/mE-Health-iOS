@@ -60,7 +60,19 @@ struct FilesListView: View {
 
 struct FilesSectionView: View {
     let filesArray: [FilesDummyData]
+    let searchText: String
     var onCardTap: (FilesDummyData) -> Void
+    
+    var filteredAppointments: [FilesDummyData] {
+           if searchText.isEmpty {
+               return filesArray
+           } else {
+               return filesArray.filter { fileData in
+                   fileData.name.localizedCaseInsensitiveContains(searchText)
+               }
+           }
+       }
+
     
     @State private var showActionSheet = false
     @State private var showImagePicker = false
@@ -81,11 +93,11 @@ struct FilesSectionView: View {
         VStack(spacing: 20) {
             // Horizontal date cards
             
-            if filesArray.isEmpty {
+            if filteredAppointments.isEmpty {
                         NoDataView()
             } else {
                 
-                ForEach(filesArray) { files in
+                ForEach(filteredAppointments) { files in
                     FilesListView(fileData: files) {
                         onCardTap(files)
                     }

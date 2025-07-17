@@ -112,17 +112,29 @@ struct VisitsView: View {
 
 struct VisitsSectionView: View {
     let visit: [VisitDummyData]
+    let searchText: String
     var onCardTap: (VisitDummyData) -> Void
+    
+    var filterVisits: [VisitDummyData] {
+           if searchText.isEmpty {
+               return visit
+           } else {
+               return visit.filter { vData in
+                   vData.name.localizedCaseInsensitiveContains(searchText)
+               }
+           }
+       }
+
     
     var body: some View {
         
         VStack(spacing: 20) {
             // Horizontal date cards
             
-            if visit.isEmpty {
+            if filterVisits.isEmpty {
                 NoDataView()
             } else {
-                ForEach(visit) { visitData in
+                ForEach(filterVisits) { visitData in
                     VisitsView(visit: visitData) {
                         onCardTap(visitData)
                     }

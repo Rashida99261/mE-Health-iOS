@@ -163,15 +163,27 @@ struct ConditionListView: View {
 
 struct ConditionSectionView: View {
     let conditions: [ConditionDummyData]
+    let searchText: String
     var onCardTap: (ConditionDummyData) -> Void
+    
+    var filteredAppointments: [ConditionDummyData] {
+           if searchText.isEmpty {
+               return conditions
+           } else {
+               return conditions.filter { condition in
+                   condition.codeDisplay.localizedCaseInsensitiveContains(searchText)
+               }
+           }
+       }
+
     
     var body: some View {
         
         VStack(spacing: 20) {
-            if conditions.isEmpty {
+            if filteredAppointments.isEmpty {
                         NoDataView()
             } else {
-                ForEach(conditions) { condition in
+                ForEach(filteredAppointments) { condition in
                     ConditionListView(condition: condition) {
                         onCardTap(condition)
                     }

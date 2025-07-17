@@ -135,15 +135,28 @@ struct BillingCardView: View {
 
 struct BillingSectionView: View {
     let items: [BillingItem]
+    let searchText: String
     var onCardTap: (BillingItem) -> Void
+    
+    var filteredAppointments: [BillingItem] {
+           if searchText.isEmpty {
+               return items
+           } else {
+               return items.filter { claim in
+                   claim.insurance?.coverage.display.localizedCaseInsensitiveContains(searchText) ?? false
+               }
+           }
+       }
+
+
     
     var body: some View {
         VStack(spacing: 20) {
             
-            if items.isEmpty {
+            if filteredAppointments.isEmpty {
                         NoDataView()
             } else {
-                ForEach(items) { item in
+                ForEach(filteredAppointments) { item in
                     BillingCardView(claim: item) {
                         onCardTap(item)
                     }

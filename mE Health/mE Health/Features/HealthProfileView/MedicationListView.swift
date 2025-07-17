@@ -83,16 +83,28 @@ struct MedicationListView: View {
 
 struct MedicationSectionView: View {
     let medications: [MedicationDummyData]
+    let searchText: String
     var onCardTap: (MedicationDummyData) -> Void
+    
+    var filteredMedication: [MedicationDummyData] {
+           if searchText.isEmpty {
+               return medications
+           } else {
+               return medications.filter { data in
+                   data.name.localizedCaseInsensitiveContains(searchText)
+               }
+           }
+       }
+
     
     var body: some View {
         
         VStack(spacing: 20) {
             // Horizontal date cards
-            if medications.isEmpty {
+            if filteredMedication.isEmpty {
                 NoDataView()
             } else {
-                ForEach(medications) { medicationData in
+                ForEach(filteredMedication) { medicationData in
                     MedicationListView(medication: medicationData) {
                         onCardTap(medicationData)
                     }

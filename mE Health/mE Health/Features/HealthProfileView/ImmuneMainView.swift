@@ -129,20 +129,29 @@ struct ImmuneMainView: View {
 
 struct ImmuneSectionView: View {
     let immune: [ImmuneDummyData]
-    let startDate: String
-    let endDate: String
+    let searchText: String
     var onCardTap: (ImmuneDummyData) -> Void
-    @State private var searchText = ""
+    
+    var filteredMedication: [ImmuneDummyData] {
+           if searchText.isEmpty {
+               return immune
+           } else {
+               return immune.filter { data in
+                   data.vaccineCodeDisplay.localizedCaseInsensitiveContains(searchText)
+               }
+           }
+       }
+
     
     var body: some View {
         
         VStack(spacing: 20) {
             // Horizontal date cards
             
-            if immune.isEmpty {
+            if filteredMedication.isEmpty {
                         NoDataView()
             } else {
-                ForEach(immune) { labdata in
+                ForEach(filteredMedication) { labdata in
                     ImmuneMainView(immune: labdata) {
                         onCardTap(labdata)
                     }

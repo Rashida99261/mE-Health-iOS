@@ -198,17 +198,31 @@ struct ImagingMainView: View {
 struct ImagingSectionView: View {
 
     let arrayImaging: [ImagingDummyData]
+    let searchText: String
     var onCardTap: (ImagingDummyData) -> Void
+    
+    var filteredAppointments: [ImagingDummyData] {
+           if searchText.isEmpty {
+               return arrayImaging
+           } else {
+               return arrayImaging.filter { imaging in
+                   imaging.modalityDisplay.localizedCaseInsensitiveContains(searchText) ||
+                   imaging.modalityCode.localizedCaseInsensitiveContains(searchText)
+               }
+           }
+       }
+
+
     
     var body: some View {
         
         VStack(spacing: 20) {
             // Horizontal date cards
             
-            if arrayImaging.isEmpty {
+            if filteredAppointments.isEmpty {
                 NoDataView()
             } else {
-                ForEach(arrayImaging) { data in
+                ForEach(filteredAppointments) { data in
                     ImagingMainView(imaging: data) {
                         onCardTap(data)
                     }

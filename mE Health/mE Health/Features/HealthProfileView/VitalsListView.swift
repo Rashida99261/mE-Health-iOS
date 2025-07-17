@@ -136,17 +136,29 @@ struct VitalsListView: View {
 }
 
 struct  VitalsSectionView: View {
-    let vitals: [VitalDummyData]
+    let vitalsArray: [VitalDummyData]
+    let searchText: String
     var onCardTap: (VitalDummyData) -> Void
+    
+    var filteredVitals: [VitalDummyData] {
+           if searchText.isEmpty {
+               return vitalsArray
+           } else {
+               return vitalsArray.filter { vital in
+                   vital.codeDisplay.localizedCaseInsensitiveContains(searchText)
+               }
+           }
+       }
+
     
     var body: some View {
         
         VStack(spacing: 20) {
             // Horizontal date cards
-            if vitals.isEmpty {
+            if filteredVitals.isEmpty {
                 NoDataView()
             } else {
-                ForEach(vitals) { vital in
+                ForEach(filteredVitals) { vital in
                     VitalsListView(vital: vital) {
                         onCardTap(vital)
                     }

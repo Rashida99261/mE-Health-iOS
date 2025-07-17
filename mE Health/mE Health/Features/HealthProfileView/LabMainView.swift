@@ -145,20 +145,29 @@ struct LabMainView: View {
 
 struct LabSectionView: View {
     let labs: [LabDummyData]
-    let startDate: String
-    let endDate: String
+    let searchText: String
     var onCardTap: (LabDummyData) -> Void
-    @State private var searchText = ""
+    
+    var filteredAppointments: [LabDummyData] {
+           if searchText.isEmpty {
+               return labs
+           } else {
+               return labs.filter { lab in
+                   lab.codeDisplay.localizedCaseInsensitiveContains(searchText)
+               }
+           }
+       }
+
     
     var body: some View {
         
         VStack(spacing: 20) {
             // Horizontal date cards
             
-            if labs.isEmpty {
+            if filteredAppointments.isEmpty {
                 NoDataView()
             } else {
-                ForEach(labs) { labdata in
+                ForEach(filteredAppointments) { labdata in
                     LabMainView(lab: labdata) {
                         onCardTap(labdata)
                     }

@@ -85,17 +85,32 @@ struct PractitionerCardView: View {
 
 struct PractitionerSectionView: View {
     let practitioners: [PractitionerData]
+    let searchText: String
     var onCardTap: (PractitionerData) -> Void
+    
+    
+    var filteredPractitioners: [PractitionerData] {
+           if searchText.isEmpty {
+               return practitioners
+           } else {
+               return practitioners.filter { practitioner in
+                   practitioner.name.localizedCaseInsensitiveContains(searchText) ||
+                   practitioner.specialty.localizedCaseInsensitiveContains(searchText) ||
+                   (practitioner.email?.localizedCaseInsensitiveContains(searchText) ?? false) ||
+                   (practitioner.phone?.localizedCaseInsensitiveContains(searchText) ?? false)
+               }
+           }
+       }
     
     var body: some View {
         
         VStack(spacing: 20) {
             // Horizontal date cards
             
-            if practitioners.isEmpty {
+            if filteredPractitioners.isEmpty {
                 NoDataView()
             } else {
-                ForEach(practitioners) { practitioner in
+                ForEach(filteredPractitioners) { practitioner in
                     PractitionerCardView(practitioner: practitioner) {
                         onCardTap(practitioner)
                     }

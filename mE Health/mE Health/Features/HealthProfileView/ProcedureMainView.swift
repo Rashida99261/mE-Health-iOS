@@ -131,17 +131,29 @@ struct ProcedureMainView: View {
 
 struct ProcedureSectionView: View {
     let procedure: [ProcedureDummyData]
+    let searchText: String
     var onCardTap: (ProcedureDummyData) -> Void
+    
+    var filteredAppointments: [ProcedureDummyData] {
+           if searchText.isEmpty {
+               return procedure
+           } else {
+               return procedure.filter { fileData in
+                   fileData.codeDisplay.localizedCaseInsensitiveContains(searchText)
+               }
+           }
+       }
+
     
     var body: some View {
         
         VStack(spacing: 20) {
             // Horizontal date cards
             
-            if procedure.isEmpty {
+            if filteredAppointments.isEmpty {
                 NoDataView()
             } else {
-                ForEach(procedure) { procData in
+                ForEach(filteredAppointments) { procData in
                     ProcedureMainView(procedure: procData) {
                         onCardTap(procData)
                     }

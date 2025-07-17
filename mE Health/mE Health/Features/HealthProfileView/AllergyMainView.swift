@@ -114,21 +114,30 @@ struct AllergyMainView: View {
 
 struct AllergySectionView: View {
     let allergies: [AllergyDummyData]
-    let startDate: String
-    let endDate: String
+    let searchText: String
     var onCardTap: (AllergyDummyData) -> Void
-    @State private var searchText = ""
+    
+    var filteredAllergy: [AllergyDummyData] {
+           if searchText.isEmpty {
+               return allergies
+           } else {
+               return allergies.filter { allergy in
+                   allergy.code?.display.localizedCaseInsensitiveContains(searchText) ?? false
+               }
+           }
+       }
+
     
     var body: some View {
         
         VStack(spacing: 20) {
             // Horizontal date cards
             
-            if allergies.isEmpty {
-                        NoDataView()
+            if filteredAllergy.isEmpty {
+                    NoDataView()
             } else {
                         
-                ForEach(allergies) { allergy in
+                ForEach(filteredAllergy) { allergy in
                     AllergyMainView(allergy: allergy) {
                         onCardTap(allergy)
                     }

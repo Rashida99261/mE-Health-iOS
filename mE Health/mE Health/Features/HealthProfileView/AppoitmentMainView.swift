@@ -203,17 +203,30 @@ struct AppoitmentMainView: View {
 
 struct AppoitmentSectionView: View {
     let appoitmentarray: [AppointmentData]
+    let searchText: String
     var onCardTap: (AppointmentData) -> Void
     var onReadMoreTap: (AppointmentData) -> Void
+    
+    var filteredAppointments: [AppointmentData] {
+           if searchText.isEmpty {
+               return appoitmentarray
+           } else {
+               return appoitmentarray.filter { appi in
+                   appi.practitionerName.localizedCaseInsensitiveContains(searchText)
+               }
+           }
+       }
+
+
     
     var body: some View {
         
         VStack(spacing: 20) {
             
-            if appoitmentarray.isEmpty {
+            if filteredAppointments.isEmpty {
                         NoDataView()
             } else {
-                ForEach(appoitmentarray) { appoitment in
+                ForEach(filteredAppointments) { appoitment in
                     AppoitmentMainView(appoinmnt: appoitment,
                                        onTap: {
                         onCardTap(appoitment)
@@ -222,9 +235,6 @@ struct AppoitmentSectionView: View {
                         onReadMoreTap(appoitment)   // <- Pass specific appointment
                     }
                     )
-                    
-                    
-                    
                 }
             }
         }
