@@ -13,18 +13,21 @@ struct MainLayout<Content: View>: View {
     let selectedMenuTab: SideMenuTab
     let onMenuItemTap: (SideMenuTab) -> Void
     let content: Content
+    let onDashboardTabTapped: (() -> Void)?
 
     init(
         selectedTab: Binding<DashboardTab>,
         showMenu: Binding<Bool>,
         selectedMenuTab: SideMenuTab,
         onMenuItemTap: @escaping (SideMenuTab) -> Void,
+        onDashboardTabTapped: (() -> Void)? = nil,
         @ViewBuilder content: () -> Content
     ) {
         self._selectedTab = selectedTab
         self._showMenu = showMenu
         self.selectedMenuTab = selectedMenuTab
         self.onMenuItemTap = onMenuItemTap
+        self.onDashboardTabTapped = onDashboardTabTapped
         self.content = content()
     }
 
@@ -37,8 +40,8 @@ struct MainLayout<Content: View>: View {
                     onMenuItemTap(tab)
                 }
             )
-            .frame(width: 150)
-            .offset(x: showMenu ? 0 : -150)
+            .frame(width: 110)
+            .offset(x: showMenu ? 0 : -110)
             .animation(.easeInOut, value: showMenu)
             .zIndex(1)
 
@@ -49,7 +52,7 @@ struct MainLayout<Content: View>: View {
                     .onTapGesture {
                         showMenu = false
                     }
-                    .offset(x: 150)
+                    .offset(x: 110)
                     .zIndex(1.1)
             }
 
@@ -60,7 +63,7 @@ struct MainLayout<Content: View>: View {
             }
            // .background(Color(UIColor.systemGray6))
             .background(Color(UIColor.systemGray6).ignoresSafeArea())
-            .offset(x: showMenu ? 150 : 0)
+            .offset(x: showMenu ? 110 : 0)
             .animation(.easeInOut, value: showMenu)
             .zIndex(2)
 
@@ -79,6 +82,7 @@ struct MainLayout<Content: View>: View {
                     onDashboardTapped: {
                         selectedTab = .dashboard
                         showMenu = false
+                        onDashboardTabTapped?()
                     }
                 )
                 .ignoresSafeArea(edges: .bottom)

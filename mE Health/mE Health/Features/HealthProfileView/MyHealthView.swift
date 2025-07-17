@@ -24,7 +24,20 @@ struct MyHealthView: View {
     @StateObject private var labVM = ReadDatdiagnostic_report()
     @StateObject private var billingVM = ReadDatclaim()
 
+    @State private var isClinicListActive = false
     
+    private let clinicStore: Store<ClinicFeature.State, ClinicFeature.Action> = {
+            withDependencies {
+                $0.practicesClient = PracticesClientKey.liveValue
+                $0.localClinicStorage = LocalClinicStorageKey.liveValue
+            } operation: {
+                Store(
+                    initialState: ClinicFeature.State(),
+                    reducer: { ClinicFeature() }
+                )
+            }
+        }()
+
 
     let visitData : [VisitDummyData] = [
         VisitDummyData(name: "Allergy follow-up, prescribed cetirizine", recordDate: "Date: 01/07/2021", status: .finish),
@@ -96,7 +109,10 @@ struct MyHealthView: View {
                     else if tab == .persona {
                         navigateToPersona = true
                     }
-                }
+                },
+                onDashboardTabTapped: {
+                        navigateToDashboard = true
+                    }
             )
             {
             
@@ -370,7 +386,7 @@ struct MyHealthView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        // Handle settings
+                        isClinicListActive = true
                     }) {
                         Image(systemName: "gearshape.fill")
                             .foregroundColor(Color(hex: "FF6605"))
@@ -487,6 +503,15 @@ struct MyHealthView: View {
         ) {
             EmptyView()
         }
+        
+        
+        NavigationLink(
+            destination: ClinicListView(store: clinicStore),
+            isActive: $isClinicListActive
+        ) {
+            EmptyView()
+        }
+
 
     }
     

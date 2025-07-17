@@ -21,7 +21,7 @@ struct SettingView: View {
     
     @State private var isClinicListActive = false
     
-    @State private var selectedTab: DashboardTab = .dashboard
+    @State private var selectedTab: DashboardTab = .menu
     @State private var showMenu: Bool = false
     @State private var selectedMenuTab: SideMenuTab = .dashboard
     @State private var navigateToDashboard = false
@@ -59,13 +59,16 @@ struct SettingView: View {
                     navigateToPersona = true
                 }
             }
+            ,
+            onDashboardTabTapped: {
+                    navigateToDashboard = true
+                }
         ) {
-            VStack(spacing: 0) {
+            VStack(spacing: 8) {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 24) {
+                    VStack(alignment: .leading, spacing: 16) {
                         Text("My Settings")
                             .font(.custom("Montserrat-Bold", size: 37))
-                            .padding(.horizontal)
                         
                         Group {
                             Text("Preferences")
@@ -79,14 +82,8 @@ struct SettingView: View {
                                 
                             }
                         }
-                        .padding(.horizontal)
-                        NavigationLink(
-                            destination: ClinicListView(store: clinicStore),
-                            isActive: $isClinicListActive
-                        ) {
-                            EmptyView()
-                        }
-                        
+
+
                         Spacer(minLength: 8)
                         
                         Group {
@@ -106,8 +103,6 @@ struct SettingView: View {
                             }
                             
                         }
-                        .padding(.horizontal)
-                        
                         
                         Spacer(minLength: 8)
                         
@@ -122,7 +117,6 @@ struct SettingView: View {
                             ToggleRow(label: "Always", icon: "tick", isOn: $Always)
                             
                         }
-                        .padding(.horizontal)
                         
                         Spacer(minLength: 8)
                         
@@ -136,7 +130,15 @@ struct SettingView: View {
                             
                             ToggleRow(label: "Always", icon: "married", isOn: $allowMeAlways)
                         }
-                        .padding(.horizontal)
+                        
+                        Spacer(minLength: 24)
+                        
+                        NavigationLink(
+                            destination: ClinicListView(store: clinicStore),
+                            isActive: $isClinicListActive
+                        ) {
+                            EmptyView()
+                        }
                     }
                     .padding(.horizontal)
                     

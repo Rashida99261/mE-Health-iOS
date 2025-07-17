@@ -84,7 +84,7 @@ struct SideMenuView: View {
         }
         .padding(.top, 60)
         .padding(.horizontal, 16) // ✅ Keep minimal padding here if needed
-        .frame(width: 150, alignment: .center)
+        .frame(width: 110, alignment: .center)
         .background(Color(.systemGray6))
     }
 }
@@ -109,7 +109,7 @@ struct SideMenuItemView: View {
             }
 
             Text(title)
-                .font(.custom("Montserrat-Medium", size: 14))
+                .font(.custom("Montserrat-Medium", size: 13))
                 .foregroundColor(.primary)
         }
         .padding(.vertical, 4)

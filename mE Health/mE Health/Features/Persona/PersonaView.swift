@@ -11,11 +11,13 @@ struct PersonaView: View {
     let store: StoreOf<PersonaFeature>
     @Environment(\.presentationMode) var presentationMode
     
-    @State private var selectedTab: DashboardTab = .dashboard
+    @State private var selectedTab: DashboardTab = .menu
     @State private var showMenu: Bool = false
     @State private var selectedMenuTab: SideMenuTab = .persona
     @State private var navigateToSettings = false
     @State private var navigateToDashboard = false
+    
+    
 
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
@@ -36,7 +38,10 @@ struct PersonaView: View {
                                else if tab == .settings {
                                    navigateToSettings = true
                                }
-                           }
+                           },
+                           onDashboardTabTapped: {
+                                   navigateToDashboard = true
+                               }
             ){
                 
                 VStack(alignment: .leading) {

@@ -62,7 +62,7 @@ struct ClinicListView: View {
     // 2-column grid layout
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
     
-    @State private var selectedTab: DashboardTab = .dashboard
+    @State private var selectedTab: DashboardTab = .menu
     @State private var showMenu: Bool = false
     @State private var selectedMenuTab: SideMenuTab = .dashboard
     @State private var navigateToSettings = false
@@ -94,6 +94,10 @@ struct ClinicListView: View {
                         navigateToPersona = true
                     }
                 }
+                ,
+                onDashboardTabTapped: {
+                        navigateToDashboard = true
+                    }
             ) {
                 NavigationStack {
                     VStack(alignment: .leading, spacing: 16) {

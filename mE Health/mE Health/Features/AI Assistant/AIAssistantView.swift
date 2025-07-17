@@ -49,7 +49,10 @@ struct AIAssistantView: View {
                             else if tab == .persona {
                                 navigateToPersona = true
                             }
-                        }
+                        },
+                        onDashboardTabTapped: {
+                                navigateToDashboard = true
+                            }
                     ) {
                         
                         

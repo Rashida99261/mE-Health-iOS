@@ -38,16 +38,23 @@ struct ClinicFeature: Reducer {
 
                 return .run { send in
                     
-                    if let cached = try await localStorage.loadStates(), !cached.isEmpty {
-                        await send(.fetchDataFromLocal(cached))
-                    } else {
-                        do {
-                            let states = try await practiceClient.getStateList()
-                            await send(.getStateSuccessResponse(states))
-                        } catch {
-                            await send(.getStateFailureResponse(error.localizedDescription))
-                        }
+                    do {
+                        let states = try await practiceClient.getStateList()
+                        await send(.getStateSuccessResponse(states))
+                    } catch {
+                        await send(.getStateFailureResponse(error.localizedDescription))
                     }
+                    
+//                    if let cached = try await localStorage.loadStates(), !cached.isEmpty {
+//                        await send(.fetchDataFromLocal(cached))
+//                    } else {
+//                        do {
+//                            let states = try await practiceClient.getStateList()
+//                            await send(.getStateSuccessResponse(states))
+//                        } catch {
+//                            await send(.getStateFailureResponse(error.localizedDescription))
+//                        }
+//                    }
                 }
                 .cancellable(id: CancelID.fetchStates, cancelInFlight: true)
                 

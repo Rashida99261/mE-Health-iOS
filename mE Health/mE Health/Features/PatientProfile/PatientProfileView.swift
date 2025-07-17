@@ -38,6 +38,10 @@ struct PatientProfileView: View {
                         navigateToSettings = true
                     }
                 }
+                ,
+                onDashboardTabTapped: {
+                        navigateToDashboard = true
+                    }
             )
             {
                 

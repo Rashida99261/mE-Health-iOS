@@ -32,8 +32,8 @@ struct DashboardView: View {
                                
                             }
                         )
-                        .frame(width: 150)
-                        .offset(x: viewStore.showMenu ? 0 : -150)
+                        .frame(width: 110)
+                        .offset(x: viewStore.showMenu ? 0 : -110)
                         .animation(.easeInOut(duration: 0.3), value: viewStore.showMenu)
                         .zIndex(1)
                         

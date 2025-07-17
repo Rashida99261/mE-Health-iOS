@@ -49,7 +49,10 @@ struct AdviceView: View {
                         else if tab == .persona {
                             navigateToPersona = true
                         }
-                    }
+                    },
+                    onDashboardTabTapped: {
+                            navigateToDashboard = true
+                        }
                 ) {
                     
                     VStack(alignment: .leading, spacing: 16) {
