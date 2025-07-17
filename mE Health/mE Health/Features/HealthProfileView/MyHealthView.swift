@@ -23,6 +23,8 @@ struct MyHealthView: View {
     @StateObject private var conditionVM = ReadDatcondition()
     @StateObject private var labVM = ReadDatdiagnostic_report()
     @StateObject private var billingVM = ReadDatclaim()
+    
+    @State private var isClinicListActive = false
 
     @State private var isClinicListActive = false
     

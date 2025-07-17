@@ -252,8 +252,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "28"
             endingLineNumber = "28"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            landmarkName = "getAssistList(_:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -276,7 +276,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "7B92F1C4-3147-4DC2-9F89-4A78BD0E3DF9"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "mE Health/Features/AI Assistant/AssistDetailView.swift"
@@ -292,7 +292,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "2E0AA70E-B1E1-4B77-9309-7B1F8C5DB2D5"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "mE Health/Features/Clinic/ClinicListView.swift"
@@ -302,6 +302,38 @@
             endingLineNumber = "13"
             landmarkName = "ClinicCard"
             landmarkType = "14">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1470823A-F5E1-4EAE-8099-0350B41DD9DD"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "mE Health/Features/AI Assistant/Advice/AdviceCardView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "26"
+            endingLineNumber = "26"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "31B48329-6029-4519-9558-2ED8078D2624"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "mE Health/Features/AI Assistant/AIAssistantView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "63"
+            endingLineNumber = "63"
+            landmarkName = "body"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

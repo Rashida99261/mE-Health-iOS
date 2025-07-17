@@ -20,6 +20,7 @@ struct AllergyDummyData: Identifiable, Equatable, Codable {
     let rawCode: String
     let clinicalStatus: String
     let patientId: String
+   
     let encounterId: String
     let recordedDate: String
     let createdAt: String
