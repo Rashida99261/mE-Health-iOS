@@ -91,7 +91,7 @@ struct AppoitmentCardView: View {
                                 .clipShape(Capsule())
                         }
                         else if status ==  "fulfilled" {
-                            Text("Completed")
+                            Text("fulfilled")
                                 .font(.custom("Montserrat-SemiBold", size: 9))
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 4)

@@ -23,6 +23,8 @@ struct MyHealthView: View {
     @StateObject private var conditionVM = ReadDatcondition()
     @StateObject private var labVM = ReadDatdiagnostic_report()
     @StateObject private var billingVM = ReadDatclaim()
+    
+    @State private var isClinicListActive = false
 
     
 
@@ -370,7 +372,8 @@ struct MyHealthView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        // Handle settings
+                       
+                       
                     }) {
                         Image(systemName: "gearshape.fill")
                             .foregroundColor(Color(hex: "FF6605"))

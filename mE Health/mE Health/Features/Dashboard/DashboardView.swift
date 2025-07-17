@@ -367,6 +367,58 @@ struct CardButton: View {
         .frame(height: 80)
         .padding(.horizontal) // Outer horizontal padding for the card itself
     }
+    
+}
+
+struct AIAssitCardButton: View {
+    let title: String
+    let iconName: String
+    let gradientColors: [Color]
+    let onCardTap: () -> Void
+    
+
+    var body: some View {
+        ZStack {
+            // Card background with full tap gesture
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.black)
+                .shadow(radius: 5)
+                .onTapGesture {
+                    onCardTap()
+                }
+
+            HStack(spacing: 16) {
+                // Leading gradient bar (flush to edge)
+                LinearGradient(
+                    gradient: Gradient(colors: gradientColors),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .frame(width: 32)
+                .clipShape(RoundedCornersShape(tl: 12, bl: 12))
+
+                // Content with custom padding (not full HStack)
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(title)
+                            .foregroundColor(.white)
+                            .font(.custom("Montserrat-Bold", size: 18))
+
+                       
+                    }
+
+                    Spacer()
+
+                    Image(iconName)
+                        .padding(.trailing, 12)
+                }
+                .padding(.horizontal) // Only content is padded
+            }
+        }
+        .frame(height: 80)
+        .padding(.horizontal) // Outer horizontal padding for the card itself
+    }
+    
 }
 
 

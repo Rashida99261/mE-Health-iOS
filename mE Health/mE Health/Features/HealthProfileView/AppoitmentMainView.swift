@@ -19,6 +19,7 @@ struct AppointmentData: Identifiable, Equatable, Codable {
     let status: String
     let patientId: String
     let practitionerId: String
+    let practitionerName: String
     let encounterId: String
     let description: String
     let reasonCodeRaw: String
@@ -50,7 +51,7 @@ struct AppointmentData: Identifiable, Equatable, Codable {
     }
 
     enum CodingKeys: String, CodingKey {
-        case id, startTime, endTime, status, patientId, practitionerId, encounterId, description
+        case id, startTime, endTime, status, patientId, practitionerId,practitionerName, encounterId, description
         case reasonCodeRaw = "reasonCode"
         case createdAt, updatedAt
     }
@@ -113,7 +114,7 @@ struct AppoitmentMainView: View {
         VStack(alignment: .leading, spacing: 0) {
             
             HStack(alignment: .top, spacing: 12) {
-                Text(appoinmnt.practitionerId)
+                Text(appoinmnt.practitionerName)
                     .font(.custom("Montserrat-Bold", size: 18))
                     .foregroundColor(.black)
                 Spacer()
@@ -139,7 +140,7 @@ struct AppoitmentMainView: View {
                         .clipShape(Capsule())
                 }
                 else if appoinmnt.status ==  "fulfilled" {
-                    Text("Completed")
+                    Text("fulfilled")
                         .font(.custom("Montserrat-SemiBold", size: 9))
                         .padding(.horizontal, 12)
                         .padding(.vertical, 4)
@@ -165,11 +166,11 @@ struct AppoitmentMainView: View {
                         .foregroundColor(.black)
                     
                     Text(appoinmnt.formattedStartDate)
-                        .font(.custom("Montserrat-Regular", size: 12))
+                        .font(.custom("Montserrat-Regular", size: 14))
                         .foregroundColor(.black)
                     
                     Text(appoinmnt.description)
-                        .font(.custom("Montserrat-Regular", size: 10))
+                        .font(.custom("Montserrat-Regular", size: 14))
                         .foregroundColor(.black)
                         .fixedSize(horizontal: false, vertical: true)
                     

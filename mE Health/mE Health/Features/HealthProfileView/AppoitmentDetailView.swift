@@ -54,7 +54,7 @@ struct AppoitmentDetailView: View {
                                 .clipShape(Circle())
 
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(appoitment.practitionerId)
+                                Text(appoitment.practitionerName)
                                     .font(.custom("Montserrat-Medium", size: 18))
                                     .foregroundColor(Color(hex: "FF6605"))
                                 Text(appoitment.description)
@@ -121,7 +121,7 @@ struct AppoitmentDetailView: View {
                                         .clipShape(Capsule())
                                 }
                                 else if appoitment.status ==  "fulfilled" {
-                                    Text("Completed")
+                                    Text("fulfilled")
                                         .font(.custom("Montserrat-SemiBold", size: 9))
                                         .padding(.horizontal, 12)
                                         .padding(.vertical, 4)
@@ -221,7 +221,7 @@ struct idHeaderView: View {
             
             VStack(alignment: .leading, spacing: 4) {
                 
-                Text("Id: \(appoitment.id)")
+                Text("\(appoitment.description)")
                 .font(.custom("Montserrat-Bold", size: 18))
                 .foregroundColor(.black)
                 .padding(.top,16)
@@ -244,10 +244,10 @@ struct idHeaderView: View {
                             .font(.custom("Montserrat-Regular", size: 12))
                             .foregroundColor(.black)
 
-                        Text(appoitment.description)
-                            .font(.custom("Montserrat-Regular", size: 10))
-                            .foregroundColor(.black)
-                            .fixedSize(horizontal: false, vertical: true)
+//                        Text(appoitment.description)
+//                            .font(.custom("Montserrat-Regular", size: 0))
+//                            .foregroundColor(.black)
+//                            .fixedSize(horizontal: false, vertical: true)
 
                         Text("Read more")
                             .font(.custom("Montserrat-SemiBold", size: 12))
