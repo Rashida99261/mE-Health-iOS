@@ -25,9 +25,6 @@ struct MyHealthView: View {
     @StateObject private var billingVM = ReadDatclaim()
     
     @State private var isClinicListActive = false
-
-    @State private var isClinicListActive = false
-    
     private let clinicStore: Store<ClinicFeature.State, ClinicFeature.Action> = {
             withDependencies {
                 $0.practicesClient = PracticesClientKey.liveValue
