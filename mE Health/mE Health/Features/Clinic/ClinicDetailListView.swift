@@ -117,7 +117,7 @@ struct ClinicDetailListView: View {
                 }
             }
             .onAppear {
-                viewStore.send(.onDetailAppear)
+                viewStore.send(.onDetailAppear(title))
             }
 
         }

@@ -21,7 +21,7 @@ struct ClinicDetailFeature: Reducer {
     }
 
     enum Action: Equatable {
-        case onDetailAppear
+        case onDetailAppear(String)
         case authFailed(String)
         case getPracticesSuccessResponse(PracticesModel)
         case getPracticesFailureResponse(String)
@@ -42,11 +42,11 @@ struct ClinicDetailFeature: Reducer {
         Reduce { state, action in
             switch action {
                 
-            case .onDetailAppear:
+            case let .onDetailAppear(stateName):
                 state.isLoading = true
                 return .run { send in
                     do {
-                        let practices = try await practiceClient.getPracticeList()
+                        let practices = try await practiceClient.getPracticeList(stateName)
                         await send(.getPracticesSuccessResponse(practices))
                     } catch {
                         await send(.getPracticesFailureResponse(error.localizedDescription))

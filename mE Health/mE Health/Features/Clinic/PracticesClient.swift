@@ -9,7 +9,7 @@ import CoreData
 
 protocol PracticesClient {
     func getStateList() async throws -> StateModel
-    func getPracticeList() async throws -> PracticesModel
+    func getPracticeList(state:String) async throws -> PracticesModel
 }
 struct ApiPracticeClient: PracticesClient {
     func getStateList() async throws -> StateModel {
@@ -28,12 +28,12 @@ struct ApiPracticeClient: PracticesClient {
         return try JSONDecoder().decode(StateModel.self, from: data)
     }
     
-    func getPracticeList() async throws -> PracticesModel {
+    func getPracticeList(state:String) async throws -> PracticesModel {
         
         guard let token = MEUtility.getME_TOKEN() else {
             throw URLError(.userAuthenticationRequired)
         }
-        let url = Constants.API.appBaseUrl + "/api/health/practices/"
+        let url = Constants.API.appBaseUrl + "/api/health/practices/?country=USA&search=\(state)"
         var request = URLRequest(url: URL(string: url)!)
         request.httpMethod = "GET"
         request.setValue("application/json", forHTTPHeaderField: "accept")
@@ -50,15 +50,15 @@ struct ApiPracticeClient: PracticesClient {
 
 struct PracticesClientDependency {
     var getStateList:() async throws -> StateModel
-    var getPracticeList:() async throws -> PracticesModel
+    var getPracticeList:(_ state: String) async throws -> PracticesModel
 }
 
 enum PracticesClientKey: DependencyKey {
     static let liveValue: PracticesClientDependency = PracticesClientDependency(
         getStateList: {
             try await ApiPracticeClient().getStateList()
-        }, getPracticeList: {
-            try await ApiPracticeClient().getPracticeList()
+        }, getPracticeList: { state in
+            try await ApiPracticeClient().getPracticeList(state: state)
         }
     )
 }
